@@ -5,7 +5,6 @@ S_Char(35);	// 文字入力
 S_Char(35);	// 文字入力
 S_IndentSpace(0);	// SPACEインデント
 S_InsertDate(0);	// 日付挿入
-S_IndentSpace(0);	// SPACEインデント
 S_InsertTime(0);	// 時刻挿入
 S_Char(13);	// 文字入力
 S_Char(45);	// 文字入力
