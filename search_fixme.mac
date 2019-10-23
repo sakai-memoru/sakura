@@ -1,0 +1,2 @@
+﻿//キーボードマクロのファイル
+S_BookmarkPattern('\\[ \\] (FIXME|TODO|XXX|CHORE)', 4);	// 該当行マーク

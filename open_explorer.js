@@ -4,7 +4,7 @@ var sh = new ActiveXObject("WScript.Shell");
 file_path = Editor.GetFilename();
 var folder_path = fs.GetParentFolderName(file_path);
 
-sh.Run("explorer.exe " + folder_path, 1, true)
+sh.Run("explorer.exe " + folder_path, 1, false)
 
 sh = null;
 fs = null;

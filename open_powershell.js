@@ -5,7 +5,7 @@ file_path = Editor.GetFilename();
 var folder_path = fs.GetParentFolderName(file_path);
 
 sh.CurrentDirectory = folder_path
-sh.Run("powershell.exe ", 1, true)
+sh.Run("powershell.exe ", 1, false)
 
 sh = null;
 fs = null;
