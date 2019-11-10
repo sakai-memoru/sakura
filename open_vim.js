@@ -1,8 +1,8 @@
 // 
-// Explorer で編集ファイルがあるフォルダを開く
-function process(expandParam){ 
-  target_ = Editor.ExpandParameter(expandParam);
-  var cmd_statement = "explorer.exe " + target_
+// vim で編集ファイルを開く
+function process(expandParam){
+  target_path = Editor.ExpandParameter(expandParam);
+  var cmd_statement = "gvim.exe " + target_path
   Editor.ExecCommand(cmd_statement, 0)
 }
 
@@ -14,8 +14,7 @@ if(typeof(Editor) !== 'undefined'){
   // $b : opened file's extention
   // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
   //      選択中でない場合、カーソル位置の単語
-  
-  process('$e');
+  process('$F');
   
 } else {
   if(typeof(WScript) !== 'undefined'){

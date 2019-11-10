@@ -1,0 +1,23 @@
+!_TAG_FILE_ENCODING	cp932	//
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_JP_AUTHOR	HIGASHI Hirohito	/Twitter: @h_east/
+!_TAG_PROGRAM_JP_URL	http://hp.vector.co.jp/authors/VA025040/	//
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8J2	//
+CONS_MACRO_FOLDER	open_journal.js	4;"	v
+CONS_MACRO_NAME	open_journal.js	3;"	v
+CONS_TARGET_FOLDER	open_journal.js	2;"	v
+getTodayString	open_journal.js	6;"	f
+get_myjournal	open_journal.js	15;"	f
+get_sakuraMacroPath	open_journal.js	28;"	f
+naviURL	search_Eijiro.js	6;"	v
+process	execute_macro.js	4;"	f
+process	execute_macro2.js	4;"	f
+process	open_journal.js	65;"	f
+process	open_powershell.js	1;"	f
+process	paste_clipboard.js	1;"	f
+set_ClipBoardData	open_journal.js	41;"	f
+strWord	search_Eijiro.js	5;"	v

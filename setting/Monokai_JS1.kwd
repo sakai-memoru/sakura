@@ -1,0 +1,27 @@
+﻿// Monokai_JS1 キーワード定義ファイル
+// CASE=False
+
+!
+!=
+!==
+$
++
+=
+case
+catch
+default
+delete
+else
+final
+for
+goto
+if
+instanceof
+new
+return
+switch
+throw
+try
+typeof
+while
+||

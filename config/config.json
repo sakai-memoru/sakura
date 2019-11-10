@@ -1,0 +1,3 @@
+var config = {
+  'PATH' : '/config/config.json'
+};

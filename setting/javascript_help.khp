@@ -1,0 +1,1681 @@
+;サクラエディタ用JavaScriptキーワード MEMORVA版  
+;Ver.2016-11-20  
+;  
+;文と宣言  
+break /// break [label];\nbreak 文は現在のループ、switch、またはラベル文を終了し、プログラムの制御を、終了した文の次の文へと移します。
+class /// class name [extends] {}\nclass 宣言は、プロトタイプベースの継承を使用した名前が付けられた新しいクラスを生成します。
+const /// const name1 = value1 [, name2 = value2 [, ... [, nameN = valueN]]];\nconst 宣言 は、読み取り専用の値を生成します。\n不変の値を意味するものではありません、単純に、再アサインできない変数の識別子を意味します。
+continue /// continue [label];\ncontinue 文は現在のループ、またはラベル付きループの現在反復中の文の実行を終了し、そのループの実行を、その次の反復を用いて継続します。
+debugger /// debugger;\ndebugger ステートメントは、ブレークポイントの設定のような任意の利用可能なデバッグ機能を呼び出します。\nデバッグ機能が利用可能ではない場合、このステートメントは効果がありません。
+default /// defaultキーワードは、JavaScriptにおいて2つのシチュエーションで使われます。\n: switchステートメント内か、exportステートメント内です。
+do /// do\n   statement\nwhile (condition);\ndo...while 文は指定された文を、テスト条件が false に評価されるまで実行するループを作成します。\n条件は文を実行した後に評価されます。\n結果として、指定された文は少なくとも 1 回は実行されます。
+export /// export { name1, name2, …, nameN };\nexport { variable1 as name1, variable2 as name2, …, nameN };\nexport let name1, name2, …, nameN; // var も使用可\nexport let name1 = …, name2 = …, …, nameN; // var, const も使用可\nexport 文は、指定したファイル (またはモジュール) から関数、オブジェクト、プリミティブをエクスポートするために使用します。
+for /// for ([initialization]; [condition]; [final-expression])\n   statement\nfor 文は丸括弧で囲まれ、セミコロンにより分けられた、3 つの省略可能な式で構成されるループを作成します。\n式の後にはループの中で実行される文が続きます。
+;each for each (variable in object) {\n  statement\n}\n 指定された変数を、オブジェクトの全プロパティの値に対して反復します。異なるそれぞれのプロパティに対し、指定された文が実行されます。
+;in  
+;of  \n\nArray.of\nArray.of(element0[, element1[, ...[, elementN]]])\nArray.of() メソッドは、引数の数や型にかかわらず、可変長引数で、新しい Array インスタンスを生成します。
+function /// function name([param,[, param,[..., param]]]) {\n   [statements]\n}\nfunction 宣言は、指定されたパラメータで関数を宣言します。
+if /// if (condition)\n   statement1\n[else\n   statement2]\nif 文は、指定された条件が true なら文を実行します。\n条件が false なら、もう一方の文を実行することがあります。
+;else  
+import /// import defaultMember from "module-name";\nimport * as name from "module-name";\nimport { member } from "module-name";\nimport { member as alias } from "module-name";\nimport { member1 , member2 } from "module-name";\nimport 文 は、外部モジュールや他のスクリプトなどからエクスポートされた関数、オブジェクト、プリミティブをインポートするために使用します。
+let /// let var1 [= value1] [, var2 [= value2]] [, ..., varN [= valueN]];\nlet 文はブロックスコープの局所変数を宣言します。\n任意で値を代入して初期化できます。
+return /// return [[expression]];\nreturn 文は関数の実行を終了して、関数の呼び出し元に返す値を指定します。
+switch /// switch (expression) {\n  case value1:\n    // 式の結果が value1 にマッチする場合に実行する文\n    [break;]\n  default:\n    // 式の値にマッチするものが存在しない場合に実行する文\n    [break;]\n}\nswitch 文は式を評価し、その式の値が case のラベルと一致するなら、その case に関連付けられた文を実行します。
+;case  
+throw /// throw expression;\nthrow 文は、ユーザー定義の例外を投げます。\n現在の関数の実行を止めて (throw の後の文は実行しません)、コールスタック内の最初の catch ブロックに制御を移します。\n呼び出し元の関数に catch ブロックが存在しない場合は、プログラムが終了します。
+try /// try {\n   try_statements\n}\n[catch (exception_var_1) {\n   catch_statements_1\n}]\n[finally {\n   finally_statements\n}]\ntry…catch 構文は試したい文のブロックをマークし、例外を投げる必要がある場合のレスポンスを指定するための構文です。
+;catch  
+var /// var varname1 [= value1 [, varname2 [, varname3 ... [, varnameN]]]];\nvariable 文は変数を宣言し、任意でそれをある値に初期化します。
+while /// while (condition) {\n  statement\n}\nwhile 文は、テスト条件が true に評価される間、指定された文を実行するループを作成します。\n条件は文を実行する前に評価されます。
+with /// with (expression)\n  statement\nwith 文は、文に対するスコープチェーンを拡張します。\n混乱させるバグや互換性問題の原因になり得るため、with 文の使用は推奨されません。
+true /// 真
+false /// 偽
+;式と演算子  
+delete /// delete expression\ndelete 演算子は、オブジェクトからプロパティを削除します。
+function* /// function* [name]([param1[, param2[, ..., paramN]]]) {\n   statements\n}\nfunction*演算子は式の中でジェネレータ関数を定義します。
+instanceof /// object instanceof constructor\ninstanceof 演算子は、オブジェクトが自身のプロトタイプにコンストラクタの prototype プロパティを持っているかを確認します。
+new /// new constructor[([arguments])]\nnew 演算子は、コンストラクタ関数を持ったユーザ定義のオブジェクト型または内蔵オブジェクト型のインスタンスを生成します。
+target /// new.target\nnew.target\nnew.target プロパティは、関数やコンストラクタが new 演算子を使用して呼び出されたかどうかを検出できるようにします。\nコンストラクタや関数内で、new 演算子でインスタンス生成すると、new.target はコンストラクタや関数への参照を返します。\n通常の関数呼び出しの場合、new.target は undefined です。\n\ntarget\ntheTarget = event.target\nイベントを発生させたオブジェクトへの参照します。\n イベントハンドラがバブリング、またはキャプチャフェーズの間に呼び出されたとき、event.currentTarget とは異なります。
+new.target /// new.target\nnew.target プロパティは、関数やコンストラクタが new 演算子を使用して呼び出されたかどうかを検出できるようにします。\nコンストラクタや関数内で、new 演算子でインスタンス生成すると、new.target はコンストラクタや関数への参照を返します。\n通常の関数呼び出しの場合、new.target は undefined です。
+super /// super([arguments]); // 親コンストラクタを呼び出す。\nsuper.functionOnParent([arguments]);\nsuper キーワードは、オブジェクトの親の関数を呼び出すために使用できます。\nsuper.prop および super[expr] 式は、class と オブジェクトリテラル の両方におけるどのようなメソッド定義でも有効です。
+this /// this\nthis キーワードは関数の実行コンテキストを参照します。
+typeof /// typeof operand\ntypeof 演算子は、評価を行われないままの状態のオペランドのデータ型を示す文字列を返します。
+void /// void expression\nvoid 演算子は与えられた式 (expression) を評価し、undefined を返します。
+yield /// [rv] = yield [expression];\nyield キーワードはジェネレーター関数の一時停止と再開で利用します。\n（function* または legacy generator function）。
+yield* /// yield* [[expression]];\nyield* 式は別の generator や反復可能なオブジェクトに委任するために使用されます。
+;クラス  
+constructor /// constructor([arguments]) { ... }\nconstructor メソッドは、class で作成されたオブジェクトの生成と初期化のための特殊なメソッドです。
+extends /// class ChildClass extends ParentClass { ... }\nextends キーワードは、class 宣言 や class 式内で、他のクラスの子としてクラスを作成するために使用します。
+static /// static methodName() { ... }\nstatic キーワードは、クラスに静的メソッドを定義します。
+;標準オブジェクト・値プロパティ https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects\n 
+Infinity /// グローバルプロパティ Infinity は無限大を表す数値です。
+NaN /// グローバルプロパティ NaN は非数 (Not-A-Number) を表す値です。\n\nNumber.NaN\n非数 (Not-A-Number) を表す値。
+undefined /// undefined\nグローバルプロパティ undefined はプリミティブ値 undefined を表します。\nこれは JavaScript におけるプリミティブ型の一つです。
+null /// null\nnull という値は null ないしは「空」の値を表す JavaScript のリテラルで、言い換えれば、オブジェクトの値が存在しないことを表します。\nこれは JavaScript におけるプリミティブ値の一つです。
+;標準オブジェクト・関数プロパティ  
+eval /// eval(string)\neval() 関数は文字列を JavaScript コードとして評価します。
+uneval /// uneval(object)\nuneval() 関数は、オブジェクトのソースコードを表す文字列を生成します。\n！非標準
+isFinite /// isFinite(testValue)\nグローバル関数 isFinite() は渡された値が有限数かどうかを判定します。\n必要に応じて、引数はまず数値へと変換されます。\n\nNumber.isFinite\nNumber.isFinite(value)\nNumber.isFinite() メソッドは、引数として与えた数が有限数かどうかの真偽値を返します。
+isNaN /// isNaN(testValue)\nisNaN() 関数は引数が NaN （非数）かどうかを判定します。\nisNaN 関数の型強制は興味深いルールを持つことに注意してください。\n値が非数かどうかを判定する代用方法として、ECMAScript 6 で定義されている Number.isNaN() や typeof が使用できます。\n\nNumber.isNaN\nNumber.isNaN(value)\n引数として与えた数がNaNかどうかの真偽値を返します。\n オリジナルのisNaN()グローバルメソッドのより堅牢なバージョンです。
+parseFloat /// parseFloat(string)\nparseFloat() 関数は引数として与えられた文字列を構文解析して浮動小数点数を返します。\n\nNumber.parseFloat\nNumber.parseFloat(string)\nNumber.parseFloat() メソッドは、文字列引数をパースし浮動小数点数を返します。\nこのメソッドはグローバル関数 parseFloat() と同様に振る舞い、ECMAScript 第 6 版の一部となっています(目的はグローバル関数のモジュール化です)。
+parseInt /// parseInt(string, radix);\nparseInt()関数は、第1引数の文字列を解析(パース)し、第2引数に与えられた基数(数学的記数法の底)にもとづく整数を返します。\n\nNumber.parseInt\nNumber.parseInt(string[, radix])\n文字列引数をパースし指定された基数または底の整数値を返します。
+decodeURI /// decodeURI(encodedURI)\ndecodeURI() 関数は、encodeURI 関数あるいは同様のルーチンによって事前に作成された URI (Uniform Resource Identifier; 統一資源識別子) をデコードします。
+decodeURIComponent /// decodeURIComponent(encodedURI)\ndecodeURIComponent() 関数は、encodeURIComponent 関数あるいは同様のルーチンによって事前に作成された URI (Uniform Resource Identifier; 統一資源識別子) の構成要素をデコードします。
+encodeURI /// encodeURI(URI)\nencodeURI() 関数は、URI (Uniform Resource Identifier; 統一資源識別子) をエンコードし、各文字のインスタンスをそれぞれ UTF-8 符号の文字を表す 1 個から 4 個のエスケープシーケンスに置き換えます (サロゲート文字のペアのみ 4 個のエスケープシーケンスになります)。\n【エンコードしない文字】アルファベット、数字、; , \n/ ? : @ & = + $ - _ . \n! ~ * ' ( ) #
+encodeURIComponent /// encodeURIComponent(str);\nencodeURIComponent() 関数は、特定の文字を UTF-8 文字エンコーディングで表された 1 個から 4 個のエスケープシーケンスに置き換えることで、URI (Uniform Resource Identifier) をエンコードします（サロゲートペアで構成される文字のみ 4 個のエスケープシーケンスになります）。\n【エンコードしない文字】アルファベット、10進数字、- _ . \n! ~ * ' ( )
+escape /// escape(str)\n非推奨機能の escape() 関数は文字列を 16 進数エスケープシーケンスに置換します。\nこの関数の代わりに encodeURI または encodeURIComponent を使用してください。
+unescape /// unescape(str)\n非推奨機能の unescape() 関数は 16 進数エスケープシーケンスをそれが表す文字列に置換します。\nエスケープシーケンスは escape といった関数によって生成されます。\nunescape は非推奨なので、代わりに decodeURI か decodeURIComponent を使用してください。
+;標準オブジェクト・Boolean https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Boolean\n 
+Boolean /// new Boolean(value)\nBoolean オブジェクトは真偽値のオブジェクト・ラッパです。
+toSource /// Boolean.prototype.toSource\nboolean.toSource()\nオブジェクトのソースコードを表す文字列を返します。\n！非標準\n\nNumber.prototype.toSource\nnumber.toSource()\nオブジェクトのソースコードを表す文字列を返します。\n！非標準\n\nDate.prototype.toSource\ndateObj.toSource()\nDate.toSource()\ntoSource() メソッドは、オブジェクトのソースコードを表す文字列を返します。\n！非標準\n\nString.prototype.toSource\nstr.toSource()\nそのオブジェクトのソースコードを表す文字列を返します。\n！非標準\n\nRegExp.prototype.toSource\nregexObj.toSource()\nオブジェクトのソースコードを表す文字列を返します。\n！非標準\n\nArray.prototype.toSource\narray.toSource()\n配列のソースコードを表す文字列を返します。\n！非標準
+Boolean.prototype.toSource /// boolean.toSource()\nオブジェクトのソースコードを表す文字列を返します。\n！非標準
+toString /// Boolean.prototype.toString\nbool.toString()\ntoString() メソッドは、指定された Boolean オブジェクトを表す文字列を返します。\n\nNumber.prototype.toString\nnumber.toString( radix )\n指定された Number オブジェクトを表す 文字列を返します。\n\nDate.prototype.toString\ndateObj.toString()\ntoString() メソッドは、指定した Date オブジェクトを表す文字列を返します。\n\nString.prototype.toString\nstr.toString()\n指定されたオブジェクトを表す文字列を返します。\n\nRegExp.prototype.toString\nregexObj.toString();\n指定されたオブジェクトを表す文字列を返します。\n\nArray.prototype.toString\nstring = array.toString()\n指定された配列とその要素を表す文字列を返します。
+Boolean.prototype.toString /// bool.toString()\ntoString() メソッドは、指定された Boolean オブジェクトを表す文字列を返します。
+valueOf /// Boolean.prototype.valueOf\nbool.valueOf()\nvalueOf() メソッドは、Boolean オブジェクトのプリミティブ値を返します。\n\nNumber.prototype.valueOf\nnumber.valueOf()\nNumber オブジェクトのプリミティブ値を返します。\n\nDate.prototype.valueOf\ndateObj.valueOf()\nvalueOf() メソッドは、Date オブジェクトのプリミティブ値を返します。\n\nString.prototype.valueOf\nstr.valueOf()\nvalueOf() メソッドは、String オブジェクトのプリミティブ値を返します。
+Boolean.prototype.valueOf /// bool.valueOf()\nvalueOf() メソッドは、Boolean オブジェクトのプリミティブ値を返します。
+;標準オブジェクト・Number https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Number\n 
+Number /// new Number(value);\nNumber JavaScript オブジェクトは、数値に作用するラッパーオブジェクトです。\nNumber オブジェクトは、Number() コンストラクタを用いて生成します。
+EPSILON /// Number.EPSILON\nNumber.EPSILON プロパティは、1 と、Number として表現できる 1 より大きい最小の値の差を表します。
+Number.EPSILON /// Number.EPSILON プロパティは、1 と、Number として表現できる 1 より大きい最小の値の差を表します。
+MAX_SAFE_INTEGER /// Number.MAX_SAFE_INTEGER\nJavaScriptにおいて正確に扱える最大整数値を表します(253 - 1)。
+Number.MAX_SAFE_INTEGER /// JavaScriptにおいて正確に扱える最大整数値を表します(253 - 1)。
+MAX_VALUE /// Number.MAX_VALUE\nJavaScript において表すことが可能な最大数値。
+Number.MAX_VALUE /// JavaScript において表すことが可能な最大数値。
+MIN_SAFE_INTEGER /// Number.MIN_SAFE_INTEGER\nNumber.MIN_SAFE_INTEGER 定数は、JavaScript において正確に扱える最小整数値を表します(-(253 - 1))。
+Number.MIN_SAFE_INTEGER /// Number.MIN_SAFE_INTEGER 定数は、JavaScript において正確に扱える最小整数値を表します(-(253 - 1))。
+MIN_VALUE /// Number.MIN_VALUE\nJavaScript において表すことが可能な最小の正の数の値。
+Number.MIN_VALUE /// JavaScript において表すことが可能な最小の正の数の値。
+NEGATIVE_INFINITY /// Number.NEGATIVE_INFINITY\n負の無限大を表す値。
+Number.NEGATIVE_INFINITY /// 負の無限大を表す値。
+Number.NaN /// 非数 (Not-A-Number) を表す値。
+POSITIVE_INFINITY /// Number.POSITIVE_INFINITY\n正の無限大を表す値。
+Number.POSITIVE_INFINITY /// 正の無限大を表す値。
+Number.isFinite /// Number.isFinite(value)\nNumber.isFinite() メソッドは、引数として与えた数が有限数かどうかの真偽値を返します。
+isInteger /// Number.isInteger\nNumber.isInteger(value)\nNumber.isInteger() は引数に指定された値が整数かどうかを判定するメソッドです。
+Number.isInteger /// Number.isInteger(value)\nNumber.isInteger() は引数に指定された値が整数かどうかを判定するメソッドです。
+Number.isNaN /// Number.isNaN(value)\n引数として与えた数がNaNかどうかの真偽値を返します。\n オリジナルのisNaN()グローバルメソッドのより堅牢なバージョンです。
+isSafeInteger /// Number.isSafeInteger\nNumber.isSafeInteger(testValue)\nNumber.isSafeInteger() メソッドは、引数として与えた数が safe integer かどうかの真偽値を返します。\nsafe integer は下記を満たす整数です。
+Number.isSafeInteger /// Number.isSafeInteger(testValue)\nNumber.isSafeInteger() メソッドは、引数として与えた数が safe integer かどうかの真偽値を返します。\nsafe integer は下記を満たす整数です。
+Number.parseFloat /// Number.parseFloat(string)\nNumber.parseFloat() メソッドは、文字列引数をパースし浮動小数点数を返します。\nこのメソッドはグローバル関数 parseFloat() と同様に振る舞い、ECMAScript 第 6 版の一部となっています(目的はグローバル関数のモジュール化です)。
+Number.parseInt /// Number.parseInt(string[, radix])\n文字列引数をパースし指定された基数または底の整数値を返します。
+toExponential /// Number.prototype.toExponential\nnumber.toExponential( fractionDigits )\nNumber オブジェクトを指数表記で表した文字列を返します。
+Number.prototype.toExponential /// number.toExponential( fractionDigits )\nNumber オブジェクトを指数表記で表した文字列を返します。
+toFixed /// Number.prototype.toFixed\nnumObj.toFixed([digits])\ntoFixed() メソッドは、数を固定小数点表記を用いてフォーマットします。
+Number.prototype.toFixed /// numObj.toFixed([digits])\ntoFixed() メソッドは、数を固定小数点表記を用いてフォーマットします。
+toLocaleString /// Number.prototype.toLocaleString\nnumObj.toLocaleString([locales [, options]])\nこのNumberオブジェクトのローケルに応じた文字列表現を返します。\n\nDate.prototype.toLocaleString\ndateObj.toLocaleString([locales[, options]])\ntoLocaleString() メソッドは、この日付を表す言語に依存した文字列を返します。\n新しい locales 引数と options 引数により、アプリケーションは、使用される書式変換の言語の指定や、関数の振る舞いのカスタマイズができます。\n古い実装のアプリケーションは、locales 引数と options 引数を無視します。\n使用されるロケールや返される文字列の書式は、完全に実装依存です。\n\nArray.prototype.toLocaleString\narr.toLocaleString();\ntoLocaleString() メソッドは、配列の要素を表す文字列を返します。\nこの要素は、配列要素の toLocaleString メソッドを使用して Strings に変換され、ロケール固有の文字列に分割されます (例えばカンマ “,”などはロケールによっては “.”で表されます) 。
+Number.prototype.toLocaleString /// numObj.toLocaleString([locales [, options]])\nこのNumberオブジェクトのローケルに応じた文字列表現を返します。
+toPrecision /// Number.prototype.toPrecision\nnumObj.toPrecision([precision])\nNumber オブジェクトを指定された精度で表した文字列を返します。
+Number.prototype.toPrecision /// numObj.toPrecision([precision])\nNumber オブジェクトを指定された精度で表した文字列を返します。
+Number.prototype.toSource /// number.toSource()\nオブジェクトのソースコードを表す文字列を返します。\n！非標準
+Number.prototype.toString /// number.toString( radix )\n指定された Number オブジェクトを表す 文字列を返します。
+Number.prototype.valueOf /// number.valueOf()\nNumber オブジェクトのプリミティブ値を返します。
+toInteger /// Number.toInteger\nNumber.toInteger(number)\n渡された引数を評価しintegerに変換します。\nしかし実装は取り除かれました。\n！廃止！非標準
+Number.toInteger /// Number.toInteger(number)\n渡された引数を評価しintegerに変換します。\nしかし実装は取り除かれました。\n！廃止！非標準
+prototype /// プロトタイプ
+;標準オブジェクト・Math https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math\n 
+Math /// new Math()\nMath は、数学的な定数と関数を提供するプロパティとメソッドを持つ、組み込みのオブジェクトです。\n関数オブジェクトではありません。
+E /// Math.E\nMath.E プロパティはネイピア数 (オイラー数) です。\nこれは、自然対数の底として用いられる数学定数で、約 2.718 です。
+Math.E /// Math.E プロパティはネイピア数 (オイラー数) です。\nこれは、自然対数の底として用いられる数学定数で、約 2.718 です。
+LN10 /// Math.LN10\n10 の自然対数。\n約 2.302 です。
+Math.LN10 /// 10 の自然対数。\n約 2.302 です。
+LN2 /// Math.LN2\n2 の自然対数。\n約 0.693 です。
+Math.LN2 /// 2 の自然対数。\n約 0.693 です。
+LOG10E /// Math.LOG10E\n10 を底とした E の対数。\n約 0.434 です。
+Math.LOG10E /// 10 を底とした E の対数。\n約 0.434 です。
+LOG2E /// Math.LOG2E\n2 を底とした E の対数。\n約 1.442 です。
+Math.LOG2E /// 2 を底とした E の対数。\n約 1.442 です。
+PI /// Math.PI\n円周率。\n約 3.14159 です。
+Math.PI /// 円周率。\n約 3.14159 です。
+SQRT1_2 /// Math.SQRT1_2\n1/2 の平方根。\nつまり、1 割る 2 の平方根。\n約 0.707 です。
+Math.SQRT1_2 /// 1/2 の平方根。\nつまり、1 割る 2 の平方根。\n約 0.707 です。
+SQRT2 /// Math.SQRT2\n2 の平方根。\n約 1.414 です。
+Math.SQRT2 /// 2 の平方根。\n約 1.414 です。
+abs /// Math.abs\nvar abs = Math.abs(x);\n引数として与えた数の絶対値を返します。
+Math.abs /// var abs = Math.abs(x);\n引数として与えた数の絶対値を返します。
+acos /// Math.acos\nMath.acos(x)\n引数として与えた数のアークコサインをラジアン単位で返します。
+Math.acos /// Math.acos(x)\n引数として与えた数のアークコサインをラジアン単位で返します。
+acosh /// Math.acosh\nMath.acosh(x)\n引数として与えた数のハイパーボリックアークコサインを返します。
+Math.acosh /// Math.acosh(x)\n引数として与えた数のハイパーボリックアークコサインを返します。
+asin /// Math.asin\nMath.asin(x)\n引数として与えた数のアークサインをラジアン単位で返します。
+Math.asin /// Math.asin(x)\n引数として与えた数のアークサインをラジアン単位で返します。
+asinh /// Math.asinh\nMath.asinh(x)\n引数として与えた数のハイパーボリックアークサインを返します。
+Math.asinh /// Math.asinh(x)\n引数として与えた数のハイパーボリックアークサインを返します。
+atan /// Math.atan\nMath.atan(x)\n引数として与えた数のアークタンジェントをラジアン単位で返します。
+Math.atan /// Math.atan(x)\n引数として与えた数のアークタンジェントをラジアン単位で返します。
+atan2 /// Math.atan2\nMath.atan2(y,x)\n引数の比率でのアークタンジェントを返します。
+Math.atan2 /// Math.atan2(y,x)\n引数の比率でのアークタンジェントを返します。
+atanh /// Math.atanh\nMath.atanh(x)\n引数として与えた数のハイパーボリックアークタンジェントを返します。
+Math.atanh /// Math.atanh(x)\n引数として与えた数のハイパーボリックアークタンジェントを返します。
+cbrt /// Math.cbrt\nMath.cbrt(x)\nMath.cbrt() 関数は、引数として与えた数の立方根を返します。
+Math.cbrt /// Math.cbrt(x)\nMath.cbrt() 関数は、引数として与えた数の立方根を返します。
+ceil /// Math.ceil\nMath.ceil(x)\n引数として与えた数以上の最小の整数を返します。
+Math.ceil /// Math.ceil(x)\n引数として与えた数以上の最小の整数を返します。
+clz32 /// Math.clz32\nMath.clz32(x)\n引数として与えた数の32ビットバイナリでの先導する0ビットの数を返します。
+Math.clz32 /// Math.clz32(x)\n引数として与えた数の32ビットバイナリでの先導する0ビットの数を返します。
+cos /// Math.cos\nMath.cos(x)\n引数として与えた数のコサインを返します。
+Math.cos /// Math.cos(x)\n引数として与えた数のコサインを返します。
+cosh /// Math.cosh\nMath.cosh(x)\n引数として与えた数のハイパーボリックコサインを返します。
+Math.cosh /// Math.cosh(x)\n引数として与えた数のハイパーボリックコサインを返します。
+exp /// Math.exp\nMath.exp(x)\nEx を返します。\nここでの x は引数、E は、自然対数の底であるネイピア数（オイラー数）です。
+Math.exp /// Math.exp(x)\nEx を返します。\nここでの x は引数、E は、自然対数の底であるネイピア数（オイラー数）です。
+expm1 /// Math.expm1\nMath.expm1(x)\nex - 1　を返します。\nx　は引数で、e は自然対数の底です。
+Math.expm1 /// Math.expm1(x)\nex - 1　を返します。\nx　は引数で、e は自然対数の底です。
+floor /// Math.floor\nMath.floor(x)\n引数として与えた数以下の最大の整数を返します。
+Math.floor /// Math.floor(x)\n引数として与えた数以下の最大の整数を返します。
+fround /// Math.fround\nMath.fround(x)\n引数として与えた数の最も近い単精度 floatを返します。
+Math.fround /// Math.fround(x)\n引数として与えた数の最も近い単精度 floatを返します。
+hypot /// Math.hypot\nMath.hypot([value1[, value2[, ...]]])\n引数の二乗和の平方根を返します。
+Math.hypot /// Math.hypot([value1[, value2[, ...]]])\n引数の二乗和の平方根を返します。
+imul /// Math.imul\nMath.imul(a, b)\nこのメソッドは 2 つの引数をとり、C 言語の様な 32 ビット乗算の結果を返します。
+Math.imul /// Math.imul(a, b)\nこのメソッドは 2 つの引数をとり、C 言語の様な 32 ビット乗算の結果を返します。
+log /// Math.log\nMath.log(x)\n引数として与えた数の自然対数（底は E ）を返します。\n\nconsole.log\nconsole.log(obj1 [, obj2, ..., objN]);\nconsole.log(msg [, subst1, ..., substN]);\nデバッガの Web コンソールにメッセージを出力します。
+Math.log /// Math.log(x)\n引数として与えた数の自然対数（底は E ）を返します。
+log10 /// Math.log10\nMath.log10(x)\nMath.log10() 関数は、引数として与えた数に対して、10 を底とする対数を返します。
+Math.log10 /// Math.log10(x)\nMath.log10() 関数は、引数として与えた数に対して、10 を底とする対数を返します。
+log1p /// Math.log1p\nMath.log1p(x)\n引数として与えた数と 1 の合計の自然対数(底 e)を返します。
+Math.log1p /// Math.log1p(x)\n引数として与えた数と 1 の合計の自然対数(底 e)を返します。
+log2 /// Math.log2\nMath.log2(x)\n引数として与えた数の2を底とする対数を返します。
+Math.log2 /// Math.log2(x)\n引数として与えた数の2を底とする対数を返します。
+max /// Math.max\nMath.max([value1[,value2[, ...]]])\n引数として与えた複数の数の中で最大の数を返します。
+Math.max /// Math.max([value1[,value2[, ...]]])\n引数として与えた複数の数の中で最大の数を返します。
+min /// Math.min\nMath.min([value1[,value2[, ...]]])\n引数として与えた複数の数の中で最小の数を返します。
+Math.min /// Math.min([value1[,value2[, ...]]])\n引数として与えた複数の数の中で最小の数を返します。
+pow /// Math.pow\nMath.pow(base, exponent)\nbase を exponent 乗した値、つまり、baseexponent の値を返します。
+Math.pow /// Math.pow(base, exponent)\nbase を exponent 乗した値、つまり、baseexponent の値を返します。
+random /// Math.random\nrandomNumber = Math.random()\n[0,1) 、……つまり、0 以上 1 未満の範囲で疑似乱数を返します。\nJava と同様に、現在時刻をシードとして乱数を生成します。
+Math.random /// randomNumber = Math.random()\n[0,1) 、……つまり、0 以上 1 未満の範囲で疑似乱数を返します。\nJava と同様に、現在時刻をシードとして乱数を生成します。
+round /// Math.round\nMath.round(x)\n引数として与えた数を四捨五入して、最も近似の整数を返します。
+Math.round /// Math.round(x)\n引数として与えた数を四捨五入して、最も近似の整数を返します。
+sign /// Math.sign\nMath.sign(x)\nMath.sign() 関数は、引数として与えた数が正、負、0 のどれであるか示す符号を返します。
+Math.sign /// Math.sign(x)\nMath.sign() 関数は、引数として与えた数が正、負、0 のどれであるか示す符号を返します。
+sin /// Math.sin\nMath.sin(x)\n引数として与えた数のサイン（正弦）を返します。
+Math.sin /// Math.sin(x)\n引数として与えた数のサイン（正弦）を返します。
+sinh /// Math.sinh\nMath.sinh(x)\n引数として与えた数のハイパーボリックサインを返します。
+Math.sinh /// Math.sinh(x)\n引数として与えた数のハイパーボリックサインを返します。
+sqrt /// Math.sqrt\nMath.sqrt(x)\n引数として与えた数の平方根を返します。
+Math.sqrt /// Math.sqrt(x)\n引数として与えた数の平方根を返します。
+tan /// Math.tan\nMath.tan(x)\n引数として与えた数のタンジェントを返します。
+Math.tan /// Math.tan(x)\n引数として与えた数のタンジェントを返します。
+tanh /// Math.tanh\nMath.tanh(x)\n引数として与えた数のハイパーボリックタンジェントを返します。
+Math.tanh /// Math.tanh(x)\n引数として与えた数のハイパーボリックタンジェントを返します。
+trunc /// Math.trunc\nMath.trunc(x)\nMath.trunc() 関数は、引数として与えた数の小数部の桁を取り除くことによって整数部を返します。
+Math.trunc /// Math.trunc(x)\nMath.trunc() 関数は、引数として与えた数の小数部の桁を取り除くことによって整数部を返します。
+;標準オブジェクト・Date https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Date\n 
+Date /// new Date();\nnew Date(value);\nnew Date(dateString);\nnew Date(year, month[, day[, hour[, minutes[, seconds[, milliseconds]]]]]);\n日付や時刻を扱うことが可能な、JavaScript の Date インスタンスを生成します。\nDate オブジェクトは、1970 年 1 月 1 日 (UTC) から始まるミリ秒単位の時刻値を基準としています。
+UTC /// Date.UTC\nDate.UTC(year, month[, day[, hour[, minute[, second[, millisecond]]]]])\nDate.UTC() メソッドは、コンストラクタと同じ最も長い書式の引数を受け入れ、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 からの経過時間を表す Date オブジェクトのミリ秒単位の数値を返します。
+Date.UTC /// Date.UTC(year, month[, day[, hour[, minute[, second[, millisecond]]]]])\nDate.UTC() メソッドは、コンストラクタと同じ最も長い書式の引数を受け入れ、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 からの経過時間を表す Date オブジェクトのミリ秒単位の数値を返します。
+now /// Date.now\nvar timeInMs = Date.now();\nDate.now() メソッドは、UTC (協定世界時) での 1970 年 1 月 1 日 0 時 0 分 0 秒 から現在までの経過時間をミリ秒単位で返します。
+Date.now /// var timeInMs = Date.now();\nDate.now() メソッドは、UTC (協定世界時) での 1970 年 1 月 1 日 0 時 0 分 0 秒 から現在までの経過時間をミリ秒単位で返します。
+parse /// Date.parse\nDate.parse(dateString)\nnew Date(dateString)\nDate.parse() メソッドは、日時を表す文字列を解釈し、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 からの経過時間を表すミリ秒単位の数値を返します。\nまたは、文字列を解釈できなかったり不正な日付 (例えば 2015-02-31) が指定された場合 NaN を返します。\n\nJSON.parse\nJSON.parse(text[, reviver])\nJSON.parse() メソッドは文字列を JSON として解析し、また任意で解析によって作り出された値を変換します。
+Date.parse /// Date.parse(dateString)\nnew Date(dateString)\nDate.parse() メソッドは、日時を表す文字列を解釈し、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 からの経過時間を表すミリ秒単位の数値を返します。\nまたは、文字列を解釈できなかったり不正な日付 (例えば 2015-02-31) が指定された場合 NaN を返します。
+getDate /// Date.prototype.getDate\ndateObj.getDate()\ngetDate() メソッドは、地方時に基づき、指定された日付の「日」を返します。
+Date.prototype.getDate /// dateObj.getDate()\ngetDate() メソッドは、地方時に基づき、指定された日付の「日」を返します。
+getDay /// Date.prototype.getDay\ndateObj.getDay()\ngetDay() メソッドは、地方時に基づき、指定された日付の「曜日」を返します。\n0 は日曜日を表します。
+Date.prototype.getDay /// dateObj.getDay()\ngetDay() メソッドは、地方時に基づき、指定された日付の「曜日」を返します。\n0 は日曜日を表します。
+getFullYear /// Date.prototype.getFullYear\ndateObj.getFullYear()\ngetFullYear() メソッドは、地方時に基づき、指定された日時の「年」を返します。
+Date.prototype.getFullYear /// dateObj.getFullYear()\ngetFullYear() メソッドは、地方時に基づき、指定された日時の「年」を返します。
+getHours /// Date.prototype.getHours\ndateObj.getHours()\ngetHours() メソッドは、地方時に基づき、指定された日時の「時」を返します。
+Date.prototype.getHours /// dateObj.getHours()\ngetHours() メソッドは、地方時に基づき、指定された日時の「時」を返します。
+getMilliseconds /// Date.prototype.getMilliseconds\ndateObj.getMilliseconds()\ngetMilliseconds() メソッドは、地方時に基づき、指定された日時の「ミリ秒」を返します。
+Date.prototype.getMilliseconds /// dateObj.getMilliseconds()\ngetMilliseconds() メソッドは、地方時に基づき、指定された日時の「ミリ秒」を返します。
+getMinutes /// Date.prototype.getMinutes\ndateObj.getMinutes()\ngetMinutes() メソッドは、地方時に基づき、指定された日時の「分」を返します。
+Date.prototype.getMinutes /// dateObj.getMinutes()\ngetMinutes() メソッドは、地方時に基づき、指定された日時の「分」を返します。
+getMonth /// Date.prototype.getMonth\ndateObj.getMonth()\ngetMonth() メソッドは、地方時に基づき、指定された日付の「月」を表す 0 を基点とした値を返します。
+Date.prototype.getMonth /// dateObj.getMonth()\ngetMonth() メソッドは、地方時に基づき、指定された日付の「月」を表す 0 を基点とした値を返します。
+getSeconds /// Date.prototype.getSeconds\ndateObj.getSeconds()\ngetSeconds() メソッドは、地方時に基づき、指定した日時の「秒」を返します。
+Date.prototype.getSeconds /// dateObj.getSeconds()\ngetSeconds() メソッドは、地方時に基づき、指定した日時の「秒」を返します。
+getTime /// Date.prototype.getTime\ndateObj.getTime()\ngetTime() メソッドは、協定世界時に基づく指定された日時の「時」に相当する数値を返します。\nこのメソッドは、日付と時刻を別の Date オブジェクトへ代入する助けとして使用できます。\nこのメソッドは、valueOf() メソッドと機能的に同等です。
+Date.prototype.getTime /// dateObj.getTime()\ngetTime() メソッドは、協定世界時に基づく指定された日時の「時」に相当する数値を返します。\nこのメソッドは、日付と時刻を別の Date オブジェクトへ代入する助けとして使用できます。\nこのメソッドは、valueOf() メソッドと機能的に同等です。
+getTimezoneOffset /// Date.prototype.getTimezoneOffset\ndateObj.getTimezoneOffset()\ngetTimezoneOffset() メソッドは、現在のロケールにおける協定世界時 (UTC) からのタイムゾーンオフセット値を分単位で返します。
+Date.prototype.getTimezoneOffset /// dateObj.getTimezoneOffset()\ngetTimezoneOffset() メソッドは、現在のロケールにおける協定世界時 (UTC) からのタイムゾーンオフセット値を分単位で返します。
+getUTCDate /// Date.prototype.getUTCDate\ndateObj.getUTCDate()\ngetUTCDate() は、協定世界時に基づき、指定された日付の「日」を返します。
+Date.prototype.getUTCDate /// dateObj.getUTCDate()\ngetUTCDate() は、協定世界時に基づき、指定された日付の「日」を返します。
+getUTCDay /// Date.prototype.getUTCDay\ndateObj.getUTCDay()\ngetUTCDay() メソッドは、協定世界時に基づき、指定された日時の「曜日」を返します。\n0 は日曜日を表します。
+Date.prototype.getUTCDay /// dateObj.getUTCDay()\ngetUTCDay() メソッドは、協定世界時に基づき、指定された日時の「曜日」を返します。\n0 は日曜日を表します。
+getUTCFullYear /// Date.prototype.getUTCFullYear\ndateObj.getUTCFullYear()\ngetUTCFullYear() メソッドは、協定世界時に基づき、指定された日付の「年」を返します。
+Date.prototype.getUTCFullYear /// dateObj.getUTCFullYear()\ngetUTCFullYear() メソッドは、協定世界時に基づき、指定された日付の「年」を返します。
+getUTCHours /// Date.prototype.getUTCHours\ndateObj.getUTCHours()\ngetUTCHours() メソッドは、協定世界時に基づき、指定された日時の「時」を返します。
+Date.prototype.getUTCHours /// dateObj.getUTCHours()\ngetUTCHours() メソッドは、協定世界時に基づき、指定された日時の「時」を返します。
+getUTCMilliseconds /// Date.prototype.getUTCMilliseconds\ndateObj.getUTCMilliseconds()\ngetUTCMilliseconds() メソッドは、協定世界時に基づき、指定された日時の「ミリ秒」を返します。
+Date.prototype.getUTCMilliseconds /// dateObj.getUTCMilliseconds()\ngetUTCMilliseconds() メソッドは、協定世界時に基づき、指定された日時の「ミリ秒」を返します。
+getUTCMinutes /// Date.prototype.getUTCMinutes\ndateObj.getUTCMinutes()\ngetUTCMinutes() メソッドは、協定世界時に基づき、指定された日時の「分」を返します。
+Date.prototype.getUTCMinutes /// dateObj.getUTCMinutes()\ngetUTCMinutes() メソッドは、協定世界時に基づき、指定された日時の「分」を返します。
+getUTCMonth /// Date.prototype.getUTCMonth\ndateObj.getUTCMonth()\ngetUTCMonth() メソッドは、協定世界時に基づき、指定された日付の「月」を返します。\n値は 0 を基点とします (0 は 1 月、1 は 2 月)。
+Date.prototype.getUTCMonth /// dateObj.getUTCMonth()\ngetUTCMonth() メソッドは、協定世界時に基づき、指定された日付の「月」を返します。\n値は 0 を基点とします (0 は 1 月、1 は 2 月)。
+getUTCSeconds /// Date.prototype.getUTCSeconds\ndateObj.getUTCSeconds()\ngetUTCSeconds() メソッドは、協定世界時に基づき、指定された日時の「秒」を返します。
+Date.prototype.getUTCSeconds /// dateObj.getUTCSeconds()\ngetUTCSeconds() メソッドは、協定世界時に基づき、指定された日時の「秒」を返します。
+getYear /// Date.prototype.getYear\ndateObj.getYear()\ngetYear() メソッドは、地方時に基づき、指定された日付の「年」を返します。\ngetYear() は完全な桁数の値を返さないため (いわゆる 2000 年問題)、使用されなくなり、getFullYear() メソッドに置き換えられました。\n！非推奨
+Date.prototype.getYear /// dateObj.getYear()\ngetYear() メソッドは、地方時に基づき、指定された日付の「年」を返します。\ngetYear() は完全な桁数の値を返さないため (いわゆる 2000 年問題)、使用されなくなり、getFullYear() メソッドに置き換えられました。\n！非推奨
+setDate /// Date.prototype.setDate\ndateObj.setDate(dayValue)\nsetDate() メソッドは、現在設定されている月から始まる Date オブジェクトの「日」を設定します。
+Date.prototype.setDate /// dateObj.setDate(dayValue)\nsetDate() メソッドは、現在設定されている月から始まる Date オブジェクトの「日」を設定します。
+setFullYear /// Date.prototype.setFullYear\ndateObj.setFullYear(yearValue[, monthValue[, dayValue]])\nsetFullYear() メソッドは、地方時に基づき、指定された日付の「年」を設定します。\n新しいタイムスタンプを返します。
+Date.prototype.setFullYear /// dateObj.setFullYear(yearValue[, monthValue[, dayValue]])\nsetFullYear() メソッドは、地方時に基づき、指定された日付の「年」を設定します。\n新しいタイムスタンプを返します。
+setHours /// Date.prototype.setHours\ndateObj.setHours(hoursValue[, minutesValue[, secondsValue[, msValue]]])\nsetHours() メソッドは、地方時に基づき、指定された日付の「時」を設定し、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 から更新された Date インスタンスが表す時刻までの間のミリ秒単位の数値を返します。
+Date.prototype.setHours /// dateObj.setHours(hoursValue[, minutesValue[, secondsValue[, msValue]]])\nsetHours() メソッドは、地方時に基づき、指定された日付の「時」を設定し、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 から更新された Date インスタンスが表す時刻までの間のミリ秒単位の数値を返します。
+setMilliseconds /// Date.prototype.setMilliseconds\ndateObj.setMilliseconds(millisecondsValue)\nsetMilliseconds() メソッドは、地方時に基づき、指定された日時の「ミリ秒」を設定します。
+Date.prototype.setMilliseconds /// dateObj.setMilliseconds(millisecondsValue)\nsetMilliseconds() メソッドは、地方時に基づき、指定された日時の「ミリ秒」を設定します。
+setMinutes /// Date.prototype.setMinutes\ndateObj.setMinutes(minutesValue[, secondsValue[, msValue]])\nsetMinutes() メソッドは、地方時に基づき、指定された日時の「分」を設定します。
+Date.prototype.setMinutes /// dateObj.setMinutes(minutesValue[, secondsValue[, msValue]])\nsetMinutes() メソッドは、地方時に基づき、指定された日時の「分」を設定します。
+setMonth /// Date.prototype.setMonth\ndateObj.setMonth(monthValue[, dayValue])\nsetMonth() メソッドは、現在設定されている年に基づき、指定された日付の「月」を設定します。
+Date.prototype.setMonth /// dateObj.setMonth(monthValue[, dayValue])\nsetMonth() メソッドは、現在設定されている年に基づき、指定された日付の「月」を設定します。
+setSeconds /// Date.prototype.setSeconds\ndateObj.setSeconds(secondsValue[, msValue])\nsetSeconds() メソッドは、地方時に基づき、指定された日時の「秒」を設定します。
+Date.prototype.setSeconds /// dateObj.setSeconds(secondsValue[, msValue])\nsetSeconds() メソッドは、地方時に基づき、指定された日時の「秒」を設定します。
+setTime /// Date.prototype.setTime\ndateObj.setTime(timeValue)\nsetTime() メソッドは、Date オブジェクトを協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 からの経過時間をミリ秒単位で表す時刻に設定します。
+Date.prototype.setTime /// dateObj.setTime(timeValue)\nsetTime() メソッドは、Date オブジェクトを協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 からの経過時間をミリ秒単位で表す時刻に設定します。
+setUTCDate /// Date.prototype.setUTCDate\ndateObj.setUTCDate(dayValue)\nsetUTCDate() メソッドは、協定世界時に基づき、指定された日付の「日」を設定します。
+Date.prototype.setUTCDate /// dateObj.setUTCDate(dayValue)\nsetUTCDate() メソッドは、協定世界時に基づき、指定された日付の「日」を設定します。
+setUTCFullYear /// Date.prototype.setUTCFullYear\ndateObj.setUTCFullYear(yearValue[, monthValue[, dayValue]])\nsetUTCFullYear() メソッドは、協定世界時に基づき、指定された日付の年を設定します。
+Date.prototype.setUTCFullYear /// dateObj.setUTCFullYear(yearValue[, monthValue[, dayValue]])\nsetUTCFullYear() メソッドは、協定世界時に基づき、指定された日付の年を設定します。
+setUTCHours /// Date.prototype.setUTCHours\ndateObj.setUTCHours(hoursValue[, minutesValue[, secondsValue[, msValue]]])\nsetUTCHours() メソッドは、協定世界時に基づき、指定された日付の「時」を設定し、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 から更新された Date インスタンスが表す時刻までの間のミリ秒単位の数値を返します。
+Date.prototype.setUTCHours /// dateObj.setUTCHours(hoursValue[, minutesValue[, secondsValue[, msValue]]])\nsetUTCHours() メソッドは、協定世界時に基づき、指定された日付の「時」を設定し、協定世界時 (UTC) 1970 年 1 月 1 日 00:00:00 から更新された Date インスタンスが表す時刻までの間のミリ秒単位の数値を返します。
+setUTCMilliseconds /// Date.prototype.setUTCMilliseconds\ndateObj.setUTCMilliseconds(millisecondsValue)\nsetUTCMilliseconds() メソッドは、協定世界時に基づき、指定された日時の「ミリ秒」を設定します。
+Date.prototype.setUTCMilliseconds /// dateObj.setUTCMilliseconds(millisecondsValue)\nsetUTCMilliseconds() メソッドは、協定世界時に基づき、指定された日時の「ミリ秒」を設定します。
+setUTCMinutes /// Date.prototype.setUTCMinutes\ndateObj.setUTCMinutes(minutesValue[, secondsValue[, msValue]])\nsetUTCMinutes() メソッドは、協定世界時に基づき、指定された日時の「分」を設定します。
+Date.prototype.setUTCMinutes /// dateObj.setUTCMinutes(minutesValue[, secondsValue[, msValue]])\nsetUTCMinutes() メソッドは、協定世界時に基づき、指定された日時の「分」を設定します。
+setUTCMonth /// Date.prototype.setUTCMonth\ndateObj.setUTCMonth(monthValue[, dayValue])\nsetUTCMonth() メソッドは、協定世界時に基づき、指定された日付の「月」を設定します。
+Date.prototype.setUTCMonth /// dateObj.setUTCMonth(monthValue[, dayValue])\nsetUTCMonth() メソッドは、協定世界時に基づき、指定された日付の「月」を設定します。
+setUTCSeconds /// Date.prototype.setUTCSeconds\ndateObj.setUTCSeconds(secondsValue[, msValue])\nsetUTCSeconds() メソッドは、協定世界時に基づき、指定された日時の「秒」を設定します。
+Date.prototype.setUTCSeconds /// dateObj.setUTCSeconds(secondsValue[, msValue])\nsetUTCSeconds() メソッドは、協定世界時に基づき、指定された日時の「秒」を設定します。
+setYear /// Date.prototype.setYear\ndateObj.setYear(yearValue)\nsetYear() メソッドは、地方時に基づき、指定された日付の「年」を設定します。\n setYear() は完全な桁数の値を設定しないため (いわゆる 2000 年問題)、使用されなくなり、setFullYear() メソッドに置き換えられました。\n！非推奨
+Date.prototype.setYear /// dateObj.setYear(yearValue)\nsetYear() メソッドは、地方時に基づき、指定された日付の「年」を設定します。\n setYear() は完全な桁数の値を設定しないため (いわゆる 2000 年問題)、使用されなくなり、setFullYear() メソッドに置き換えられました。\n！非推奨
+toDateString /// Date.prototype.toDateString\ndateObj.toDateString()\ntoDateString() メソッドは、人間が読めるアメリカ英語の表記で Date オブジェクトの「日付」部を返します。
+Date.prototype.toDateString /// dateObj.toDateString()\ntoDateString() メソッドは、人間が読めるアメリカ英語の表記で Date オブジェクトの「日付」部を返します。
+toGMTString /// Date.prototype.toGMTString\ndateObj.toGMTString()\ntoGMTString() メソッドは、インターネットグリニッジ標準時 (GMT) 協定に基づき、日付を文字列へ変換します。\ntoGMTString() が返す値の正確な書式は、プラットフォームやブラウザによって変化しますが、一般に、人間が読める日付の文字列を表します。\n！非推奨
+Date.prototype.toGMTString /// dateObj.toGMTString()\ntoGMTString() メソッドは、インターネットグリニッジ標準時 (GMT) 協定に基づき、日付を文字列へ変換します。\ntoGMTString() が返す値の正確な書式は、プラットフォームやブラウザによって変化しますが、一般に、人間が読める日付の文字列を表します。\n！非推奨
+toISOString /// Date.prototype.toISOString\ndateObj.toISOString()\ntoISOString() メソッドは、簡潔な拡張表記の ISO 形式 (ISO 8601) の文字列を返しますこれは、常に 24 文字または 27 文字の長さになります (それぞれ、YYYY-MM-DDTHH:mm:ss.sssZ または ±YYYYYY-MM-DDTHH:mm:ss.sssZ)。\nタイムゾーンは常に 0 UTC オフセットになり、接尾辞 "Z" で表記されます。
+Date.prototype.toISOString /// dateObj.toISOString()\ntoISOString() メソッドは、簡潔な拡張表記の ISO 形式 (ISO 8601) の文字列を返しますこれは、常に 24 文字または 27 文字の長さになります (それぞれ、YYYY-MM-DDTHH:mm:ss.sssZ または ±YYYYYY-MM-DDTHH:mm:ss.sssZ)。\nタイムゾーンは常に 0 UTC オフセットになり、接尾辞 "Z" で表記されます。
+toJSON /// Date.prototype.toJSON\ndateObj.toJSON()\ntoJSON() メソッドは、Date オブジェクトを表す文字列を返します。
+Date.prototype.toJSON /// dateObj.toJSON()\ntoJSON() メソッドは、Date オブジェクトを表す文字列を返します。
+toLocaleDateString /// Date.prototype.toLocaleDateString\ndateObj.toLocaleDateString([locales [, options]])\ntoLocaleDateString() メソッドは、この Date オブジェクトの「日付」部を表す言語に依存した文字列を返します。\n新しい locales 引数と options 引数により、アプリケーションは、使用される書式変換の言語の指定や、関数の振る舞いのカスタマイズができます。\n古い実装のアプリケーションは、locales 引数と options 引数を無視します。\n使用されるロケールや返される文字列の書式は、完全に実装依存です。
+Date.prototype.toLocaleDateString /// dateObj.toLocaleDateString([locales [, options]])\ntoLocaleDateString() メソッドは、この Date オブジェクトの「日付」部を表す言語に依存した文字列を返します。\n新しい locales 引数と options 引数により、アプリケーションは、使用される書式変換の言語の指定や、関数の振る舞いのカスタマイズができます。\n古い実装のアプリケーションは、locales 引数と options 引数を無視します。\n使用されるロケールや返される文字列の書式は、完全に実装依存です。
+toLocaleFormat /// Date.prototype.toLocaleFormat\ndateObj.toLocaleFormat(formatString)\n非標準の toLocaleFormat() メソッドは、指定した書式を用いて日付を文字列に変換します。\nIntl.DateTimeFormat は、標準に準拠した方法で日付をフォーマットする代替です。\nDate.prototype.toLocaleDateString() の新しいバージョンも参照してください。\n！非標準
+Date.prototype.toLocaleFormat /// dateObj.toLocaleFormat(formatString)\n非標準の toLocaleFormat() メソッドは、指定した書式を用いて日付を文字列に変換します。\nIntl.DateTimeFormat は、標準に準拠した方法で日付をフォーマットする代替です。\nDate.prototype.toLocaleDateString() の新しいバージョンも参照してください。\n！非標準
+Date.prototype.toLocaleString /// dateObj.toLocaleString([locales[, options]])\ntoLocaleString() メソッドは、この日付を表す言語に依存した文字列を返します。\n新しい locales 引数と options 引数により、アプリケーションは、使用される書式変換の言語の指定や、関数の振る舞いのカスタマイズができます。\n古い実装のアプリケーションは、locales 引数と options 引数を無視します。\n使用されるロケールや返される文字列の書式は、完全に実装依存です。
+toLocaleTimeString /// Date.prototype.toLocaleTimeString\ndateObj.toLocaleTimeString([locales[, options]])\ntoLocaleTimeString() メソッドは、この Date オブジェクトの「時刻」部を表す言語に依存した文字列を返します。\n新しい locales 引数と options 引数により、アプリケーションは、使用される書式変換の言語の指定や、関数の振る舞いのカスタマイズができます。\n古い実装のアプリケーションは、locales 引数と options 引数を無視します。\n使用されるロケールや返される文字列の書式は、完全に実装依存です。
+Date.prototype.toLocaleTimeString /// dateObj.toLocaleTimeString([locales[, options]])\ntoLocaleTimeString() メソッドは、この Date オブジェクトの「時刻」部を表す言語に依存した文字列を返します。\n新しい locales 引数と options 引数により、アプリケーションは、使用される書式変換の言語の指定や、関数の振る舞いのカスタマイズができます。\n古い実装のアプリケーションは、locales 引数と options 引数を無視します。\n使用されるロケールや返される文字列の書式は、完全に実装依存です。
+Date.prototype.toSource /// dateObj.toSource()\nDate.toSource()\ntoSource() メソッドは、オブジェクトのソースコードを表す文字列を返します。\n！非標準
+Date.prototype.toString /// dateObj.toString()\ntoString() メソッドは、指定した Date オブジェクトを表す文字列を返します。
+toTimeString /// Date.prototype.toTimeString\ndateObj.toTimeString()\ntoTimeString() メソッドは、アメリカ英語表記の人間が読める形式で、Date オブジェクトの「時刻」部を返します。
+Date.prototype.toTimeString /// dateObj.toTimeString()\ntoTimeString() メソッドは、アメリカ英語表記の人間が読める形式で、Date オブジェクトの「時刻」部を返します。
+toUTCString /// Date.prototype.toUTCString\ndateObj.toUTCString()\ntoUTCString() メソッドは、協定世界時 (UTC) のタイムゾーンに基づき、日付を文字列へ変換します。
+Date.prototype.toUTCString /// dateObj.toUTCString()\ntoUTCString() メソッドは、協定世界時 (UTC) のタイムゾーンに基づき、日付を文字列へ変換します。
+Date.prototype.valueOf /// dateObj.valueOf()\nvalueOf() メソッドは、Date オブジェクトのプリミティブ値を返します。
+;標準オブジェクト・String https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String\n 
+String /// String(thing)\nnew String(thing)\nString グローバルオブジェクトは文字列のコンストラクタ、または文字列シーケンスです。
+length /// String.length\nstr.length\nlength プロパティは、文字列の文字数を表します。\n\nArray.length\narray.length\n配列の要素数を表す符号なし 32 ビット整数。\n\nwindow.length\nframesCount = window.length;\nウィンドウにおけるフレーム（<frame> か <iframe> 要素のいずれか）の数を返します。\n\nStorage.length\nvar aLength = storage.length;\nStorage インターフェイスの読み取り専用プロパティ length は、Storage オブジェクトに保存されているデータアイテムの数を表す整数を返します。
+String.length /// str.length\nlength プロパティは、文字列の文字数を表します。
+fromCharCode /// String.fromCharCode\nString.fromCharCode(num1,...,numN)\nUnicode の値の指定のシーケンスを使用することによって生成された文字列を返します。
+String.fromCharCode /// String.fromCharCode(num1,...,numN)\nUnicode の値の指定のシーケンスを使用することによって生成された文字列を返します。
+fromCodePoint /// String.fromCodePoint\nString.fromCodePoint(num1[, ...[, numN]])\n静的なString.fromCodePoint() メソッドはコードポイントの指定されたシーケンスを使用することによって生成された文字列を返します。\n！実験段階
+String.fromCodePoint /// String.fromCodePoint(num1[, ...[, numN]])\n静的なString.fromCodePoint() メソッドはコードポイントの指定されたシーケンスを使用することによって生成された文字列を返します。\n！実験段階
+anchor /// String.prototype.anchor\nstr.anchor(name)\nanchor() メソッドは、ハイパーテキストターゲットとして利用される <a> HTML アンカー要素を生成します。
+String.prototype.anchor /// str.anchor(name)\nanchor() メソッドは、ハイパーテキストターゲットとして利用される <a> HTML アンカー要素を生成します。
+big /// String.prototype.big\nstring.big()\n文字列を、 BIG タグ で囲んだときと同様に、大きなフォントで表示させます。\n！非推奨
+String.prototype.big /// string.big()\n文字列を、 BIG タグ で囲んだときと同様に、大きなフォントで表示させます。\n！非推奨
+blink /// String.prototype.blink\nString.blink()\n文字列を、BLINK タグで囲んだときのように、点滅させます。\n！非推奨
+String.prototype.blink /// String.blink()\n文字列を、BLINK タグで囲んだときのように、点滅させます。\n！非推奨
+bold /// String.prototype.bold\nstr.bold()\nbold() メソッドは、文字列を太字で表示する <b> 要素を生成します。\n！非推奨
+String.prototype.bold /// str.bold()\nbold() メソッドは、文字列を太字で表示する <b> 要素を生成します。\n！非推奨
+charAt /// String.prototype.charAt\nstring.charAt(index)\n文字列から指定位置の文字を返します。
+String.prototype.charAt /// string.charAt(index)\n文字列から指定位置の文字を返します。
+charCodeAt /// String.prototype.charCodeAt\nstr.charCodeAt(index)\n与えられたインデックスに位置する文字の Unicode コードポイントを10進数値で返します。
+String.prototype.charCodeAt /// str.charCodeAt(index)\n与えられたインデックスに位置する文字の Unicode コードポイントを10進数値で返します。
+codePointAt /// String.prototype.codePointAt\nstr.codePointAt(pos)\ncodePointAt() メソッドは、Unicode ポイント値である負でない整数を返します。
+String.prototype.codePointAt /// str.codePointAt(pos)\ncodePointAt() メソッドは、Unicode ポイント値である負でない整数を返します。
+concat /// String.prototype.concat\nstr.concat(string2[, string3, ..., stringN])\nconcat() メソッドは、文字列に別の文字列を連結して、新しい文字列として返します。\n\nArray.prototype.concat\nvar new_array = old_array.concat(value1[, value2[, ...[, valueN]]])\nconcat() メソッドは、配列に他の配列や値をつないでできた新しい配列を返します。
+String.prototype.concat /// str.concat(string2[, string3, ..., stringN])\nconcat() メソッドは、文字列に別の文字列を連結して、新しい文字列として返します。
+endsWith /// String.prototype.endsWith\nstr.endsWith(searchString[, position])\nendsWith() メソッドは、対象の文字列が引数に指定された別の文字列を末尾に持つ文字列であるか否かを示す真偽値を返します。
+String.prototype.endsWith /// str.endsWith(searchString[, position])\nendsWith() メソッドは、対象の文字列が引数に指定された別の文字列を末尾に持つ文字列であるか否かを示す真偽値を返します。
+fixed /// String.prototype.fixed\nstr.fixed()\n文字列を <tt> タグ で囲んだときのように、等幅フォントで表示します。\n！非推奨
+String.prototype.fixed /// str.fixed()\n文字列を <tt> タグ で囲んだときのように、等幅フォントで表示します。\n！非推奨
+fontcolor /// String.prototype.fontcolor\nstr.fontcolor(color)\n文字列を、<font color=" color "> タグで囲んだときのように、指定された色で表示します。\n！非推奨
+String.prototype.fontcolor /// str.fontcolor(color)\n文字列を、<font color=" color "> タグで囲んだときのように、指定された色で表示します。\n！非推奨
+fontsize /// String.prototype.fontsize\nstr.fontsize(size)\n文字列を、<font size=" size "> タグで囲んだときのように、指定されたフォントサイズで表示させます。\n！非推奨
+String.prototype.fontsize /// str.fontsize(size)\n文字列を、<font size=" size "> タグで囲んだときのように、指定されたフォントサイズで表示させます。\n！非推奨
+includes /// String.prototype.includes\nstr.includes(searchString[, position])\nincludes() メソッドは、1 つの文字列を別の文字列の中に見出すことができるかどうかを判断し、必要に応じて true か false を返します。\n\nArray.prototype.includes\nvar boolean = array.includes(searchElement[, fromIndex])\nincludes() メソッドは、特定の要素が配列に含まれているかどうかを true または false で返します。
+String.prototype.includes /// str.includes(searchString[, position])\nincludes() メソッドは、1 つの文字列を別の文字列の中に見出すことができるかどうかを判断し、必要に応じて true か false を返します。
+indexOf /// String.prototype.indexOf\nstr.indexOf(searchValue[, fromIndex])\nindexOf() メソッドは、呼び出す String オブジェクト中で、fromIndex から検索を始め、指定された値が最初に現れたインデックスを返します。\n値が見つからない場合は -1 を返します。\n\nArray.prototype.indexOf\nvar index = array.indexOf(searchElement[, fromIndex]);\n引数に与えられた内容と同じ内容を持つ配列要素の内、最初のものの添字を返します。\n存在しない場合は -1 を返します。
+String.prototype.indexOf /// str.indexOf(searchValue[, fromIndex])\nindexOf() メソッドは、呼び出す String オブジェクト中で、fromIndex から検索を始め、指定された値が最初に現れたインデックスを返します。\n値が見つからない場合は -1 を返します。
+italics /// String.prototype.italics\nstr.italics()\n文字列を、I タグで囲んだときのように、斜体 (italic) で表示させます。\n！非推奨
+String.prototype.italics /// str.italics()\n文字列を、I タグで囲んだときのように、斜体 (italic) で表示させます。\n！非推奨
+lastIndexOf /// String.prototype.lastIndexOf\nstr.lastIndexOf(searchValue[, fromIndex])\n呼び出す String オブジェクト中で、指定された値が最後に現れるインデックスを返します。\n値が見つけられない場合、-1 を返します。\n呼び出す文字列は、fromIndex から検索を始め、逆方向に検索されます。\n\nArray.prototype.lastIndexOf\nvar index = array.lastIndexOf(searchElement[, fromIndex]);\n配列中で与えられた要素が見つけられた最後の添字を返します。\nもし存在しなければ -1 を返します。\n配列は fromIndex から逆向きに検索されます。
+String.prototype.lastIndexOf /// str.lastIndexOf(searchValue[, fromIndex])\n呼び出す String オブジェクト中で、指定された値が最後に現れるインデックスを返します。\n値が見つけられない場合、-1 を返します。\n呼び出す文字列は、fromIndex から検索を始め、逆方向に検索されます。
+link /// String.prototype.link\nstr.link(url)\n他の URL をリクエストする HTML ハイパーテキストリンクを生成します。
+String.prototype.link /// str.link(url)\n他の URL をリクエストする HTML ハイパーテキストリンクを生成します。
+localeCompare /// String.prototype.localeCompare\nstr.localeCompare(compareString[, locales[, options]])\nlocaleCompare() メソッドは参照文字列がソート順で引数で与えられた文字列と大なり、小なり、等しいとなるかどうかを示す数値を返します。
+String.prototype.localeCompare /// str.localeCompare(compareString[, locales[, options]])\nlocaleCompare() メソッドは参照文字列がソート順で引数で与えられた文字列と大なり、小なり、等しいとなるかどうかを示す数値を返します。
+match /// String.prototype.match\nstr.match(regexp)\n正規表現に対する文字列 のマッチングの際に、そのマッチ結果を得るために使われます。
+String.prototype.match /// str.match(regexp)\n正規表現に対する文字列 のマッチングの際に、そのマッチ結果を得るために使われます。
+normalize /// String.prototype.normalize\nstr.normalize([form])\nnormalize() メソッドは、引数で与えられた文字列(その値が文字列でない場合、最初の文字列に変換されます)の Unicode 正規化形式を返します。
+String.prototype.normalize /// str.normalize([form])\nnormalize() メソッドは、引数で与えられた文字列(その値が文字列でない場合、最初の文字列に変換されます)の Unicode 正規化形式を返します。
+quote /// String.prototype.quote\nstr.quote()\n特殊文字をエスケープシーケンスで置換しダブル・クォーテーション（"）でラップした文字列のコピーを返します。\n！廃止！非標準
+String.prototype.quote /// str.quote()\n特殊文字をエスケープシーケンスで置換しダブル・クォーテーション（"）でラップした文字列のコピーを返します。\n！廃止！非標準
+repeat /// String.prototype.repeat\nstr.repeat(count)\nrepeat() メソッドは、それが呼び出された文字列を指定した数だけコピーして結合した新しい文字列を構築し返却します。
+String.prototype.repeat /// str.repeat(count)\nrepeat() メソッドは、それが呼び出された文字列を指定した数だけコピーして結合した新しい文字列を構築し返却します。
+replace /// String.prototype.replace\nstr.replace(pattern, replacement[, flags])\nreplace() メソッドは、pattern にマッチした文字列の一部または全てを replacement で置き換えた新しい文字列を返します。\npattern は文字列または RegExp、replacement は文字列または各マッチで呼び出される関数です。
+String.prototype.replace /// str.replace(pattern, replacement[, flags])\nreplace() メソッドは、pattern にマッチした文字列の一部または全てを replacement で置き換えた新しい文字列を返します。\npattern は文字列または RegExp、replacement は文字列または各マッチで呼び出される関数です。
+search /// String.prototype.search\nstr.search(regexp)\nsearch() メソッドは、対象の String オブジェクトが正規表現でマッチできるかどうかを調べるためのメソッドです。
+String.prototype.search /// str.search(regexp)\nsearch() メソッドは、対象の String オブジェクトが正規表現でマッチできるかどうかを調べるためのメソッドです。
+slice /// String.prototype.slice\nstr.slice(beginSlice[, endSlice])\nslice() メソッドは、文字列の一部分を取り出し、新しい文字列を返します。\n\nArray.prototype.slice\nArray.slice(begin[,end]) \n配列の一部を取り出して新しい配列を返します。\n\nArrayBuffer.prototype.slice\narraybuffer.slice(begin[, end])\nbeginから(包括)endまで(排他)までこのArrayBufferのバイト単位のコピーされた内容の新しいArrayBufferを返します。
+String.prototype.slice /// str.slice(beginSlice[, endSlice])\nslice() メソッドは、文字列の一部分を取り出し、新しい文字列を返します。
+small /// String.prototype.small\nstr.small()\n文字列を、<small>で囲んだときと同様に、小さなフォントで表示させます。\n！非推奨
+String.prototype.small /// str.small()\n文字列を、<small>で囲んだときと同様に、小さなフォントで表示させます。\n！非推奨
+split /// String.prototype.split\nstr.split([separator[, limit]])\nsplit() メソッドは、文字列を複数の部分文字列に区切ることによりString オブジェクトを文字列の配列に分割します。
+String.prototype.split /// str.split([separator[, limit]])\nsplit() メソッドは、文字列を複数の部分文字列に区切ることによりString オブジェクトを文字列の配列に分割します。
+startsWith /// String.prototype.startsWith\nstr.startsWith(searchString[, position])\nstartsWith() メソッドは文字列が別の文字列の文字で始まるか判断し、その結果に応じて true か false を返します。
+String.prototype.startsWith /// str.startsWith(searchString[, position])\nstartsWith() メソッドは文字列が別の文字列の文字で始まるか判断し、その結果に応じて true か false を返します。
+strike /// String.prototype.strike\nstr.strike()\n文字列を、<strike> タグで囲んだときのように、打ち消し線を引いたテキストとして表示させます。\n！非推奨
+String.prototype.strike /// str.strike()\n文字列を、<strike> タグで囲んだときのように、打ち消し線を引いたテキストとして表示させます。\n！非推奨
+sub /// String.prototype.sub\nstr.sub()\n文字列を、<sub> タグで囲んだときのように、下付文字 (subscript) として表示させます。\n！非推奨
+String.prototype.sub /// str.sub()\n文字列を、<sub> タグで囲んだときのように、下付文字 (subscript) として表示させます。\n！非推奨
+substr /// String.prototype.substr\nstr.substr(start[, length])\n非推奨の substr() メソッドは、文字列内における文字を、指定した位置から指定した数だけ返します。
+String.prototype.substr /// str.substr(start[, length])\n非推奨の substr() メソッドは、文字列内における文字を、指定した位置から指定した数だけ返します。
+substring /// String.prototype.substring\nstr.substring(indexStart[, indexEnd])\nsubstring() メソッドは、0 インデックスやそのほか、または文字列の最後までの String オブジェクトの部分集合を返します。
+String.prototype.substring /// str.substring(indexStart[, indexEnd])\nsubstring() メソッドは、0 インデックスやそのほか、または文字列の最後までの String オブジェクトの部分集合を返します。
+sup /// String.prototype.sup\nstr.sup()\n文字列を、<sup> タグ で囲んだときのように、上付文字 (superscript) として表示させます。\n！非推奨
+String.prototype.sup /// str.sup()\n文字列を、<sup> タグ で囲んだときのように、上付文字 (superscript) として表示させます。\n！非推奨
+toLocaleLowerCase /// String.prototype.toLocaleLowerCase\nstr.toLocaleLowerCase()\n任意のロケール固有のケースマッピングに従って、参照文字列の値を小文字に変換して返します。
+String.prototype.toLocaleLowerCase /// str.toLocaleLowerCase()\n任意のロケール固有のケースマッピングに従って、参照文字列の値を小文字に変換して返します。
+toLocaleUpperCase /// String.prototype.toLocaleUpperCase\nstr.toLocaleUpperCase()\n任意のロケール固有のケースマッピングに従って、参照文字列の値を大文字に変換して返します。
+String.prototype.toLocaleUpperCase /// str.toLocaleUpperCase()\n任意のロケール固有のケースマッピングに従って、参照文字列の値を大文字に変換して返します。
+toLowerCase /// String.prototype.toLowerCase\nstr.toLowerCase()\n呼び出す文字列の値を小文字に変換して返します。
+String.prototype.toLowerCase /// str.toLowerCase()\n呼び出す文字列の値を小文字に変換して返します。
+String.prototype.toSource /// str.toSource()\nそのオブジェクトのソースコードを表す文字列を返します。\n！非標準
+String.prototype.toString /// str.toString()\n指定されたオブジェクトを表す文字列を返します。
+toUpperCase /// String.prototype.toUpperCase\nstr.toUpperCase()\n呼び出す文字列の値を大文字に変換して返します。
+String.prototype.toUpperCase /// str.toUpperCase()\n呼び出す文字列の値を大文字に変換して返します。
+trim /// String.prototype.trim\nstr.trim()\n文字列の両端の空白を削除します。
+String.prototype.trim /// str.trim()\n文字列の両端の空白を削除します。
+trimLeft /// String.prototype.trimLeft\nstr.trimLeft()\n文字列の左端の空白を削除します。\n！非標準
+String.prototype.trimLeft /// str.trimLeft()\n文字列の左端の空白を削除します。\n！非標準
+trimRight /// String.prototype.trimRight\nstr.trimRight()\n文字列の右端の空白を削除します。\n！非標準
+String.prototype.trimRight /// str.trimRight()\n文字列の右端の空白を削除します。\n！非標準
+String.prototype.valueOf /// str.valueOf()\nvalueOf() メソッドは、String オブジェクトのプリミティブ値を返します。
+raw /// String.raw\nString.raw(callSite, ...substitutions)\nString.raw`templateString`\n静的メソッドである String.raw() は、文字列リテラルのための Python の r プレフィックスや C# の @ プレフィックスのような template strings のタグ関数です。\nこの関数は、template strings の生の文字列形式を取得するために使用されます。
+String.raw /// String.raw(callSite, ...substitutions)\nString.raw`templateString`\n静的メソッドである String.raw() は、文字列リテラルのための Python の r プレフィックスや C# の @ プレフィックスのような template strings のタグ関数です。\nこの関数は、template strings の生の文字列形式を取得するために使用されます。
+;標準オブジェクト・RegExp https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/RegExp\n 
+RegExp /// /pattern/flags\nnew RegExp(pattern[, flags])\nRegExp コンストラクタは、パターンに従ったテキストにマッチする正規表現オブジェクトを生成します。
+input /// RegExp.input\nRegExp.input\nRegExp.$_\n非標準の input プロパティは正規表現の一致している文字列を含む静的プロパティです。\nRegExp.$_はこのプロパティのエイリアスです。\n！非標準\n\ninput\nEvent\nThe value of an element changes or the content of an element with the attribute contenteditable is modified.
+RegExp.input /// RegExp.input\nRegExp.$_\n非標準の input プロパティは正規表現の一致している文字列を含む静的プロパティです。\nRegExp.$_はこのプロパティのエイリアスです。\n！非標準
+lastMatch /// RegExp.lastMatch\nRegExp.lastMatch\nRegExp['$&']\n非標準のlastMatch プロパティは最後にマッチした文字列を含む正規表現の静的で読み取り専用のプロパティです。\nRegExp.$&はこのプロパティに対するエイリアスです。\n！非標準
+RegExp.lastMatch /// RegExp.lastMatch\nRegExp['$&']\n非標準のlastMatch プロパティは最後にマッチした文字列を含む正規表現の静的で読み取り専用のプロパティです。\nRegExp.$&はこのプロパティに対するエイリアスです。\n！非標準
+lastParen /// RegExp.lastParen\nRegExp.lastParen\nRegExp['$+']\n非標準のlastParen プロパティは最後の括弧で囲まれた部分文字列の一致を含む正規表現の静的で読み取り専用プロパティです。\nRegExp.$+はこのプロパティに対するエイリアスです。\n！非標準
+RegExp.lastParen /// RegExp.lastParen\nRegExp['$+']\n非標準のlastParen プロパティは最後の括弧で囲まれた部分文字列の一致を含む正規表現の静的で読み取り専用プロパティです。\nRegExp.$+はこのプロパティに対するエイリアスです。\n！非標準
+leftContext /// RegExp.leftContext\nRegExp.leftContext\nRegExp['$`']\n非標準の leftContext プロパティは、最新の一致の左側の部分文字列を含む正規表現の静的で読み取り専用のプロパティです。\nRegExp.$`はこのプロパティに対するエイリアスです。\n！非標準
+RegExp.leftContext /// RegExp.leftContext\nRegExp['$`']\n非標準の leftContext プロパティは、最新の一致の左側の部分文字列を含む正規表現の静的で読み取り専用のプロパティです。\nRegExp.$`はこのプロパティに対するエイリアスです。\n！非標準
+flags /// RegExp.prototype.flags\nflags プロパティは、現在の正規表現オブジェクトのフラグから成る文字列を返します。
+RegExp.prototype.flags /// flags プロパティは、現在の正規表現オブジェクトのフラグから成る文字列を返します。
+global /// RegExp.prototype.global\n"g" フラグが正規表現で使われているかどうかを返します。
+RegExp.prototype.global /// "g" フラグが正規表現で使われているかどうかを返します。
+ignoreCase /// RegExp.prototype.ignoreCase\nignoreCase プロパティは、"i" フラグが正規表現で使われているかどうかを示します。\nignoreCase は、正規表現インスタンスごとの読み取り専用プロパティです。\nignoreCase は、個々の正規表現オブジェクトのプロパティです。
+RegExp.prototype.ignoreCase /// ignoreCase プロパティは、"i" フラグが正規表現で使われているかどうかを示します。\nignoreCase は、正規表現インスタンスごとの読み取り専用プロパティです。\nignoreCase は、個々の正規表現オブジェクトのプロパティです。
+multiline /// RegExp.prototype.multiline\nmultiline プロパティは、正規表現で "m" フラグが使用されているかどうかを示します。\nmultiline は正規表現インスタンスごとの読み取り専用プロパティです。
+RegExp.prototype.multiline /// multiline プロパティは、正規表現で "m" フラグが使用されているかどうかを示します。\nmultiline は正規表現インスタンスごとの読み取り専用プロパティです。
+source /// RegExp.prototype.source\nsource プロパティは、regexp オブジェクトのソーステキストを含む String を返します。\nこれには、両サイドの 2 つのスラッシュやフラグは含まれません。
+RegExp.prototype.source /// source プロパティは、regexp オブジェクトのソーステキストを含む String を返します。\nこれには、両サイドの 2 つのスラッシュやフラグは含まれません。
+sticky /// RegExp.prototype.sticky\nsticky プロパティは検索が寛容(sticky)どうかを表します。\n(この正規表現の lastIndex プロパティによって示されるインデックスからのみの文字列を検索します)。\n sticky は正規表現オブジェクトごとの読み取り専用のプロパティです。
+RegExp.prototype.sticky /// sticky プロパティは検索が寛容(sticky)どうかを表します。\n(この正規表現の lastIndex プロパティによって示されるインデックスからのみの文字列を検索します)。\n sticky は正規表現オブジェクトごとの読み取り専用のプロパティです。
+unicode /// RegExp.prototype.unicode\nunicode プロパティは、"u" フラグが正規表現で使われているかどうかを示します。\nunicode は個々の正規表現インスタンスの読み取り専用プロパティです。
+RegExp.prototype.unicode /// unicode プロパティは、"u" フラグが正規表現で使われているかどうかを示します。\nunicode は個々の正規表現インスタンスの読み取り専用プロパティです。
+rightContext /// RegExp.rightContext\nRegExp.rightContext\nRegExp["$'"]\n非標準のrightContext プロパティは最新の一致の右側の部分文字列を含む正規表現の静的で読み取り専用のプロパティです。\nRegExp.$'はこのプロパティに対するエイリアスです。\n！非標準
+RegExp.rightContext /// RegExp.rightContext\nRegExp["$'"]\n非標準のrightContext プロパティは最新の一致の右側の部分文字列を含む正規表現の静的で読み取り専用のプロパティです。\nRegExp.$'はこのプロパティに対するエイリアスです。\n！非標準
+lastIndex /// RegExp.lastIndex\nregExpObj.lastIndex\nlastIndex は、次のマッチの始まりの位置を示す、正規表現インスタンスの読み書き可能な整数値のプロパティです。
+RegExp.lastIndex /// regExpObj.lastIndex\nlastIndex は、次のマッチの始まりの位置を示す、正規表現インスタンスの読み書き可能な整数値のプロパティです。
+compile /// RegExp.prototype.compile\nregexObj.compile(pattern, flags)\n非推奨の compile() メソッドはスクリプトの実行中に正規表現を(再)コンパイルするために使われます。\nRegExpコンストラクタと基本的に同じです。\n！非推奨
+RegExp.prototype.compile /// regexObj.compile(pattern, flags)\n非推奨の compile() メソッドはスクリプトの実行中に正規表現を(再)コンパイルするために使われます。\nRegExpコンストラクタと基本的に同じです。\n！非推奨
+exec /// RegExp.prototype.exec\nvar result1 = regexp.exec(str);\n特定の文字列でのマッチのための検索を実行します。\n結果の配列、あるいは、null が返ります。
+RegExp.prototype.exec /// var result1 = regexp.exec(str);\n特定の文字列でのマッチのための検索を実行します。\n結果の配列、あるいは、null が返ります。
+test /// RegExp.prototype.test\nregexObj.test(str)\ntest() メソッドは、正規表現と対象の文字列の間のマッチを調べるための検索を実行し、結果を示す真偽値 ( true / false )を返します。
+RegExp.prototype.test /// regexObj.test(str)\ntest() メソッドは、正規表現と対象の文字列の間のマッチを調べるための検索を実行し、結果を示す真偽値 ( true / false )を返します。
+RegExp.prototype.toSource /// regexObj.toSource()\nオブジェクトのソースコードを表す文字列を返します。\n！非標準
+RegExp.prototype.toString /// regexObj.toString();\n指定されたオブジェクトを表す文字列を返します。
+;標準オブジェクト・Array https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array\n 
+Array /// [element0, element1, ..., elementN]\nnew Array(element0, element1[, ...[, elementN]])\nnew Array(arrayLength)\nJavaScript の Array オブジェクトは、配列を構築するためのグローバルオブジェクトです。\n配列とは、高レベルのリスト構造のようなオブジェクトです。
+unscopables /// arr[Symbol.unscopables]\n@@unscopable シンボルプロパティには、ES2015（ES6）以前の ECMAScript 標準には含まれていないプロパティ名があります。\nそれらのプロパティは、with ステートメントバインディングから除外されます。
+Array.length /// array.length\n配列の要素数を表す符号なし 32 ビット整数。
+from /// Array.from\nArray.from(arrayLike[, mapFn[, thisArg]])\nArray.from() メソッドは、配列型 (array-like) オブジェクトや反復可能 (iterable) オブジェクトから新しい Array インスタンスを生成します。
+Array.from /// Array.from(arrayLike[, mapFn[, thisArg]])\nArray.from() メソッドは、配列型 (array-like) オブジェクトや反復可能 (iterable) オブジェクトから新しい Array インスタンスを生成します。
+isArray /// Array.isArray\nArray.isArray(obj)\nArray.isArray()メソッドは、オブジェクトが配列であればtrueを、そうでなければfalseを返します。
+Array.isArray /// Array.isArray(obj)\nArray.isArray()メソッドは、オブジェクトが配列であればtrueを、そうでなければfalseを返します。
+observe /// Array.observe\nArray.observe(arr, callback)\nArray.observe() メソッドは、配列への変更を非同期で監視するために使用されました。\nオブジェクト用の Object.observe() と似ています。\n変更内容は、発生した順番に時系列で提供されます。\naccept type list ["add", \n"update", \n"delete", \n"splice"] で呼び出された Object.observe() と同等です。\nしかしながら、この API の使用は非推奨となり、ブラウザから削除されています。\n代わりに、一般的な Proxy オブジェクトを使用してください。
+Array.observe /// Array.observe(arr, callback)\nArray.observe() メソッドは、配列への変更を非同期で監視するために使用されました。\nオブジェクト用の Object.observe() と似ています。\n変更内容は、発生した順番に時系列で提供されます。\naccept type list ["add", \n"update", \n"delete", \n"splice"] で呼び出された Object.observe() と同等です。\nしかしながら、この API の使用は非推奨となり、ブラウザから削除されています。\n代わりに、一般的な Proxy オブジェクトを使用してください。
+Array.of /// Array.of(element0[, element1[, ...[, elementN]]])\nArray.of() メソッドは、引数の数や型にかかわらず、可変長引数で、新しい Array インスタンスを生成します。
+Array.prototype.concat /// var new_array = old_array.concat(value1[, value2[, ...[, valueN]]])\nconcat() メソッドは、配列に他の配列や値をつないでできた新しい配列を返します。
+copyWithin /// Array.prototype.copyWithin\narr.copyWithin(target, start[, end = this.length])\ncopyWithin() メソッドは、配列内の配列要素の並びを target で始まる位置にコピーします。\nこのコピーは、2, \n3 番目の引数である start と end に指定したインデックス位置から取られます。\nend 引数の指定は任意であり、デフォルトで配列の長さ (最後尾) になります。
+Array.prototype.copyWithin /// arr.copyWithin(target, start[, end = this.length])\ncopyWithin() メソッドは、配列内の配列要素の並びを target で始まる位置にコピーします。\nこのコピーは、2, \n3 番目の引数である start と end に指定したインデックス位置から取られます。\nend 引数の指定は任意であり、デフォルトで配列の長さ (最後尾) になります。
+entries /// Array.prototype.entries\narr.entries()\n配列内の各要素に対するkey/valueペアを含む新しい Array Iterator オブジェクト を取得します。
+Array.prototype.entries /// arr.entries()\n配列内の各要素に対するkey/valueペアを含む新しい Array Iterator オブジェクト を取得します。
+every /// Array.prototype.every\nallPassed = array.every(callback[, thisObject]);\n与えられた関数によって実行されるテストに配列のすべての要素が合格するかどうかをテストします。
+Array.prototype.every /// allPassed = array.every(callback[, thisObject]);\n与えられた関数によって実行されるテストに配列のすべての要素が合格するかどうかをテストします。
+fill /// Array.prototype.fill\narr.fill(value[, start = 0[, end = this.length]])\nfill() メソッドは、配列中の開始インデックスから終了インデックスまでの要素を固定値で設定します。
+Array.prototype.fill /// arr.fill(value[, start = 0[, end = this.length]])\nfill() メソッドは、配列中の開始インデックスから終了インデックスまでの要素を固定値で設定します。
+filter /// Array.prototype.filter\nvar filteredArray = array.filter(callback[, thisObject]);\n引数として与えられたテスト関数を各配列要素に対して実行し、それに合格したすべての配列要素からなる新しい配列を生成します。
+Array.prototype.filter /// var filteredArray = array.filter(callback[, thisObject]);\n引数として与えられたテスト関数を各配列要素に対して実行し、それに合格したすべての配列要素からなる新しい配列を生成します。
+find /// Array.prototype.find\narr.find(callback[, thisArg])\nfind() メソッドは、配列内の要素が指定されたテスト関数を満たす場合、配列内の 値 を返します。\nそうでない場合は undefined を返します。\n\nwindow.find\nwindow.find(aString, aCaseSensitive, aBackwards, aWrapAround, aWholeWord, aSearchInFrames, aShowDialog);\nウィンドウ内の文字列を検索します。
+Array.prototype.find /// arr.find(callback[, thisArg])\nfind() メソッドは、配列内の要素が指定されたテスト関数を満たす場合、配列内の 値 を返します。\nそうでない場合は undefined を返します。
+findIndex /// Array.prototype.findIndex\narr.findIndex(callback[, thisArg])\nfindIndex() メソッドは、配列内の要素が指定されたテスト関数を満たす場合、配列内の インデックス を返します。\nそうでない場合は -1 を返します。
+Array.prototype.findIndex /// arr.findIndex(callback[, thisArg])\nfindIndex() メソッドは、配列内の要素が指定されたテスト関数を満たす場合、配列内の インデックス を返します。\nそうでない場合は -1 を返します。
+forEach /// Array.prototype.forEach\narray.forEach(callback[, thisObj]);\n与えられた関数を、配列の各要素に対して一度ずつ実行します。
+Array.prototype.forEach /// array.forEach(callback[, thisObj]);\n与えられた関数を、配列の各要素に対して一度ずつ実行します。
+Array.prototype.includes /// var boolean = array.includes(searchElement[, fromIndex])\nincludes() メソッドは、特定の要素が配列に含まれているかどうかを true または false で返します。
+Array.prototype.indexOf /// var index = array.indexOf(searchElement[, fromIndex]);\n引数に与えられた内容と同じ内容を持つ配列要素の内、最初のものの添字を返します。\n存在しない場合は -1 を返します。
+join /// Array.prototype.join\nstr = arr.join([separator = ','])\njoin() メソッドは、配列のすべての要素を繋いで文字列にします。
+Array.prototype.join /// str = arr.join([separator = ','])\njoin() メソッドは、配列のすべての要素を繋いで文字列にします。
+keys /// Array.prototype.keys\narr.keys()\nkeys() メソッドは、配列の各インデックスのキーを含む新しい Array Iterator オブジェクトを返します。
+Array.prototype.keys /// arr.keys()\nkeys() メソッドは、配列の各インデックスのキーを含む新しい Array Iterator オブジェクトを返します。
+Array.prototype.lastIndexOf /// var index = array.lastIndexOf(searchElement[, fromIndex]);\n配列中で与えられた要素が見つけられた最後の添字を返します。\nもし存在しなければ -1 を返します。\n配列は fromIndex から逆向きに検索されます。
+map /// Array.prototype.map\narr.map(callback[, thisArg]);\n与えられた関数を配列のすべての要素に対して呼び出し、その結果からなる新しい配列を生成します。
+Array.prototype.map /// arr.map(callback[, thisArg]);\n与えられた関数を配列のすべての要素に対して呼び出し、その結果からなる新しい配列を生成します。
+pop /// Array.prototype.pop\narr.pop()\npop() メソッドは、配列から最後の要素を取り除き、その要素を返します。
+Array.prototype.pop /// arr.pop()\npop() メソッドは、配列から最後の要素を取り除き、その要素を返します。
+push /// Array.prototype.push\narray.push(element1, ..., elementN)\npush() メソッドは、配列の末尾に 1 つ以上の要素を追加することができます。\nまた戻り値として新しい配列の要素数を返します。\n\nNavigator.push\n-\n\npush\nPushEvent\nA Service Worker has received a push message.
+Array.prototype.push /// array.push(element1, ..., elementN)\npush() メソッドは、配列の末尾に 1 つ以上の要素を追加することができます。\nまた戻り値として新しい配列の要素数を返します。
+reduce /// Array.prototype.reduce\nvar result = array.reduce(callback[, initialValue]);\n隣り合う 2 つの配列要素に対して（左から右へ）同時に関数を適用し、単一の値にします。
+Array.prototype.reduce /// var result = array.reduce(callback[, initialValue]);\n隣り合う 2 つの配列要素に対して（左から右へ）同時に関数を適用し、単一の値にします。
+reduceRight /// Array.prototype.reduceRight\nresult = array.reduceRight(callback[, initialValue]);\n隣り合う 2 つの配列要素に対して（右からから左へ）同時に関数を適用し、単一の値にします。
+Array.prototype.reduceRight /// result = array.reduceRight(callback[, initialValue]);\n隣り合う 2 つの配列要素に対して（右からから左へ）同時に関数を適用し、単一の値にします。
+reverse /// Array.prototype.reverse\nArray.reverse()\n配列の要素を反転させます。\n最初の要素は最後に、最後の要素は最初になります。
+Array.prototype.reverse /// Array.reverse()\n配列の要素を反転させます。\n最初の要素は最後に、最後の要素は最初になります。
+shift /// Array.prototype.shift\narray.shift()\nshift() メソッドは、配列から最初の要素を取り除き、その要素を返します。\nこのメソッドは配列の長さを変えます。
+Array.prototype.shift /// array.shift()\nshift() メソッドは、配列から最初の要素を取り除き、その要素を返します。\nこのメソッドは配列の長さを変えます。
+Array.prototype.slice /// Array.slice(begin[,end]) \n配列の一部を取り出して新しい配列を返します。
+some /// Array.prototype.some\nvar someElementPassed = array.some(callback[, thisObject]);\n与えられた関数によって実行されるテストに合格する要素が配列の中にあるかどうかをテストします。
+Array.prototype.some /// var someElementPassed = array.some(callback[, thisObject]);\n与えられた関数によって実行されるテストに合格する要素が配列の中にあるかどうかをテストします。
+sort /// Array.prototype.sort\narray.sort(compareFunction);\n配列の要素をソートします。
+Array.prototype.sort /// array.sort(compareFunction);\n配列の要素をソートします。
+splice /// Array.prototype.splice\narray.splice(index, howMany, [element1][, ..., elementN]);\narray.splice(index, [howMany, [element1][, ..., elementN]]);  // SpiderMonkey/Firefox 拡張、この場合 howMany=array.length-index となります\n古い要素を取り除きつつ新しい要素を追加することで、配列の内容を変更します。
+Array.prototype.splice /// array.splice(index, howMany, [element1][, ..., elementN]);\narray.splice(index, [howMany, [element1][, ..., elementN]]);  // SpiderMonkey/Firefox 拡張、この場合 howMany=array.length-index となります\n古い要素を取り除きつつ新しい要素を追加することで、配列の内容を変更します。
+Array.prototype.toLocaleString /// arr.toLocaleString();\ntoLocaleString() メソッドは、配列の要素を表す文字列を返します。\nこの要素は、配列要素の toLocaleString メソッドを使用して Strings に変換され、ロケール固有の文字列に分割されます (例えばカンマ “,”などはロケールによっては “.”で表されます) 。
+Array.prototype.toSource /// array.toSource()\n配列のソースコードを表す文字列を返します。\n！非標準
+Array.prototype.toString /// string = array.toString()\n指定された配列とその要素を表す文字列を返します。
+unshift /// Array.prototype.unshift\narr.unshift([element1[, ...[, elementN]]])\nunshift() メソッドは、配列の最初に 1 つ以上の要素を追加し、新しい配列の長さを返します。
+Array.prototype.unshift /// arr.unshift([element1[, ...[, elementN]]])\nunshift() メソッドは、配列の最初に 1 つ以上の要素を追加し、新しい配列の長さを返します。
+values /// Array.prototype.values\narr.values()\nvalues() メソッドは、配列の各インデックスの値を含む新しい Array Iterator オブジェクトを返します。
+Array.prototype.values /// arr.values()\nvalues() メソッドは、配列の各インデックスの値を含む新しい Array Iterator オブジェクトを返します。
+iterator /// arr[Symbol.iterator]()\n@@iterator プロパティの初期値は、values() プロパティの初期値と同じ関数オブジェクトです。
+unobserve /// Array.unobserve\nArray.unobserve(arr, callback)\nArray.unobserve()メソッドは、Array.observe() で設定された監視を削除するために使われていましたが、非推奨となりブラウザから削除されました。\n代わりに、一般的な Proxy オブジェクトを使用してください。\n！廃止
+Array.unobserve /// Array.unobserve(arr, callback)\nArray.unobserve()メソッドは、Array.observe() で設定された監視を削除するために使われていましたが、非推奨となりブラウザから削除されました。\n代わりに、一般的な Proxy オブジェクトを使用してください。\n！廃止
+species /// Array[Symbol.species]\nArray[@@species] アクセッサプロパティは、Array コンストラクタを返します。\n\nspecies\nArrayBuffer[Symbol.species]\nArrayBuffer[@@species] アクセッサプロパティは、ArrayBuffer コンストラクタを返します。
+Int8Array /// new Int8Array(length);\nnew Int8Array(typedArray);\nnew Int8Array(object);\n?new Int8Array(buffer [, byteOffset [, length]]);\nInt8Array タイプは、2 の補数形式の 8 ビット符号付き整数値の配列を表します。\n各要素は0で初期化されます。\n生成された Int8Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+Uint8Array /// new Uint8Array(length);\nnew Uint8Array(typedArray);\nnew Uint8Array(object);\n?new Uint8Array(buffer [, byteOffset [, length]]);\nUint8Array タイプは、8 ビット符号なし整数値の配列を表します。\n各要素は0で初期化されます。\n生成された Uint8Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+Uint8ClampedArray /// new Uint8ClampedArray(length);\nnew Uint8ClampedArray(typedArray);\nnew Uint8ClampedArray(object);\nnew Uint8ClampedArray(buffer [, byteOffset [, length]]);\n8ビット符号なし整数の配列を表現しますが、要素の値は0-255の範囲に切り詰められます (範囲外の数値を設定しようとすると最小値または最大値が設定されます)。\n内容は0で初期化されます。\n配列を作った後は、オブジェクトのメソッドや標準の配列インデックス構文(すなわち角括弧表記)を使用して、配列内の要素を参照できます。
+Int16Array /// new Int16Array(length);\nnew Int16Array(typedArray);\nnew Int16Array(object);\n?new Int16Array(buffer [, byteOffset [, length]]);\nInt16Array タイプは、2 の補数形式の 16 ビット符号付き整数値の配列を表します。\n各要素のバイトオーダーはプラットフォームに依存します。\nもしコントロールしたい場合は代わりにDataViewを使って下さい。\n各要素は0で初期化されます。\n生成された Int16Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+Uint16Array /// new Uint16Array(length);\nnew Uint16Array(typedArray);\nnew Uint16Array(object);\n?new Uint16Array(buffer [, byteOffset [, length]]);\nUint16Array タイプは、16 ビット符号なし整数値の配列を表します。\n各要素のバイトオーダーはプラットフォームに依存します。\nもしコントロールしたい場合は代わりにDataViewを使って下さい。\n各要素は0で初期化されます。\n生成された Uint16Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+Int32Array /// new Int32Array(length);\nnew Int32Array(typedArray);\nnew Int32Array(object);\n?new Int32Array(buffer [, byteOffset [, length]]);\nInt32Array タイプは、2 の補数形式の 32 ビット符号付き整数値の配列を表します。\n各要素のバイトオーダーはプラットフォームに依存します。\nもしコントロールしたい場合は代わりにDataViewを使って下さい。\n各要素は0で初期化されます。\n生成された Int32Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+Uint32Array /// new Uint32Array(length);\nnew Uint32Array(typedArray);\nnew Uint32Array(object);\n?new Uint32Array(buffer [, byteOffset [, length]]);\nUint32Array タイプは、32 ビット符号なし整数値の配列を表します。\n各要素のバイトオーダーはプラットフォームに依存します。\nもしコントロールしたい場合は代わりにDataViewを使って下さい。\n各要素は0で初期化されます。\n生成された Uint32Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+Float32Array /// new Float32Array(length);\nnew Float32Array(typedArray);\nnew Float32Array(object);\n?new Float32Array(buffer [, byteOffset [, length]]);\nFloat32Array タイプは、32 ビット浮動小数点数 (C 言語の float データタイプに相当します) の配列を表します。\n各要素のバイトオーダーはプラットフォームに依存します。\nもしコントロールしたい場合は代わりにDataViewを使って下さい。\n各要素は0で初期化されます。\n生成された Float32Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+Float64Array /// new Float64Array(length);\nnew Float64Array(typedArray);\nnew Float64Array(object);\n?new Float64Array(buffer [, byteOffset [, length]]);\nFloat64Array タイプは、64 ビット浮動小数点数 (C 言語の float データタイプに相当します) の配列を表します。\n各要素のバイトオーダーはプラットフォームに依存します。\nもしコントロールしたい場合は代わりにDataViewを使って下さい。\n各要素は0で初期化されます。\n生成された Float64Array オブジェクトのメソッドあるいは配列のような表記法 ("[]") を用いて、要素を参照することができます。
+;標準オブジェクト・ArrayBuffer https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer\n 
+ArrayBuffer /// new ArrayBuffer(length)\nArrayBuffer は、一般的な固定長のバイナリデータのバッファを示すために使われるデータタイプです。\nArrayBuffer の内容物を直接操作することはできません。\n代わりにバッファを特定の形式で表現し、またバッファの内容物を読み書きするために使用される typed array object か DataView オブジェクトを作成します。
+byteLength /// ArrayBuffer.prototype.byteLength\narraybuffer.byteLength\nArrayBufferのバイト単位の長さを表します。
+ArrayBuffer.prototype.byteLength /// arraybuffer.byteLength\nArrayBufferのバイト単位の長さを表します。
+isView /// ArrayBuffer.isView\nArrayBuffer.isView(arg)\nargが、typed array objectsやDataViewのように、ArrayBufferのビューの場合、trueを返します。\n さもなければ、false を返します。
+ArrayBuffer.isView /// ArrayBuffer.isView(arg)\nargが、typed array objectsやDataViewのように、ArrayBufferのビューの場合、trueを返します。\n さもなければ、false を返します。
+ArrayBuffer.prototype.slice /// arraybuffer.slice(begin[, end])\nbeginから(包括)endまで(排他)までこのArrayBufferのバイト単位のコピーされた内容の新しいArrayBufferを返します。
+transfer /// ArrayBuffer.transfer\nArrayBuffer.transfer(oldBuffer [, newByteLength]);\n静的なArrayBuffer.transfer() メソッドは、oldBufferのデータから得られる内容の新しいArrayBufferを返します。\nnewByteLengthによって切断されるかゼロ拡張されます。\nnewByteLengthがundefinedなら、oldBufferのbyteLengthが使われます。\nこの操作は切り離された状態でoldBufferを見捨てます。
+ArrayBuffer.transfer /// ArrayBuffer.transfer(oldBuffer [, newByteLength]);\n静的なArrayBuffer.transfer() メソッドは、oldBufferのデータから得られる内容の新しいArrayBufferを返します。\nnewByteLengthによって切断されるかゼロ拡張されます。\nnewByteLengthがundefinedなら、oldBufferのbyteLengthが使われます。\nこの操作は切り離された状態でoldBufferを見捨てます。
+;標準オブジェクト・JSON https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/JSON\n 
+JSON /// JSON オブジェクトは、JavaScript Object Notation (JSON) をパースするメソッドや、値を JSON に変換するメソッドを持ちます。\nこれは呼び出しや構築ができず、また 2 つのメソッドを除きそれ自身に興味深い機能性はありません。
+JSON.parse /// JSON.parse(text[, reviver])\nJSON.parse() メソッドは文字列を JSON として解析し、また任意で解析によって作り出された値を変換します。
+stringify /// JSON.stringify\nJSON.stringify(value[, replacer[, space]])\nJSON.stringify() メソッドは JavaScript の値を JSON 文字列に変換します。\n置き換え関数を指定して値を置き換えたり、置き換え配列を指定して指定されたプロパティのみを含むようにしたりできます。
+JSON.stringify /// JSON.stringify(value[, replacer[, space]])\nJSON.stringify() メソッドは JavaScript の値を JSON 文字列に変換します。\n置き換え関数を指定して値を置き換えたり、置き換え配列を指定して指定されたプロパティのみを含むようにしたりできます。
+;API・console https://developer.mozilla.org/ja/docs/Web/API/Console\n 
+console /// Console オブジェクトは、ブラウザのデバッグコンソール(例えば Firefox の Web コンソール)へアクセスする機能を提供します。\nこのオブジェクトの詳細な動作はブラウザによって異なりますが、一般的に共通の機能セットがサポートされています。
+assert /// console.assert\n-
+console.assert /// -
+clear /// console.clear\n-\n\ndocument.clear\ndocument.clear();\nこのメソッドはドキュメントの内容を消去するものであり、初期の Mozilla アプリケーション（※ 1.0 以前）にのみ存在したものです。\n！非推奨\n\nStorage.clear\nstorage.clear();\nStorage インターフェイスの clear() メソッドを呼び出すと、ストレージ内のすべてのキーを消去します。
+console.clear /// -
+count /// console.count\n-
+console.count /// -
+dir /// console.dir\n-\n\ndocument.dir\ndirStr = document.dir;\ndocument.dir = dirStr;\nThe Document.dir property is a DOMString representing the directionality of the text of the document, \nwhether left to right (default) or right to left. \nPossible values are 'rtl', \nright to left, \nand 'ltr', \nleft to right.
+console.dir /// -
+dirxml /// console.dirxml\n-
+console.dirxml /// -
+error /// console.error\n-\n\nerror\nUIEvent\nA resource failed to load.\n\nerror\nProgressEvent\nProgression has failed.\n\nerror\nEvent\nAn error occurred while downloading the cache manifest or updating the content of the application.\n\nerror\nEvent\nA WebSocket connection has been closed with prejudice (some data couldn't be sent for example).\n\nerror\nEvent\nAn event source connection has been failed.\n\nerror\nEvent\nA request caused an error and failed.\n\nerror\nEvent\nA speech recognition error occurs.\n\nerror\nSpeechSynthesisErrorEvent\nAn error occurs that prevents the utterance from being succesfully spoken.
+console.error /// -
+group /// console.group\n-
+console.group /// -
+groupCollapsed /// console.groupCollapsed\n-
+console.groupCollapsed /// -
+groupEnd /// console.groupEnd\n-
+console.groupEnd /// -
+info /// console.info\n-
+console.info /// -
+console.log /// console.log(obj1 [, obj2, ..., objN]);\nconsole.log(msg [, subst1, ..., substN]);\nデバッガの Web コンソールにメッセージを出力します。
+profile /// console.profile\n-
+console.profile /// -
+profileEnd /// console.profileEnd\n-
+console.profileEnd /// -
+table /// console.table\n-
+console.table /// -
+time /// console.time\n-
+console.time /// -
+timeEnd /// console.timeEnd\n-
+console.timeEnd /// -
+timeStamp /// console.timeStamp\n-\n\nPosition.timestamp\ncoord = position.timestamp\nThe Position.timestamp read-only property, \na DOMTimeStamp object, \nrepresents the date and the time of the creation of the Position object it belongs to. \nThe precision is to the millisecond.\n\ntimeStamp\nvar number = event.timeStamp;\nイベントが発生した時刻（1970 年 1 月 1 日 00:00:00 からの経過ミリ秒）を返します。
+console.timeStamp /// -
+trace /// console.trace\n-
+console.trace /// -
+warn /// console.warn\n-
+console.warn /// -
+;API・window https://developer.mozilla.org/ja/docs/Web/API/Window\n 
+window /// window オブジェクトは、DOM document を収めるウィンドウを表します。\ndocument プロパティは、そのウィンドウに読み込まれた DOM の document オブジェクトを指します。\n特定のドキュメントが属するウィンドウは、document.defaultView プロパティを使用して取得できます。\n\nwindow.window\nwindow.window\nwindow.window.window\nwindow.window.window.window\n  ...\nwindow オブジェクトの window プロパティは、その window オブジェクト自身を指します。\n故に、以下の表現は同じ window オブジェクトを返します。
+applicationCache /// window.applicationCache\ncache = window.applicationCache;\nウィンドウのアプリケーションキャッシュオブジェクトへの参照を返します。
+window.applicationCache /// cache = window.applicationCache;\nウィンドウのアプリケーションキャッシュオブジェクトへの参照を返します。
+caches /// window.caches\nvar myCacheStorage = window.caches;\nWindow.caches 読み取り専用プロパティは、現在の生成元 (origin)に関連付けられた CacheStorage オブジェクトを返します。\nこのオブジェクトは、オフライン利用のためのリソースの格納やリクエストに対するカスタムレスポンスの生成などの service worker 機能を有効にします。
+window.caches /// var myCacheStorage = window.caches;\nWindow.caches 読み取り専用プロパティは、現在の生成元 (origin)に関連付けられた CacheStorage オブジェクトを返します。\nこのオブジェクトは、オフライン利用のためのリソースの格納やリクエストに対するカスタムレスポンスの生成などの service worker 機能を有効にします。
+closed /// window.closed\nvar isClosed = windowRef.closed;\nこの読取専用プロパティは、対象ウィンドウが閉じられているかどうかを示します。
+window.closed /// var isClosed = windowRef.closed;\nこの読取専用プロパティは、対象ウィンドウが閉じられているかどうかを示します。
+controllers /// window.controllers\ncontrollers = window.controllers\nReturns the XUL controllers of the chrome window.
+window.controllers /// controllers = window.controllers\nReturns the XUL controllers of the chrome window.
+crypto /// window.crypto\n様々なブラウザのセキュリティ機能を扱うために利用できる、ブラウザの crypto オブジェクトを返します。
+window.crypto /// 様々なブラウザのセキュリティ機能を扱うために利用できる、ブラウザの crypto オブジェクトを返します。
+defaultStatus /// window.defaultStatus\nsMsg = window.defaultStatus\nwindow.defaultStatus =sMsg\n与えられたウィンドウのステータスバーのテキストを取得/設定します。\n一度開いたウィンドウのステータスバーのテキストを設定するには、window.status を使用してください。
+window.defaultStatus /// sMsg = window.defaultStatus\nwindow.defaultStatus =sMsg\n与えられたウィンドウのステータスバーのテキストを取得/設定します。\n一度開いたウィンドウのステータスバーのテキストを設定するには、window.status を使用してください。
+devicePixelRatio /// window.devicePixelRatio\n-
+window.devicePixelRatio /// -
+dialogArguments /// window.dialogArguments\nvalue = window.dialogArguments;\ndialogArguments プロパティは、 window.showModalDialog() メソッドに渡されたパラメータを返します。\nモーダルダイアログボックスの作成時に、引数にどのようなパラメータが指定されたを判断することができます。
+window.dialogArguments /// value = window.dialogArguments;\ndialogArguments プロパティは、 window.showModalDialog() メソッドに渡されたパラメータを返します。\nモーダルダイアログボックスの作成時に、引数にどのようなパラメータが指定されたを判断することができます。
+directories /// window.directories\ndirBar = window.directories\nウィンドウディレクトリのツールバーオブジェクトを返します。
+window.directories /// dirBar = window.directories\nウィンドウディレクトリのツールバーオブジェクトを返します。
+document /// window.document\ndoc = window.document\nwindow に含まれる document への参照を返します。\n\ndocument\nDocument インターフェイスはブラウザに読み込まれた Web ページを表し、Web ページのコンテンツである DOM ツリー (<body> や <table> などの要素を含みます) へのエントリポイントとして提供されます。\nこれはページの URL を取得したりドキュメントで新たな要素を作成するなど、ドキュメント全体に関わる機能を提供します。
+window.document /// doc = window.document\nwindow に含まれる document への参照を返します。
+frameElement /// window.frameElement\nframeEl = window.frameElement;\n（<iframe> や <object> のような）ウィンドウが埋め込まれた要素を返します。\n要素がトップレベルであるか異なるスクリプト生成元をもつ文書に埋め込まれるかのいずれかの場合は、 null を返します。
+window.frameElement /// frameEl = window.frameElement;\n（<iframe> や <object> のような）ウィンドウが埋め込まれた要素を返します。\n要素がトップレベルであるか異なるスクリプト生成元をもつ文書に埋め込まれるかのいずれかの場合は、 null を返します。
+frames /// window.frames\nframeList = window.frames;\n現在のウィンドウの直接のサブフレームをリスト化した、配列のようなオブジェクトである windows 自身を返します。
+window.frames /// frameList = window.frames;\n現在のウィンドウの直接のサブフレームをリスト化した、配列のようなオブジェクトである windows 自身を返します。
+fullScreen /// window.fullScreen\nvar isInFullScreen = windowRef.fullScreen;\nこのプロパティは、ウィンドウがフルスクリーンモードで表示されているかどうかを示します。\nこれは、Gecko 1.9 (Firefox 3) 以降でのみ信頼することができます。\n以下の注記を参照してください。
+window.fullScreen /// var isInFullScreen = windowRef.fullScreen;\nこのプロパティは、ウィンドウがフルスクリーンモードで表示されているかどうかを示します。\nこれは、Gecko 1.9 (Firefox 3) 以降でのみ信頼することができます。\n以下の注記を参照してください。
+history /// window.history\nvar historyObj = window.history;\nThe Window.history read-only property returns a reference to the History object, \nwhich provides an interface for manipulating the browser session history (pages visited in the tab or frame that the current page is loaded in).
+window.history /// var historyObj = window.history;\nThe Window.history read-only property returns a reference to the History object, \nwhich provides an interface for manipulating the browser session history (pages visited in the tab or frame that the current page is loaded in).
+indexedDB /// window.indexedDB\nvar DBOpenRequest = self.indexedDB.open("toDoList");\nThe indexedDB property of the IDBEnvironment interface provides a mechanism for applications to asynchronously access the capabilities of indexed databases.
+window.indexedDB /// var DBOpenRequest = self.indexedDB.open("toDoList");\nThe indexedDB property of the IDBEnvironment interface provides a mechanism for applications to asynchronously access the capabilities of indexed databases.
+innerHeight /// window.innerHeight\nvar intViewportHeight = window.innerHeight;\n水平スクロールバー（表示されている場合）を含む、ブラウザウィンドウの ビューポート (viewport) の高さを返します。
+window.innerHeight /// var intViewportHeight = window.innerHeight;\n水平スクロールバー（表示されている場合）を含む、ブラウザウィンドウの ビューポート (viewport) の高さを返します。
+innerWidth /// window.innerWidth\nvar intViewportWidth = window.innerWidth;\n垂直スクロールバー（表示されている場合）を含む、ブラウザウィンドウの ビューポート (viewport) の幅を返します。
+window.innerWidth /// var intViewportWidth = window.innerWidth;\n垂直スクロールバー（表示されている場合）を含む、ブラウザウィンドウの ビューポート (viewport) の幅を返します。
+isSecureContext /// window.isSecureContext\n-
+window.isSecureContext /// -
+window.length /// framesCount = window.length;\nウィンドウにおけるフレーム（<frame> か <iframe> 要素のいずれか）の数を返します。
+localStorage /// window.localStorage\nmyStorage = localStorage;\nlocalStorage プロパティはローカルの Storage オブジェクトにアクセスすることができます。\n localStorage は sessionStorage によく似ています。\n唯一の違いは、localStorage に保存されたデータには保持期間の制限はなく、sessionStorage に保存されたデータはセッションが終わると同時にクリアされてしまう（ブラウザが閉じられたとき）ことです。
+window.localStorage /// myStorage = localStorage;\nlocalStorage プロパティはローカルの Storage オブジェクトにアクセスすることができます。\n localStorage は sessionStorage によく似ています。\n唯一の違いは、localStorage に保存されたデータには保持期間の制限はなく、sessionStorage に保存されたデータはセッションが終わると同時にクリアされてしまう（ブラウザが閉じられたとき）ことです。
+location /// window.location\nvarlocationObj = window.location;\nwindow.location =newLocation;\n文書の URL についての情報を含み、また、URL を変更するためのメソッドを提供をする、 Location オブジェクト を返します。\n別の URL を読み込ませるために、このプロパティに URL を代入することもできます。\n\ndocument.location\n// ロケーションオブジェクトの取得\nvar locationObj = document.location;\n// ロケーションオブジェクトの値を設定（※注記の項を参照）\ndocument.location = 'http://www.mozilla.org';\n文書の URL に関する情報を持ち、その URL を変更するメソッドを提供する Location オブジェクトを返します。\nGecko ブラウザでは URL をこのプロパティに割り当てる事により別の URL をロードする事もできます。
+window.location /// varlocationObj = window.location;\nwindow.location =newLocation;\n文書の URL についての情報を含み、また、URL を変更するためのメソッドを提供をする、 Location オブジェクト を返します。\n別の URL を読み込ませるために、このプロパティに URL を代入することもできます。
+locationbar /// window.locationbar\nobjRef = window.locationbar\nlocationbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+window.locationbar /// objRef = window.locationbar\nlocationbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+menubar /// window.menubar\nobjRef = window.menubar\nmenubar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+window.menubar /// objRef = window.menubar\nmenubar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+messageManager /// window.messageManager\n-
+window.messageManager /// -
+mozAnimationStartTime /// window.mozAnimationStartTime\n-
+window.mozAnimationStartTime /// -
+mozInnerScreenX /// window.mozInnerScreenX\n-
+window.mozInnerScreenX /// -
+mozInnerScreenY /// window.mozInnerScreenY\n-
+window.mozInnerScreenY /// -
+mozPaintCount /// window.mozPaintCount\n-
+window.mozPaintCount /// -
+name /// window.name\nstring = window.name;\nwindow.name = string;\nウィンドウ名を取得 / 設定します。\n\nelement.name\nHTMLElement.name = string;\nvar elName = HTMLElement.name;\nvar fControl = HTMLFormElement.elementName;\nvar controlCollection = HTMLFormElement.elements.elementName;\nname はDOM オブジェクトのname 属性を取得または設定します。\nただし、この属性が適用されるのは次の要素に限られます。\n<a>, \n<applet>, \n<form>, \n<frame>, \n<iframe>, \n<img>, \n<input>, \n<map>, \n<meta>, \n<object>, \n<option>, \n<param>, \n<select>, \n<textarea>.name は、 document.getElementsByName() メソッドか、 form と form.elements のコレクションで使用することができます。\n form や form.elements のコレクションで使われた場合、一つの要素かコレクションを返します。
+window.name /// string = window.name;\nwindow.name = string;\nウィンドウ名を取得 / 設定します。
+navigator /// window.navigator\nalert("あなたは " + navigator.appName + " を使用しています。");\nnavigator オブジェクトへの参照を返します。\n navigator オブジェクトを用いることで、スクリプトを実行しているアプリケーションについての情報を得ることができます。\n\nnavigator\nThe Navigator interface represents the state and the identity of the user agent. \nIt allows scripts to query it and to register themselves to carry on some activities.
+window.navigator /// alert("あなたは " + navigator.appName + " を使用しています。");\nnavigator オブジェクトへの参照を返します。\n navigator オブジェクトを用いることで、スクリプトを実行しているアプリケーションについての情報を得ることができます。
+onabort /// window.onabort\nwindow.onabort = funcRef\nウィンドウに中断イベントを送ったときのイベントハンドラです。\n\ndocument.onabort\nwindow.onabort = funcRef\nウィンドウに中断イベントを送ったときのイベントハンドラです。
+window.onabort /// window.onabort = funcRef\nウィンドウに中断イベントを送ったときのイベントハンドラです。
+onafterprint /// window.onafterprint\nwindow.onafterprint = event handling code\nonafterprint プロパティーは現在のwindowに対するイベントハンドラをセットして値を返します。
+window.onafterprint /// window.onafterprint = event handling code\nonafterprint プロパティーは現在のwindowに対するイベントハンドラをセットして値を返します。
+onbeforeprint /// window.onbeforeprint\nwindow.onbeforeprint = event handling code\nThe property onbeforeprint sets and returns the onbeforeprint event handler code for the current window.
+window.onbeforeprint /// window.onbeforeprint = event handling code\nThe property onbeforeprint sets and returns the onbeforeprint event handler code for the current window.
+onbeforeunload /// window.onbeforeunload\nwindow.onbeforeunload = funcRef\nwindow のリソースの unload 直前に発生するイベントに対応する処理を設定します。\n 文書が未だ可視状態であり、イベントが未だキャンセル可能 (event.preventDefault) なタイミング で発生します。
+window.onbeforeunload /// window.onbeforeunload = funcRef\nwindow のリソースの unload 直前に発生するイベントに対応する処理を設定します。\n 文書が未だ可視状態であり、イベントが未だキャンセル可能 (event.preventDefault) なタイミング で発生します。
+onblur /// window.onblur\nelement.onblur = function;\nonblur プロパティはonBlurイベントを返します。\n\ndocument.onblur\nelement.onblur = function;\nonblur プロパティはonBlurイベントを返します。
+window.onblur /// element.onblur = function;\nonblur プロパティはonBlurイベントを返します。
+onchange /// window.onchange\nelement.onchange = handlerFunction;\nvar handlerFunction = element.onchange;\nonchange プロパティはchangeイベント処理をセットする、もしくはイベント処理を返り値として返します。\n\ndocument.onchange\nelement.onchange = handlerFunction;\nvar handlerFunction = element.onchange;\nonchange プロパティはchangeイベント処理をセットする、もしくはイベント処理を返り値として返します。
+window.onchange /// element.onchange = handlerFunction;\nvar handlerFunction = element.onchange;\nonchange プロパティはchangeイベント処理をセットする、もしくはイベント処理を返り値として返します。
+onclick /// window.onclick\nelement.onclick = functionRef;\nThe onclick property returns the click event handler code on the current element.\n\ndocument.onclick\nelement.onclick = functionRef;\nThe onclick property returns the click event handler code on the current element.
+window.onclick /// element.onclick = functionRef;\nThe onclick property returns the click event handler code on the current element.
+onclose /// window.onclose\nwindow.onclose = funcRef;\nウィンドウの close イベントに対するイベントハンドラです (Firefox 2 および Safari では使用不可)\n\ndocument.onclose\nwindow.onclose = funcRef;\nウィンドウの close イベントに対するイベントハンドラです (Firefox 2 および Safari では使用不可)
+window.onclose /// window.onclose = funcRef;\nウィンドウの close イベントに対するイベントハンドラです (Firefox 2 および Safari では使用不可)
+oncontextmenu /// window.oncontextmenu\nwindow.oncontextmenu = funcRef;\n//funcRef refers to the function to be called\nAn event handler property for right-click events on the window. \nUnless the default behavior is prevented (see examples below on how to do this), \nthe browser context menu will activate (though IE8 has a bug with this and will not activate the context menu if a contextmenu event handler is defined). \nNote that this event will occur with any non-disabled right-click event and does not depend on an element possessing the "contextmenu" attribute.\n\ndocument.oncontextmenu\nwindow.oncontextmenu = funcRef;\n//funcRef refers to the function to be called\nAn event handler property for right-click events on the window. \nUnless the default behavior is prevented (see examples below on how to do this), \nthe browser context menu will activate (though IE8 has a bug with this and will not activate the context menu if a contextmenu event handler is defined). \nNote that this event will occur with any non-disabled right-click event and does not depend on an element possessing the "contextmenu" attribute.
+window.oncontextmenu /// window.oncontextmenu = funcRef;\n//funcRef refers to the function to be called\nAn event handler property for right-click events on the window. \nUnless the default behavior is prevented (see examples below on how to do this), \nthe browser context menu will activate (though IE8 has a bug with this and will not activate the context menu if a contextmenu event handler is defined). \nNote that this event will occur with any non-disabled right-click event and does not depend on an element possessing the "contextmenu" attribute.
+ondblclick /// window.ondblclick\nelement.ondblclick = function;\nThe ondblclick property returns the onDblClick event handler code on the current element.\n\ndocument.ondblclick\nelement.ondblclick = function;\nThe ondblclick property returns the onDblClick event handler code on the current element.
+window.ondblclick /// element.ondblclick = function;\nThe ondblclick property returns the onDblClick event handler code on the current element.
+ondevicelight /// window.ondevicelight\nwindow.ondevicelight = funcRef\nデバイスの環境光センサが光の強度の変化を検出した際に発生する devicelight イベントを受け取るイベントリスナーを指定します。
+window.ondevicelight /// window.ondevicelight = funcRef\nデバイスの環境光センサが光の強度の変化を検出した際に発生する devicelight イベントを受け取るイベントリスナーを指定します。
+ondevicemotion /// window.ondevicemotion\n-
+window.ondevicemotion /// -
+ondeviceorientation /// window.ondeviceorientation\n-
+window.ondeviceorientation /// -
+ondeviceproximity /// window.ondeviceproximity\n-
+window.ondeviceproximity /// -
+ondragdrop /// window.ondragdrop\n-
+window.ondragdrop /// -
+onerror /// window.onerror\n-\n\ndocument.onerror\nwindow.onerror = function(messageOrEvent, source, lineno, colno, error) { ... }\nAn event handler for the error event. \nError events are fired at various targets for different kinds of errors:
+window.onerror /// -
+onfocus /// window.onfocus\nelement.onfocus = event handling code\nThe onfocus property returns the onFocus event handler code on the current element.\n\ndocument.onfocus\nelement.onfocus = event handling code\nThe onfocus property returns the onFocus event handler code on the current element.
+window.onfocus /// element.onfocus = event handling code\nThe onfocus property returns the onFocus event handler code on the current element.
+onhashchange /// window.onhashchange\nwindow.onhashchange = funcRef;\nhashchange イベントは、 window のハッシュが変更された際に発生します (参照：location.hash)
+window.onhashchange /// window.onhashchange = funcRef;\nhashchange イベントは、 window のハッシュが変更された際に発生します (参照：location.hash)
+oninput /// window.oninput\nwindow 上の input イベントのためのイベントハンドラです。\ninput イベントは、 <input> 要素の値が変化したときに発生します。\nこのイベントはバブルです。\nwindow でサポートされている場合、<input> 要素でも同様にサポートされています。\n\ndocument.oninput\nwindow 上の input イベントのためのイベントハンドラです。\ninput イベントは、 <input> 要素の値が変化したときに発生します。\nこのイベントはバブルです。\nwindow でサポートされている場合、<input> 要素でも同様にサポートされています。
+window.oninput /// window 上の input イベントのためのイベントハンドラです。\ninput イベントは、 <input> 要素の値が変化したときに発生します。\nこのイベントはバブルです。\nwindow でサポートされている場合、<input> 要素でも同様にサポートされています。
+onkeydown /// window.onkeydown\nelement.onkeydown = event handling code\nThe onkeydown property returns the onKeyDown event handler code on the current element.\n\ndocument.onkeydown\nelement.onkeydown = event handling code\nThe onkeydown property returns the onKeyDown event handler code on the current element.
+window.onkeydown /// element.onkeydown = event handling code\nThe onkeydown property returns the onKeyDown event handler code on the current element.
+onkeypress /// window.onkeypress\nelement.onkeypress = event handling code\nonkeypress プロパティは対象要素の onKeyPress イベントハンドラコードの取得 / 設定に用います。\n\ndocument.onkeypress\nelement.onkeypress = event handling code\nonkeypress プロパティは対象要素の onKeyPress イベントハンドラコードの取得 / 設定に用います。
+window.onkeypress /// element.onkeypress = event handling code\nonkeypress プロパティは対象要素の onKeyPress イベントハンドラコードの取得 / 設定に用います。
+onkeyup /// window.onkeyup\nelement.onkeyup = event handling code\nThe onkeyup property returns the onKeyUp event handler code for the current element.\n\ndocument.onkeyup\nelement.onkeyup = event handling code\nThe onkeyup property returns the onKeyUp event handler code for the current element.
+window.onkeyup /// element.onkeyup = event handling code\nThe onkeyup property returns the onKeyUp event handler code for the current element.
+onlanguagechange /// window.onlanguagechange\n-
+window.onlanguagechange /// -
+onload /// window.onload\nwindow.onload = funcRef;\nwindow の load イベントに対応するイベントハンドラです。\n\ndocument.onload\nwindow.onload = funcRef;\nwindow の load イベントに対応するイベントハンドラです。
+window.onload /// window.onload = funcRef;\nwindow の load イベントに対応するイベントハンドラです。
+onmousedown /// window.onmousedown\nelement.onmousedown = funcRef;\n対象要素の mousedown イベントに対応するイベントハンドラです。\n\ndocument.onmousedown\nelement.onmousedown = funcRef;\n対象要素の mousedown イベントに対応するイベントハンドラです。
+window.onmousedown /// element.onmousedown = funcRef;\n対象要素の mousedown イベントに対応するイベントハンドラです。
+onmousemove /// window.onmousemove\nelement.onmousemove = イベントを扱うコード\nonmousemoveプロパティは、当該要素のmousemoveイベントハンドラのコードを返します。\n\ndocument.onmousemove\nelement.onmousemove = イベントを扱うコード\nonmousemoveプロパティは、当該要素のmousemoveイベントハンドラのコードを返します。
+window.onmousemove /// element.onmousemove = イベントを扱うコード\nonmousemoveプロパティは、当該要素のmousemoveイベントハンドラのコードを返します。
+onmouseout /// window.onmouseout\nelement.onmouseout = event handling code\nThe onmouseout property returns the onMouseOut event handler code on the current element.\n\ndocument.onmouseout\nelement.onmouseout = event handling code\nThe onmouseout property returns the onMouseOut event handler code on the current element.
+window.onmouseout /// element.onmouseout = event handling code\nThe onmouseout property returns the onMouseOut event handler code on the current element.
+onmouseover /// window.onmouseover\nelement.onmouseover = event handling code\nThe onmouseover property returns the onMouseOver event handler code on the current element.\n\ndocument.onmouseover\nelement.onmouseover = event handling code\nThe onmouseover property returns the onMouseOver event handler code on the current element.
+window.onmouseover /// element.onmouseover = event handling code\nThe onmouseover property returns the onMouseOver event handler code on the current element.
+onmouseup /// window.onmouseup\nelement.onmouseup = funcRef;\n対象要素の mouseup イベントに対応するイベントハンドラです。\n\ndocument.onmouseup\nelement.onmouseup = funcRef;\n対象要素の mouseup イベントに対応するイベントハンドラです。
+window.onmouseup /// element.onmouseup = funcRef;\n対象要素の mouseup イベントに対応するイベントハンドラです。
+onmozbeforepaint /// window.onmozbeforepaint\n-
+window.onmozbeforepaint /// -
+onpaint /// window.onpaint\n-
+window.onpaint /// -
+onpointercancel /// window.onpointercancel\n-\n\ndocument.onpointercancel\n-
+window.onpointercancel /// -
+onpointerdown /// window.onpointerdown\n-\n\ndocument.onpointerdown\n-
+window.onpointerdown /// -
+onpointerenter /// window.onpointerenter\n-\n\ndocument.onpointerenter\n-
+window.onpointerenter /// -
+onpointerleave /// window.onpointerleave\n-\n\ndocument.onpointerleave\n-
+window.onpointerleave /// -
+onpointermove /// window.onpointermove\n-\n\ndocument.onpointermove\n-
+window.onpointermove /// -
+onpointerout /// window.onpointerout\n-\n\ndocument.onpointerout\n-
+window.onpointerout /// -
+onpointerover /// window.onpointerover\n-\n\ndocument.onpointerover\n-
+window.onpointerover /// -
+onpointerup /// window.onpointerup\n-\n\ndocument.onpointerup\n-
+window.onpointerup /// -
+onpopstate /// window.onpopstate\n-
+window.onpopstate /// -
+onrejectionhandled /// window.onrejectionhandled\n-
+window.onrejectionhandled /// -
+onreset /// window.onreset\nwindow.onreset = funcRef;\nフォームの reset イベントに対応するイベントハンドラです。\n\ndocument.onreset\nwindow.onreset = funcRef;\nフォームの reset イベントに対応するイベントハンドラです。
+window.onreset /// window.onreset = funcRef;\nフォームの reset イベントに対応するイベントハンドラです。
+onresize /// window.onresize\nwindow.onresize = funcRef;\nwindow のリサイズイベントに対応するイベントハンドラ。\n\ndocument.onresize\nwindow.onresize = funcRef;\nwindow のリサイズイベントに対応するイベントハンドラ。
+window.onresize /// window.onresize = funcRef;\nwindow のリサイズイベントに対応するイベントハンドラ。
+onscroll /// window.onscroll\nelement.onscroll = functionReference\nHTML要素のスクロールイベントを処理します。\n\ndocument.onscroll\nelement.onscroll = functionReference\nHTML要素のスクロールイベントを処理します。
+window.onscroll /// element.onscroll = functionReference\nHTML要素のスクロールイベントを処理します。
+onselect /// window.onselect\nwindow.onselect = funcRef;\nwindow の select イベントに対応するイベントハンドラです。\n\ndocument.onselect\nwindow.onselect = funcRef;\nwindow の select イベントに対応するイベントハンドラです。
+window.onselect /// window.onselect = funcRef;\nwindow の select イベントに対応するイベントハンドラです。
+onselectstart /// window.onselectstart\nobj.onselectstart = function;\nThe GlobalEventHandlers.onselectstart property represents the event handler that is called when a selectstart event reaches this object.\n\ndocument.onselectstart\nobj.onselectstart = function;\nThe GlobalEventHandlers.onselectstart property represents the event handler that is called when a selectstart event reaches this object.
+window.onselectstart /// obj.onselectstart = function;\nThe GlobalEventHandlers.onselectstart property represents the event handler that is called when a selectstart event reaches this object.
+onstorage /// window.onstorage\nwindowObj.onstorage = function() { ... };\nWindowEventHandlers.onstorage プロパティは、storage イベントが発火した際に実行するイベントハンドラーを含みます。\nこれは、ストレージ領域が変更されたとき（たとえば、新しい項目が保存されたとき）に発生します。
+window.onstorage /// windowObj.onstorage = function() { ... };\nWindowEventHandlers.onstorage プロパティは、storage イベントが発火した際に実行するイベントハンドラーを含みます。\nこれは、ストレージ領域が変更されたとき（たとえば、新しい項目が保存されたとき）に発生します。
+onsubmit /// window.onsubmit\nwindow.onsubmit = funcRef;\nAn event handler for the submit event on the window.\n\ndocument.onsubmit\nwindow.onsubmit = funcRef;\nAn event handler for the submit event on the window.
+window.onsubmit /// window.onsubmit = funcRef;\nAn event handler for the submit event on the window.
+ontouchcancel /// window.ontouchcancel\n-\n\ndocument.ontouchcancel\n-
+window.ontouchcancel /// -
+ontouchmove /// window.ontouchmove\n-\n\ndocument.ontouchmove\n-
+window.ontouchmove /// -
+ontouchstart /// window.ontouchstart\n-\n\ndocument.ontouchstart\n-
+window.ontouchstart /// -
+onunhandledrejection /// window.onunhandledrejection\n-
+window.onunhandledrejection /// -
+onunload /// window.onunload\nwindow.onunload = funcRef;\nThe unload event is raised when the window is unloading its content and resources. \nThe resources removal is processed after the unload event occurs.
+window.onunload /// window.onunload = funcRef;\nThe unload event is raised when the window is unloading its content and resources. \nThe resources removal is processed after the unload event occurs.
+onuserproximity /// window.onuserproximity\n-
+window.onuserproximity /// -
+opener /// window.opener\nobjRef = window.opener;\n現在のウィンドウを開いたウィンドウへの参照を返します。
+window.opener /// objRef = window.opener;\n現在のウィンドウを開いたウィンドウへの参照を返します。
+outerHeight /// window.outerHeight\nvar intWindowHeight = window.outerHeight;\nブラウザウィンドウの外側の高さを取得します。\n window.outerHeight は、ツールバー、ウィンドウ chrome を含む、ブラウザウィンドウ全体の高さを表します。
+window.outerHeight /// var intWindowHeight = window.outerHeight;\nブラウザウィンドウの外側の高さを取得します。\n window.outerHeight は、ツールバー、ウィンドウ chrome を含む、ブラウザウィンドウ全体の高さを表します。
+outerWidth /// window.outerWidth\nvar intWindowWidth = window.outerWidth;\nブラウザウィンドウの外側の幅を取得します。\n window.outerWidth は、サイドバー（展開されている場合）、ウィンドウ chrome 、ウィンドウをリサイズするボーダー/ハンドルを含む、ブラウザウィンドウ全体の幅を表します。
+window.outerWidth /// var intWindowWidth = window.outerWidth;\nブラウザウィンドウの外側の幅を取得します。\n window.outerWidth は、サイドバー（展開されている場合）、ウィンドウ chrome 、ウィンドウをリサイズするボーダー/ハンドルを含む、ブラウザウィンドウ全体の幅を表します。
+parent /// window.parent\nparentWindow = window.parent\n現在のウィンドウ、または、サブフレームの親ウィンドウへの参照を返します。\nウィンドウが親を持たない場合、parent プロパティは、それ自身への参照となります。\nウィンドウが <iframe> 、<object> 、あるいは、<frame> で読み込まれた場合、その親ウィンドウは、ウィンドウを埋め込んだ要素が存在するウィンドウとなります。
+window.parent /// parentWindow = window.parent\n現在のウィンドウ、または、サブフレームの親ウィンドウへの参照を返します。\nウィンドウが親を持たない場合、parent プロパティは、それ自身への参照となります。\nウィンドウが <iframe> 、<object> 、あるいは、<frame> で読み込まれた場合、その親ウィンドウは、ウィンドウを埋め込んだ要素が存在するウィンドウとなります。
+performance /// window.performance\n-
+window.performance /// -
+personalbar /// window.personalbar\nobjRef =window.personalbar\npersonalbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+window.personalbar /// objRef =window.personalbar\npersonalbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+pkcs11 /// window.pkcs11\nobjRef = window.pkcs11\npcks11 プロトコル に関連するドライバや他のソフトウェアをインストールするために用いられる pkcs11 オブジェクトを返します。
+window.pkcs11 /// objRef = window.pkcs11\npcks11 プロトコル に関連するドライバや他のソフトウェアをインストールするために用いられる pkcs11 オブジェクトを返します。
+screen /// window.screen\nscreenObj = window.screen;\nwindow オブジェクトに紐付く screen オブジェクトへの参照を返します。\nscreen オブジェクトは現在のウィンドウがレンダリングされている画面のプロパティを調べるための特別なオブジェクトです。\n\nscreen\nThe Screen interface represents a screen, \nusually the one on which the current window is being rendered.
+window.screen /// screenObj = window.screen;\nwindow オブジェクトに紐付く screen オブジェクトへの参照を返します。\nscreen オブジェクトは現在のウィンドウがレンダリングされている画面のプロパティを調べるための特別なオブジェクトです。
+screenX /// window.screenX\nlLoc = window.screenX\n画面の左端からユーザのブラウザの左端までの水平距離を返します。
+window.screenX /// lLoc = window.screenX\n画面の左端からユーザのブラウザの左端までの水平距離を返します。
+screenY /// window.screenY\nlLoc = window.screenY\n画面の上端からユーザのブラウザの上端までの垂直距離を返します。
+window.screenY /// lLoc = window.screenY\n画面の上端からユーザのブラウザの上端までの垂直距離を返します。
+scrollbars /// window.scrollbars\nobjRef = window.scrollbars\nscrollbars オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+window.scrollbars /// objRef = window.scrollbars\nscrollbars オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+scrollMaxX /// window.scrollMaxX\nxpix = window.scrollMaxX\n文書が水平スクロールされ得る最大ピクセル数を返します。
+window.scrollMaxX /// xpix = window.scrollMaxX\n文書が水平スクロールされ得る最大ピクセル数を返します。
+scrollMaxY /// window.scrollMaxY\nypix = window.scrollMaxY\n文書が垂直スクロールされ得る最大ピクセル数を返します。
+window.scrollMaxY /// ypix = window.scrollMaxY\n文書が垂直スクロールされ得る最大ピクセル数を返します。
+scrollX /// window.scrollX\nvar x = window.scrollX\n文書が水平スクロールされているピクセル数を返します。
+window.scrollX /// var x = window.scrollX\n文書が水平スクロールされているピクセル数を返します。
+scrollY /// window.scrollY\nypix = window.scrollY;\n文書が垂直スクロールされているピクセル数を返します。
+window.scrollY /// ypix = window.scrollY;\n文書が垂直スクロールされているピクセル数を返します。
+self /// window.self\nvar w = window.self;  // w === window\nWindow.self 読み取り専用プロパティは、WindowProxy のように、ウィンドウ自身を返します。
+window.self /// var w = window.self;  // w === window\nWindow.self 読み取り専用プロパティは、WindowProxy のように、ウィンドウ自身を返します。
+sessionStorage /// window.sessionStorage\n// sessionStorage にデータを保存する\nsessionStorage.setItem('key', 'value');\n// sessionStorage に保存したデータを取得する\nvar data = sessionStorage.getItem('key');\n// sessionStorage に保存したデータを削除する\nsessionStorage.removeItem('key')\nsessionStorage プロパティで、セッション Storage オブジェクトにアクセスできます。\nsessionStorage は Window.localStorage に似ています。\n唯一の違いは、localStorage に保存されたデータに期限がないのに対して、sessionStorage に保存されたデータはページのセッションが終了するときに消去されます。\nページのセッションはブラウザを開いている限り、ページの再読み込みや復元を越えて持続します。\n新しいタブやウィンドウにページを開くと、新しいセッションが開始します。\nこれは、セッション Cookie の動作とは異なります。
+window.sessionStorage /// // sessionStorage にデータを保存する\nsessionStorage.setItem('key', 'value');\n// sessionStorage に保存したデータを取得する\nvar data = sessionStorage.getItem('key');\n// sessionStorage に保存したデータを削除する\nsessionStorage.removeItem('key')\nsessionStorage プロパティで、セッション Storage オブジェクトにアクセスできます。\nsessionStorage は Window.localStorage に似ています。\n唯一の違いは、localStorage に保存されたデータに期限がないのに対して、sessionStorage に保存されたデータはページのセッションが終了するときに消去されます。\nページのセッションはブラウザを開いている限り、ページの再読み込みや復元を越えて持続します。\n新しいタブやウィンドウにページを開くと、新しいセッションが開始します。\nこれは、セッション Cookie の動作とは異なります。
+sidebar /// window.sidebar\nwindow.sidebar.addPanel("Google", "http://www.google.com/", "");\nブラウザにアドオンを追加するためのいくつかのメソッドを含む、sidebar オブジェクトを返します。\n！非標準！非推奨
+window.sidebar /// window.sidebar.addPanel("Google", "http://www.google.com/", "");\nブラウザにアドオンを追加するためのいくつかのメソッドを含む、sidebar オブジェクトを返します。\n！非標準！非推奨
+speechSynthesis /// window.speechSynthesis\n-
+window.speechSynthesis /// -
+status /// window.status\nstring =window.status; //取得window.status = string; //設定\nブラウザの下部にあるステータスバー内にテキストを設定するか、もしくは、直前に設定されていたテキストを返します。
+window.status /// string =window.status; //取得window.status = string; //設定\nブラウザの下部にあるステータスバー内にテキストを設定するか、もしくは、直前に設定されていたテキストを返します。
+statusbar /// window.statusbar\nobjRef = window.statusbar\nstatusbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+window.statusbar /// objRef = window.statusbar\nstatusbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+toolbar /// window.toolbar\nobjRef = window.toolbar\ntoolbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+window.toolbar /// objRef = window.toolbar\ntoolbar オブジェクトを返します。\nこのバーの表示は、ウィンドウ内でトグル（表示/非表示の状態を切り替える）ことができます。
+top /// window.top\nvar topWindow = window.top;\nウィンドウ階層における最上位のウィンドウへの参照を返します。\n\nscreen.top\nItop = window.screen.top\n現在の画面の上端からの距離をピクセル単位で返します。
+window.top /// var topWindow = window.top;\nウィンドウ階層における最上位のウィンドウへの参照を返します。
+URL /// window.URL\nオブジェクト URL の作成や削除に用いるメソッドを提供します。\nwindow.URL.createObjectURL()、window.URL.revokeObjectURL()\n\ndocument.URL\nstring = document.URL;\n現在の文書の URL を返します。
+window.URL /// オブジェクト URL の作成や削除に用いるメソッドを提供します。\nwindow.URL.createObjectURL()、window.URL.revokeObjectURL()
+window.window /// window.window\nwindow.window.window\nwindow.window.window.window\n  ...\nwindow オブジェクトの window プロパティは、その window オブジェクト自身を指します。\n故に、以下の表現は同じ window オブジェクトを返します。
+alert /// window.alert\nwindow.alert(message);\n指定したテキストと OK ボタンを持つ警告ダイアログを表示します。
+window.alert /// window.alert(message);\n指定したテキストと OK ボタンを持つ警告ダイアログを表示します。
+atob /// window.atob\ndecodedData = window.atob(encodedData);\nbase64 形式でエンコードされたデータの文字列をデコードします。\nユニコードまたは UTF-8 文字列に対してこのメソッドを用いる場合の問題や解決方法については、『window.btoa - ユニコード文字列』または『Base64 のエンコードとデコード』の『ユニコードの問題』の章をご覧下さい。
+window.atob /// decodedData = window.atob(encodedData);\nbase64 形式でエンコードされたデータの文字列をデコードします。\nユニコードまたは UTF-8 文字列に対してこのメソッドを用いる場合の問題や解決方法については、『window.btoa - ユニコード文字列』または『Base64 のエンコードとデコード』の『ユニコードの問題』の章をご覧下さい。
+back /// window.back\nwindow.back()\nウィンドウを履歴のひとつ前の内容に戻します。
+window.back /// window.back()\nウィンドウを履歴のひとつ前の内容に戻します。
+blur /// window.blur\nwindow.blur()\nウィンドウからフォーカスをはずします。\n\nblur\nFocusEvent\nAn element has lost focus (does not bubble).
+window.blur /// window.blur()\nウィンドウからフォーカスをはずします。
+btoa /// window.btoa\nencodedData = window.btoa(stringToEncode);\nバイナリデータの文字列から base64 エンコードされた文字列を作成します。\n※このメソッドは生のユニコード文字列には適していません。
+window.btoa /// encodedData = window.btoa(stringToEncode);\nバイナリデータの文字列から base64 エンコードされた文字列を作成します。\n※このメソッドは生のユニコード文字列には適していません。
+cancelAnimationFrame /// window.cancelAnimationFrame\n-
+window.cancelAnimationFrame /// -
+cancelIdleCallback /// window.cancelIdleCallback\n-
+window.cancelIdleCallback /// -
+captureEvents /// window.captureEvents\n-
+window.captureEvents /// -
+clearImmediate /// window.clearImmediate\n-
+window.clearImmediate /// -
+clearInterval /// window.clearInterval\nwindow.clearInterval(intervalID)\nsetInterval を使用して設定された繰り返し動作をキャンセルします。
+window.clearInterval /// window.clearInterval(intervalID)\nsetInterval を使用して設定された繰り返し動作をキャンセルします。
+clearTimeout /// window.clearTimeout\nwindow.clearTimeout(timeoutID)\nwindow.setTimeout() によって設定された遅延を解除します。
+window.clearTimeout /// window.clearTimeout(timeoutID)\nwindow.setTimeout() によって設定された遅延を解除します。
+close /// window.close\nwindow.close();\nWindow.close() メソッドは、現在のウィンドウ、またはそのページ上で呼び出されたウィンドウを閉じます。\nこのメソッドが許可されるのは、window.open() メソッドを用いたスクリプトにより開かれたウィンドウに対する呼び出しのみです。\nウィンドウがスクリプトにより開かれたものでない場合、次のようなエラーがコンソールに表示されます: スクリプトはスクリプトによって開かれたウィンドウ以外を閉じることができません。\n\ndocument.close\ndocument.close();\ndocument.close() メソッドは、document.open() で開かれた文書への書き込みを終了します。\n\nclose\nEvent\nA WebSocket connection has been closed.
+window.close /// window.close();\nWindow.close() メソッドは、現在のウィンドウ、またはそのページ上で呼び出されたウィンドウを閉じます。\nこのメソッドが許可されるのは、window.open() メソッドを用いたスクリプトにより開かれたウィンドウに対する呼び出しのみです。\nウィンドウがスクリプトにより開かれたものでない場合、次のようなエラーがコンソールに表示されます: スクリプトはスクリプトによって開かれたウィンドウ以外を閉じることができません。
+confirm /// window.confirm\nresult = window.confirm(message)\nメッセージと、OK と キャンセルの 2 つのボタンを持つモーダルダイアログを表示します。
+window.confirm /// result = window.confirm(message)\nメッセージと、OK と キャンセルの 2 つのボタンを持つモーダルダイアログを表示します。
+convertPointFromNodeToPage /// window.convertPointFromNodeToPage\n-
+window.convertPointFromNodeToPage /// -
+createImageBitmap /// window.createImageBitmap\n-
+window.createImageBitmap /// -
+dump /// window.dump\nwindow.dump(message);\ndump(message);\n(システムの) コンソールにメッセージを表示します。\n！非標準
+window.dump /// window.dump(message);\ndump(message);\n(システムの) コンソールにメッセージを表示します。\n！非標準
+event /// window.event\n-\n\nEvent\nevent = new Event(typeArg, eventInit);\nThe Event() constructor creates a new Event.
+window.event /// -
+fetch /// window.fetch\n-
+window.fetch /// -
+window.find /// window.find(aString, aCaseSensitive, aBackwards, aWrapAround, aWholeWord, aSearchInFrames, aShowDialog);\nウィンドウ内の文字列を検索します。
+focus /// window.focus\nwindow.focus()\nウィンドウにフォーカスを合わせます。\n\nfocus\nFocusEvent\nAn element has received focus (does not bubble).
+window.focus /// window.focus()\nウィンドウにフォーカスを合わせます。
+forward /// window.forward\nwindow.forward()\nウィンドウの文書の履歴のひとつ分だけ前へ進めます。
+window.forward /// window.forward()\nウィンドウの文書の履歴のひとつ分だけ前へ進めます。
+getAttention /// window.getAttention\nwindow.getAttention();\nユーザの注意を引きつける動作をします。\nこれがどのような動作になるかは、OS と ウィンドウマネージャー次第で変化します。
+window.getAttention /// window.getAttention();\nユーザの注意を引きつける動作をします。\nこれがどのような動作になるかは、OS と ウィンドウマネージャー次第で変化します。
+getComputedStyle /// window.getComputedStyle\n-
+window.getComputedStyle /// -
+getDefaultComputedStyle /// window.getDefaultComputedStyle\n-
+window.getDefaultComputedStyle /// -
+getSelection /// window.getSelection\nselection = window.getSelection();\nユーザーが選択した範囲を示す、selection オブジェクトを返します。\n\ndocument.getSelection\n-
+window.getSelection /// selection = window.getSelection();\nユーザーが選択した範囲を示す、selection オブジェクトを返します。
+home /// window.home\nwindow.home()\nウィンドウをホームページに移動させます。
+window.home /// window.home()\nウィンドウをホームページに移動させます。
+matchMedia /// window.matchMedia\nmql = window.matchMedia(mediaQueryString)\n指定された メディアクエリ文字列のパース結果を表す、新しい MediaQueryList オブジェクトを返します。
+window.matchMedia /// mql = window.matchMedia(mediaQueryString)\n指定された メディアクエリ文字列のパース結果を表す、新しい MediaQueryList オブジェクトを返します。
+minimize /// window.minimize\n-
+window.minimize /// -
+moveBy /// window.moveBy\nwindow.moveBy(deltaX, deltaY)\n指定された量だけ現在のウィンドウを移動します。
+window.moveBy /// window.moveBy(deltaX, deltaY)\n指定された量だけ現在のウィンドウを移動します。
+moveTo /// window.moveTo\nwindow.moveTo(x, y)\nウィンドウを指定座標に移動します。
+window.moveTo /// window.moveTo(x, y)\nウィンドウを指定座標に移動します。
+open /// window.open\nvar win = window.open(url, name [, features]);\n新しい副ブラウザウィンドウを生成し、参照されているリソースをロードします。\n\ndocument.open\ndocument.open();\ndocument.open() メソッドは、書き込み (writing) のための文書を開きます。\n\nopen\nEvent\nA WebSocket connection has been established.\n\nopen\nEvent\nAn event source connection has been established.
+window.open /// var win = window.open(url, name [, features]);\n新しい副ブラウザウィンドウを生成し、参照されているリソースをロードします。
+openDialog /// window.openDialog\n-
+window.openDialog /// -
+postMessage /// window.postMessage\n-
+window.postMessage /// -
+print /// window.print\nwindow.print()\n現在の文書を印刷するための印刷ダイアログを開きます。
+window.print /// window.print()\n現在の文書を印刷するための印刷ダイアログを開きます。
+prompt /// window.prompt\nresult = window.prompt( text, value );\nユーザにテキストを入力することを促すメッセージを持つダイアログを表示します。
+window.prompt /// result = window.prompt( text, value );\nユーザにテキストを入力することを促すメッセージを持つダイアログを表示します。
+releaseEvents /// window.releaseEvents\n-
+window.releaseEvents /// -
+requestAnimationFrame /// window.requestAnimationFrame\n-
+window.requestAnimationFrame /// -
+requestIdleCallback /// window.requestIdleCallback\n-
+window.requestIdleCallback /// -
+resizeBy /// window.resizeBy\nwindow.resizeBy(xDelta, yDelta)\n現在のウィンドウを特定の量だけリサイズします。
+window.resizeBy /// window.resizeBy(xDelta, yDelta)\n現在のウィンドウを特定の量だけリサイズします。
+resizeTo /// window.resizeTo\nwindow.resizeTo(iWidth, iHeight)\nウィンドウサイズを動的に変更します。
+window.resizeTo /// window.resizeTo(iWidth, iHeight)\nウィンドウサイズを動的に変更します。
+restore /// window.restore\n-
+window.restore /// -
+routeEvent /// window.routeEvent\n-
+window.routeEvent /// -
+scroll /// window.scroll\nwindow.scroll(x-coord,y-coord)\nウィンドウを文書内の特定の位置までスクロールします。\n\nscroll\nUIEvent\nThe document view or an element has been scrolled.
+window.scroll /// window.scroll(x-coord,y-coord)\nウィンドウを文書内の特定の位置までスクロールします。
+scrollBy /// window.scrollBy\nwindow.scrollBy(X,Y);\n指定された量だけウィンドウ内の文書をスクロールします。
+window.scrollBy /// window.scrollBy(X,Y);\n指定された量だけウィンドウ内の文書をスクロールします。
+scrollByLines /// window.scrollByLines\nwindow.scrollByLines(lines)\n指定した行分文書をスクロールします。
+window.scrollByLines /// window.scrollByLines(lines)\n指定した行分文書をスクロールします。
+scrollByPages /// window.scrollByPages\nwindow.scrollByPages(pages)\n指定したページ分文書をスクロールします。
+window.scrollByPages /// window.scrollByPages(pages)\n指定したページ分文書をスクロールします。
+scrollTo /// window.scrollTo\nwindow.scrollTo(x-coord,y-coord)\n文書内の特定の座標までスクロールします。
+window.scrollTo /// window.scrollTo(x-coord,y-coord)\n文書内の特定の座標までスクロールします。
+setCursor /// window.setCursor\nfunction setBusyCursor(enable) {\n  window.setCursor(enable ? "wait" : "auto");\n}\n対象ウィンドウのカーソルを変更します。
+window.setCursor /// function setBusyCursor(enable) {\n  window.setCursor(enable ? "wait" : "auto");\n}\n対象ウィンドウのカーソルを変更します。
+setImmediate /// window.setImmediate\n-
+window.setImmediate /// -
+setInterval /// window.setInterval\nintervalID = window.setInterval(func, delay[, param1, param2, ...]);\nintervalID = window.setInterval(code, delay);\n一定の遅延間隔を置いて関数を繰り返し呼び出します。
+window.setInterval /// intervalID = window.setInterval(func, delay[, param1, param2, ...]);\nintervalID = window.setInterval(code, delay);\n一定の遅延間隔を置いて関数を繰り返し呼び出します。
+setTimeout /// window.setTimeout\ntimeoutID = window.setTimeout(func, delay[, param1, param2, ...]);\ntimeoutID = window.setTimeout(code, delay);\n指定された遅延の後に、コードの断片または関数を実行します。
+window.setTimeout /// timeoutID = window.setTimeout(func, delay[, param1, param2, ...]);\ntimeoutID = window.setTimeout(code, delay);\n指定された遅延の後に、コードの断片または関数を実行します。
+showModalDialog /// window.showModalDialog\n-
+window.showModalDialog /// -
+sizeToContent /// window.sizeToContent\nwindow.sizeToContent()\nコンテンツの大きさにウィンドウのサイズを変更します。\nDOM コンテンツはこの関数が呼び出されたときに読み込まれるべきです。\n例えば、DOMContentLoaded イベント後などです。
+window.sizeToContent /// window.sizeToContent()\nコンテンツの大きさにウィンドウのサイズを変更します。\nDOM コンテンツはこの関数が呼び出されたときに読み込まれるべきです。\n例えば、DOMContentLoaded イベント後などです。
+stop /// window.stop\nwindow.stop()\nこのメソッドは、ウィンドウの読み込みを停止します。
+window.stop /// window.stop()\nこのメソッドは、ウィンドウの読み込みを停止します。
+updateCommands /// window.updateCommands\nwindow.updateCommands("sCommandName")\n現在の chrome ウィンドウ（UI）のコマンドの状態を更新します。
+window.updateCommands /// window.updateCommands("sCommandName")\n現在の chrome ウィンドウ（UI）のコマンドの状態を更新します。
+pageXOffset /// window.pageXOffset\nwindow.pageXOffset == window.scrollX; // 常に true\npageXOffset プロパティは、scrollX プロパティのエイリアスです。
+window.pageXOffset /// window.pageXOffset == window.scrollX; // 常に true\npageXOffset プロパティは、scrollX プロパティのエイリアスです。
+pageYOffset /// window.pageYOffset\nwindow.pageYOffset == window.scrollY; // 常に true\npageYOffset プロパティは、scrollY プロパティのエイリアスです。
+window.pageYOffset /// window.pageYOffset == window.scrollY; // 常に true\npageYOffset プロパティは、scrollY プロパティのエイリアスです。
+;API・document https://developer.mozilla.org/ja/docs/Web/API/Document\n 
+activeElement /// document.activeElement\n-
+document.activeElement /// -
+alinkColor /// document.alinkColor\ncolor = document.alinkColor; //取得\ndocument.alinkColor = color; //設定\nリンクのアクティブ状態（リンクの mousedown 及び mouseup イベント発生時）に於ける色を取得 / 設定します。\n！非推奨
+document.alinkColor /// color = document.alinkColor; //取得\ndocument.alinkColor = color; //設定\nリンクのアクティブ状態（リンクの mousedown 及び mouseup イベント発生時）に於ける色を取得 / 設定します。\n！非推奨
+anchors /// document.anchors\nnodeList = document.anchors;\nanchors は、文書中のすべてのアンカーのリストを返します。
+document.anchors /// nodeList = document.anchors;\nanchors は、文書中のすべてのアンカーのリストを返します。
+applets /// document.applets\nnodeList = document.applets \ndocument.applets はドキュメント内のアプレットの序列リストを返します。\nリストの各項目には添え字でアクセス可能です。
+document.applets /// nodeList = document.applets \ndocument.applets はドキュメント内のアプレットの序列リストを返します。\nリストの各項目には添え字でアクセス可能です。
+async /// document.async\ndocument.async は、 document.load の呼び出しを同期で行うか、または非同期で行うかの指示を真偽値で設定します。\n true が初期値であり、これはドキュメントを非同期的にロードするよう要求するものです。
+document.async /// document.async は、 document.load の呼び出しを同期で行うか、または非同期で行うかの指示を真偽値で設定します。\n true が初期値であり、これはドキュメントを非同期的にロードするよう要求するものです。
+bgColor /// document.bgColor\ncolor = document.bgColor; // 取得\ndocument.bgColor = color //設定;\nbgColor は、現在のドキュメントの背景色の取得 / 設定に用います。\n！非推奨
+document.bgColor /// color = document.bgColor; // 取得\ndocument.bgColor = color //設定;\nbgColor は、現在のドキュメントの背景色の取得 / 設定に用います。\n！非推奨
+body /// document.body\nobjRef = document.body; //取得\ndocument.body = objRef; //設定\nその文書の <body> 要素、または <frameset> 要素を返します。
+document.body /// objRef = document.body; //取得\ndocument.body = objRef; //設定\nその文書の <body> 要素、または <frameset> 要素を返します。
+characterSet /// document.characterSet\nvar string = document.characterSet\n読み取り専用の Document.characterSet プロパティは、文書の文字エンコーディングを表す文字列を返します。\n文字エンコーディングは文書のレンダリングに使用される文字セットです。\n文字エンコーディングは上書き可能である為、文書に指定したエンコーディングと異なるものが返る場合があります。
+document.characterSet /// var string = document.characterSet\n読み取り専用の Document.characterSet プロパティは、文書の文字エンコーディングを表す文字列を返します。\n文字エンコーディングは文書のレンダリングに使用される文字セットです。\n文字エンコーディングは上書き可能である為、文書に指定したエンコーディングと異なるものが返る場合があります。
+childElementCount /// document.childElementCount\n-\n\nelement.childElementCount\nvar elCount = elementNodeReference.childElementCount; \n読み取り専用の ParentNode.childElementCount プロパティは、与えられた要素の子要素の数を表す unsigned long 値を返します。
+document.childElementCount /// -
+children /// document.children\n-\n\nelement.children\n-
+document.children /// -
+compatMode /// document.compatMode\n-
+document.compatMode /// -
+contentType /// document.contentType\n-
+document.contentType /// -
+currentScript /// document.currentScript\nvar curScriptElement = document.currentScript;\nそのスクリプトを処理している <script> 要素を返します。
+document.currentScript /// var curScriptElement = document.currentScript;\nそのスクリプトを処理している <script> 要素を返します。
+defaultView /// document.defaultView\nvar win = document.defaultView;\nブラウザーにおいて、document.defaultView はドキュメントに関連付けられている window オブジェクトを返します。\nもし存在しない場合は null を返します。
+document.defaultView /// var win = document.defaultView;\nブラウザーにおいて、document.defaultView はドキュメントに関連付けられている window オブジェクトを返します。\nもし存在しない場合は null を返します。
+designMode /// document.designMode\nvar mode = document.designMode;\ndocument.designMode = "on";\ndocument.designMode = "off";\ndocument.designMode は、document 全体を編集可能にするかどうかを制御します。\nセットできる値は、"on" と "off" のどちらかです。\n仕様書では、このプロパティの値はデフォルトで "off" です。\nFirefox はこの標準仕様に従います。\nChrome や IE の最近のバージョンでは、デフォルトで "inherit" です。\nIE6～10 では、値が大文字です。
+document.designMode /// var mode = document.designMode;\ndocument.designMode = "on";\ndocument.designMode = "off";\ndocument.designMode は、document 全体を編集可能にするかどうかを制御します。\nセットできる値は、"on" と "off" のどちらかです。\n仕様書では、このプロパティの値はデフォルトで "off" です。\nFirefox はこの標準仕様に従います。\nChrome や IE の最近のバージョンでは、デフォルトで "inherit" です。\nIE6～10 では、値が大文字です。
+document.dir /// dirStr = document.dir;\ndocument.dir = dirStr;\nThe Document.dir property is a DOMString representing the directionality of the text of the document, \nwhether left to right (default) or right to left. \nPossible values are 'rtl', \nright to left, \nand 'ltr', \nleft to right.
+doctype /// document.doctype\ndoctypeObj = document.doctype;\n現在のドキュメントに関連付けられた文書型宣言(DTD) を返します。\n返されるオブジェクトは、DocumentType インターフェイスを持ちます。\n DocumentType を作成するには DOMImplementation.createDocumentType() を使用します。
+document.doctype /// doctypeObj = document.doctype;\n現在のドキュメントに関連付けられた文書型宣言(DTD) を返します。\n返されるオブジェクトは、DocumentType インターフェイスを持ちます。\n DocumentType を作成するには DOMImplementation.createDocumentType() を使用します。
+documentElement /// document.documentElement\nelement = document.documentElement;\ndocument のルート要素 (HTML 文書の場合は <html> 要素) を返します。\nこれは読取専用プロパティです
+document.documentElement /// element = document.documentElement;\ndocument のルート要素 (HTML 文書の場合は <html> 要素) を返します。\nこれは読取専用プロパティです
+documentURI /// document.documentURI\nvar string = document.documentURI;\n文書のロケーションを文字列で返します。\nDOM4 仕様では読み取り専用となっています。
+document.documentURI /// var string = document.documentURI;\n文書のロケーションを文字列で返します。\nDOM4 仕様では読み取り専用となっています。
+documentURIObject /// document.documentURIObject\nvaruri =doc.documentURIObject;\ndocument の URI に対応する nsIURI オブジェクトを返します。
+document.documentURIObject /// varuri =doc.documentURIObject;\ndocument の URI に対応する nsIURI オブジェクトを返します。
+domain /// document.domain\n-
+document.domain /// -
+domConfig /// document.domConfig\n-
+document.domConfig /// -
+embeds /// document.embeds\nnodeList = document.embeds\ndocument.embeds は、現在の文書の埋め込みオブジェクト (<embed>) のリストを返します。
+document.embeds /// nodeList = document.embeds\ndocument.embeds は、現在の文書の埋め込みオブジェクト (<embed>) のリストを返します。
+fgColor /// document.fgColor\ncolor = document.fgColor; // 取得\ndocument.fgColor = color  // 設定;\nfgColor は、現在のドキュメントの前景色または文字色の取得 / 設定に用います。\n！非推奨
+document.fgColor /// color = document.fgColor; // 取得\ndocument.fgColor = color  // 設定;\nfgColor は、現在のドキュメントの前景色または文字色の取得 / 設定に用います。\n！非推奨
+firstElementChild /// document.firstElementChild\n-\n\nelement.firstElementChild\n-
+document.firstElementChild /// -
+forms /// document.forms\nnodeList = document.forms\nforms は現在の文書のフォーム要素のリストを返します。
+document.forms /// nodeList = document.forms\nforms は現在の文書のフォーム要素のリストを返します。
+head /// document.head\nvar objRef = document.head;\n文書の <head> 要素を返します。\n <head> 要素は文法上、<html> 要素直下にひとつのみ配置可能ですが、仮に <head> 要素が文書中に複数存在する場合、 document.head はそれらの内の最初の <head> 要素を返します。
+document.head /// var objRef = document.head;\n文書の <head> 要素を返します。\n <head> 要素は文法上、<html> 要素直下にひとつのみ配置可能ですが、仮に <head> 要素が文書中に複数存在する場合、 document.head はそれらの内の最初の <head> 要素を返します。
+height /// document.height\npixels = document.height;\n現在の文書の <body> 要素の現在の高さのピクセル値を返します。\n！廃止\n\nscreen.height\niHeight = window.screen.height\n画面の高さをピクセル単位で返します。
+document.height /// pixels = document.height;\n現在の文書の <body> 要素の現在の高さのピクセル値を返します。\n！廃止
+images /// document.images\nvar htmlCollection = document.images;\ndocument.images は、現在の HTML 文書の Image のコレクションを返します。
+document.images /// var htmlCollection = document.images;\ndocument.images は、現在の HTML 文書の Image のコレクションを返します。
+implementation /// document.implementation\nDOMImpObj = document.implementation;\n現在のドキュメントに関連付けられた DOMImplementation オブジェクトを返します。
+document.implementation /// DOMImpObj = document.implementation;\n現在のドキュメントに関連付けられた DOMImplementation オブジェクトを返します。
+lastElementChild /// document.lastElementChild\n-\n\nelement.lastElementChild\n-
+document.lastElementChild /// -
+lastModified /// document.lastModified\nstring = document.lastModified; \n現在の文書の最終更新日を表す文字列を返します。
+document.lastModified /// string = document.lastModified; \n現在の文書の最終更新日を表す文字列を返します。
+lastStyleSheetSet /// document.lastStyleSheetSet\n-
+document.lastStyleSheetSet /// -
+linkColor /// document.linkColor\ncolor = document.linkColor; //取得\ndocument.linkColor = color; //設定\nリンク色を取得 / 設定します。\n！非推奨
+document.linkColor /// color = document.linkColor; //取得\ndocument.linkColor = color; //設定\nリンク色を取得 / 設定します。\n！非推奨
+links /// document.links\nnodeList = document.links;\nlinks プロパティは、文書中の、 href 属性の値を持つすべての <area> 要素とアンカー要素のコレクションを返します。
+document.links /// nodeList = document.links;\nlinks プロパティは、文書中の、 href 属性の値を持つすべての <area> 要素とアンカー要素のコレクションを返します。
+document.location /// // ロケーションオブジェクトの取得\nvar locationObj = document.location;\n// ロケーションオブジェクトの値を設定（※注記の項を参照）\ndocument.location = 'http://www.mozilla.org';\n文書の URL に関する情報を持ち、その URL を変更するメソッドを提供する Location オブジェクトを返します。\nGecko ブラウザでは URL をこのプロパティに割り当てる事により別の URL をロードする事もできます。
+mozFullScreen /// document.mozFullScreen\n-
+document.mozFullScreen /// -
+mozFullScreenElement /// document.mozFullScreenElement\n-
+document.mozFullScreenElement /// -
+mozFullScreenEnabled /// document.mozFullScreenEnabled\n-
+document.mozFullScreenEnabled /// -
+mozSyntheticDocument /// document.mozSyntheticDocument\n-
+document.mozSyntheticDocument /// -
+document.onabort /// window.onabort = funcRef\nウィンドウに中断イベントを送ったときのイベントハンドラです。
+onafterscriptexecute /// document.onafterscriptexecute\n-
+document.onafterscriptexecute /// -
+onbeforescriptexecute /// document.onbeforescriptexecute\n-
+document.onbeforescriptexecute /// -
+document.onblur /// element.onblur = function;\nonblur プロパティはonBlurイベントを返します。
+document.onchange /// element.onchange = handlerFunction;\nvar handlerFunction = element.onchange;\nonchange プロパティはchangeイベント処理をセットする、もしくはイベント処理を返り値として返します。
+document.onclick /// element.onclick = functionRef;\nThe onclick property returns the click event handler code on the current element.
+document.onclose /// window.onclose = funcRef;\nウィンドウの close イベントに対するイベントハンドラです (Firefox 2 および Safari では使用不可)
+document.oncontextmenu /// window.oncontextmenu = funcRef;\n//funcRef refers to the function to be called\nAn event handler property for right-click events on the window. \nUnless the default behavior is prevented (see examples below on how to do this), \nthe browser context menu will activate (though IE8 has a bug with this and will not activate the context menu if a contextmenu event handler is defined). \nNote that this event will occur with any non-disabled right-click event and does not depend on an element possessing the "contextmenu" attribute.
+document.ondblclick /// element.ondblclick = function;\nThe ondblclick property returns the onDblClick event handler code on the current element.
+document.onerror /// window.onerror = function(messageOrEvent, source, lineno, colno, error) { ... }\nAn event handler for the error event. \nError events are fired at various targets for different kinds of errors:
+document.onfocus /// element.onfocus = event handling code\nThe onfocus property returns the onFocus event handler code on the current element.
+document.oninput /// window 上の input イベントのためのイベントハンドラです。\ninput イベントは、 <input> 要素の値が変化したときに発生します。\nこのイベントはバブルです。\nwindow でサポートされている場合、<input> 要素でも同様にサポートされています。
+document.onkeydown /// element.onkeydown = event handling code\nThe onkeydown property returns the onKeyDown event handler code on the current element.
+document.onkeypress /// element.onkeypress = event handling code\nonkeypress プロパティは対象要素の onKeyPress イベントハンドラコードの取得 / 設定に用います。
+document.onkeyup /// element.onkeyup = event handling code\nThe onkeyup property returns the onKeyUp event handler code for the current element.
+document.onload /// window.onload = funcRef;\nwindow の load イベントに対応するイベントハンドラです。
+document.onmousedown /// element.onmousedown = funcRef;\n対象要素の mousedown イベントに対応するイベントハンドラです。
+document.onmousemove /// element.onmousemove = イベントを扱うコード\nonmousemoveプロパティは、当該要素のmousemoveイベントハンドラのコードを返します。
+document.onmouseout /// element.onmouseout = event handling code\nThe onmouseout property returns the onMouseOut event handler code on the current element.
+document.onmouseover /// element.onmouseover = event handling code\nThe onmouseover property returns the onMouseOver event handler code on the current element.
+document.onmouseup /// element.onmouseup = funcRef;\n対象要素の mouseup イベントに対応するイベントハンドラです。
+onoffline /// document.onoffline\n-
+document.onoffline /// -
+ononline /// document.ononline\n-
+document.ononline /// -
+document.onpointercancel /// -
+document.onpointerdown /// -
+document.onpointerenter /// -
+document.onpointerleave /// -
+document.onpointermove /// -
+document.onpointerout /// -
+document.onpointerover /// -
+document.onpointerup /// -
+document.onreset /// window.onreset = funcRef;\nフォームの reset イベントに対応するイベントハンドラです。
+document.onresize /// window.onresize = funcRef;\nwindow のリサイズイベントに対応するイベントハンドラ。
+document.onscroll /// element.onscroll = functionReference\nHTML要素のスクロールイベントを処理します。
+document.onselect /// window.onselect = funcRef;\nwindow の select イベントに対応するイベントハンドラです。
+onselectionchange /// document.onselectionchange\nobj.selectionchange = function;\nDocument.onselectionchange 属性には selectionchange イベントが発火した際に呼ばれるハンドラを登録できます。
+document.onselectionchange /// obj.selectionchange = function;\nDocument.onselectionchange 属性には selectionchange イベントが発火した際に呼ばれるハンドラを登録できます。
+document.onselectstart /// obj.onselectstart = function;\nThe GlobalEventHandlers.onselectstart property represents the event handler that is called when a selectstart event reaches this object.
+document.onsubmit /// window.onsubmit = funcRef;\nAn event handler for the submit event on the window.
+document.ontouchcancel /// -
+document.ontouchmove /// -
+document.ontouchstart /// -
+origin /// document.origin\n-
+document.origin /// -
+plugins /// document.plugins\nembedArrayObj = document.plugins;\n現在のドキュメントの <embed> 要素を表す 1 つ以上の HTMLEmbedElement か null を含む、 HTMLCollection オブジェクトを返します。
+document.plugins /// embedArrayObj = document.plugins;\n現在のドキュメントの <embed> 要素を表す 1 つ以上の HTMLEmbedElement か null を含む、 HTMLCollection オブジェクトを返します。
+pointerLockElement /// document.pointerLockElement\n-
+document.pointerLockElement /// -
+popupNode /// document.popupNode\n-
+document.popupNode /// -
+preferredStyleSheetSet /// document.preferredStyleSheetSet\n-
+document.preferredStyleSheetSet /// -
+readyState /// document.readyState\nvar string = document.readyState;\n文書の読み込み状況を示す文字列を返します。\ndocument が読み込み中の場合は "loading" 、パースが完了したがまだサブリソースが読み込み中の時点では "interactive" 、サブリソースの読み込みも完了した時点で "complete" となります。\nこのプロパティの値が変化する時には、 document オブジェクトの readystatechange が発生します。
+document.readyState /// var string = document.readyState;\n文書の読み込み状況を示す文字列を返します。\ndocument が読み込み中の場合は "loading" 、パースが完了したがまだサブリソースが読み込み中の時点では "interactive" 、サブリソースの読み込みも完了した時点で "complete" となります。\nこのプロパティの値が変化する時には、 document オブジェクトの readystatechange が発生します。
+referrer /// document.referrer\nstring = document.referrer;\n文書の リファラ を返します。
+document.referrer /// string = document.referrer;\n文書の リファラ を返します。
+scripts /// document.scripts\nvar scriptList = document.scripts;\n文書中の <script> 要素のリスト(単一の HTMLCollection オブジェクト)を返します。
+document.scripts /// var scriptList = document.scripts;\n文書中の <script> 要素のリスト(単一の HTMLCollection オブジェクト)を返します。
+scrollingElement /// document.scrollingElement\n-
+document.scrollingElement /// -
+selectedStyleSheetSet /// document.selectedStyleSheetSet\n-
+document.selectedStyleSheetSet /// -
+styleSheets /// document.styleSheets\nvar styleSheetList = document.styleSheets;\nDocument.styleSheets 読み取り専用プロパティは、document 内で明示的にリンクまたは埋め込まれたスタイルシートについて、CSSStyleSheet オブジェクトの StyleSheetList を返します。
+document.styleSheets /// var styleSheetList = document.styleSheets;\nDocument.styleSheets 読み取り専用プロパティは、document 内で明示的にリンクまたは埋め込まれたスタイルシートについて、CSSStyleSheet オブジェクトの StyleSheetList を返します。
+styleSheetSets /// document.styleSheetSets\nsets = document.styleSheetSets\nReturns a live list of all of the currently-available style sheet sets.
+document.styleSheetSets /// sets = document.styleSheetSets\nReturns a live list of all of the currently-available style sheet sets.
+title /// document.title\nvar docTitle = document.title;\n文書のタイトルを取得 / 設定します。
+document.title /// var docTitle = document.title;\n文書のタイトルを取得 / 設定します。
+tooltipNode /// document.tooltipNode\ndocument.tooltipNode;\n現在の tooltip の対象ノードを返します。
+document.tooltipNode /// document.tooltipNode;\n現在の tooltip の対象ノードを返します。
+document.URL /// string = document.URL;\n現在の文書の URL を返します。
+vlinkColor /// document.vlinkColor\ncolor = document.vlinkColor; //取得\ndocument.vlinkColor = color; //設定\n訪問済リンク色を取得 / 設定します。\n！非推奨
+document.vlinkColor /// color = document.vlinkColor; //取得\ndocument.vlinkColor = color; //設定\n訪問済リンク色を取得 / 設定します。\n！非推奨
+width /// document.width\npixels = document.width;\n現在の文書の 要素の現在の幅のピクセル値を返します。\nInternet Explorer ではサポートされていません。\n！廃止\n\nscreen.width\nlWidth = window.screen.width\n画面の幅を返します。
+document.width /// pixels = document.width;\n現在の文書の 要素の現在の幅のピクセル値を返します。\nInternet Explorer ではサポートされていません。\n！廃止
+xmlEncoding /// document.xmlEncoding\n-
+document.xmlEncoding /// -
+xmlVersion /// document.xmlVersion\n-
+document.xmlVersion /// -
+adoptNode /// document.adoptNode\nnode = document.adoptNode(externalNode);\n外部ドキュメントからノードを取り込みます。\nノードとそのサブツリーは、(もしあれば) 元あったドキュメントから削除され、ownerDocument が現在のドキュメントに変更されます。\nそして、そのノードが現在のドキュメントに挿入できるようになります。
+document.adoptNode /// node = document.adoptNode(externalNode);\n外部ドキュメントからノードを取り込みます。\nノードとそのサブツリーは、(もしあれば) 元あったドキュメントから削除され、ownerDocument が現在のドキュメントに変更されます。\nそして、そのノードが現在のドキュメントに挿入できるようになります。
+caretPositionFromPoint /// document.caretPositionFromPoint\n-
+document.caretPositionFromPoint /// -
+caretRangeFromPoint /// document.caretRangeFromPoint\n-
+document.caretRangeFromPoint /// -
+document.clear /// document.clear();\nこのメソッドはドキュメントの内容を消去するものであり、初期の Mozilla アプリケーション（※ 1.0 以前）にのみ存在したものです。\n！非推奨
+document.close /// document.close();\ndocument.close() メソッドは、document.open() で開かれた文書への書き込みを終了します。
+createAttribute /// document.createAttribute\nattribute = document.createAttribute(name) \nThe Document.createAttribute() method creates a new attribute node, \nand returns it. \nThe object created a node implementing the Attr interface. \nThe DOM does not enforce what sort of attributes can be added to a particular element in this manner.
+document.createAttribute /// attribute = document.createAttribute(name) \nThe Document.createAttribute() method creates a new attribute node, \nand returns it. \nThe object created a node implementing the Attr interface. \nThe DOM does not enforce what sort of attributes can be added to a particular element in this manner.
+createCDATASection /// document.createCDATASection\n-
+document.createCDATASection /// -
+createComment /// document.createComment\n-
+document.createComment /// -
+createDocumentFragment /// document.createDocumentFragment\n-
+document.createDocumentFragment /// -
+createElement /// document.createElement\nelement = document.createElement(tagName);\n指定の要素名の要素を生成します。
+document.createElement /// element = document.createElement(tagName);\n指定の要素名の要素を生成します。
+createElementNS /// document.createElementNS\n-
+document.createElementNS /// -
+createEntityReference /// document.createEntityReference\n-
+document.createEntityReference /// -
+createEvent /// document.createEvent\nvar event = document.createEvent(type);\n指定されたタイプの イベント を作成します。\n返されるオブジェクトは初めに初期化する必要があり、その後で element.dispatchEvent へ渡すことができます。\n\ncreateEvent\ndocument.createEvent(type)\nCreates a new event, \nwhich must then be initialized by calling its init() method.
+document.createEvent /// var event = document.createEvent(type);\n指定されたタイプの イベント を作成します。\n返されるオブジェクトは初めに初期化する必要があり、その後で element.dispatchEvent へ渡すことができます。
+createExpression /// document.createExpression\n-
+document.createExpression /// -
+createNodeIterator /// document.createNodeIterator\n-
+document.createNodeIterator /// -
+createNSResolver /// document.createNSResolver\n-
+document.createNSResolver /// -
+createProcessingInstruction /// document.createProcessingInstruction\n-
+document.createProcessingInstruction /// -
+createRange /// document.createRange\n-
+document.createRange /// -
+createTextNode /// document.createTextNode\ntextNode = document.createTextNode(data);\n新しいテキストノードを生成し、返します。
+document.createTextNode /// textNode = document.createTextNode(data);\n新しいテキストノードを生成し、返します。
+createTouch /// document.createTouch\n-
+document.createTouch /// -
+createTouchList /// document.createTouchList\n-
+document.createTouchList /// -
+createTreeWalker /// document.createTreeWalker\n-
+document.createTreeWalker /// -
+elementFromPoint /// document.elementFromPoint\n-
+document.elementFromPoint /// -
+enableStyleSheetsForSet /// document.enableStyleSheetsForSet\n-
+document.enableStyleSheetsForSet /// -
+evaluate /// document.evaluate\nvar xpathResult = document.evaluate(\n xpathExpression,\n contextNode,\n namespaceResolver,\n resultType,\n result\n);\nXPath 式やその他与えられたパラメータに基づいて XPathResult を返します。
+document.evaluate /// var xpathResult = document.evaluate(\n xpathExpression,\n contextNode,\n namespaceResolver,\n resultType,\n result\n);\nXPath 式やその他与えられたパラメータに基づいて XPathResult を返します。
+execCommand /// document.execCommand\nbool = document.execCommand(aCommandName, aShowDefaultUI, aValueArgument)\nHTML ドキュメントが designMode へ切り替えられると、document オブジェクトは execCommand メソッドを露呈します。\nこのメソッドは、編集可能領域のコンテンツを操作するコマンドを実行します。\n多くのコマンド (bold、italics、他) は document 内の選択範囲に影響を及ぼしますが、その他に新しい要素を挿入 (リンクを追加) するコマンドや行全体 (字下げ) に影響を及ぼすコマンドもあります。\ncontentEditable を使用した場合、execCommand() メソッドは現在アクティブな編集可能要素に影響を及ぼします。
+document.execCommand /// bool = document.execCommand(aCommandName, aShowDefaultUI, aValueArgument)\nHTML ドキュメントが designMode へ切り替えられると、document オブジェクトは execCommand メソッドを露呈します。\nこのメソッドは、編集可能領域のコンテンツを操作するコマンドを実行します。\n多くのコマンド (bold、italics、他) は document 内の選択範囲に影響を及ぼしますが、その他に新しい要素を挿入 (リンクを追加) するコマンドや行全体 (字下げ) に影響を及ぼすコマンドもあります。\ncontentEditable を使用した場合、execCommand() メソッドは現在アクティブな編集可能要素に影響を及ぼします。
+exitPointerLock /// document.exitPointerLock\n-
+document.exitPointerLock /// -
+getBoxObjectFor /// document.getBoxObjectFor\n-
+document.getBoxObjectFor /// -
+getElementById /// document.getElementById\nelement = document.getElementById(id);\n指定された ID を持つ要素を返します。
+document.getElementById /// element = document.getElementById(id);\n指定された ID を持つ要素を返します。
+getElementsByClassName /// document.getElementsByClassName\nelements = document.getElementsByClassName(name) // または:elements = rootElement.getElementsByClassName(name)\n与えられたクラス名で得られる要素の集合を返します。\ndocument オブジェクトで呼び出されたときは、ルートノードを含む、完全な文書が検索されます。\n任意の要素で getElementsByClassName を呼び出すこともできます。\nその場合は、与えられたクラス名を持つ指定されたルート要素下の要素だけが返ります。\n\nelement.getElementsByClassName\nvar elements = element.getElementsByClassName(names);\nThe Element.getElementsByClassName() method returns a live HTMLCollection containing all child elements which have all of the given class names. \nWhen called on the document object, \nthe complete document is searched, \nincluding the root node.
+document.getElementsByClassName /// elements = document.getElementsByClassName(name) // または:elements = rootElement.getElementsByClassName(name)\n与えられたクラス名で得られる要素の集合を返します。\ndocument オブジェクトで呼び出されたときは、ルートノードを含む、完全な文書が検索されます。\n任意の要素で getElementsByClassName を呼び出すこともできます。\nその場合は、与えられたクラス名を持つ指定されたルート要素下の要素だけが返ります。
+getElementsByName /// document.getElementsByName\nelements = document.getElementsByName(name)\n指定した name 属性値を持つ (X)HTML 文書内のノードリストを返します。
+document.getElementsByName /// elements = document.getElementsByName(name)\n指定した name 属性値を持つ (X)HTML 文書内のノードリストを返します。
+getElementsByTagName /// document.getElementsByTagName\nelements = document.getElementsByTagName(name)\n与えられたタグ名を持つ要素のリストを返します。\nルートノードを含めたドキュメント全体が検索されます。\n\nelement.getElementsByTagName\nelements =element.getElementsByTagName(tagName)\n指定された タグ名 による要素のリストを返します。\n指定された要素以下のサブツリーが検索対象となり、その要素自体は除外されます。
+document.getElementsByTagName /// elements = document.getElementsByTagName(name)\n与えられたタグ名を持つ要素のリストを返します。\nルートノードを含めたドキュメント全体が検索されます。
+getElementsByTagNameNS /// document.getElementsByTagNameNS\nelements = document.getElementsByTagNameNS(namespace, name)\nReturns a list of elements with the given tag name belonging to the given namespace. \nThe complete document is searched, \nincluding the root node.\n\nelement.getElementsByTagNameNS\nelements =element.getElementsByTagNameNS(namespaceURI,localName)\n与えられた名前空間に属し、与えられたタグの名前を持つ要素のリストを返します。
+document.getElementsByTagNameNS /// elements = document.getElementsByTagNameNS(namespace, name)\nReturns a list of elements with the given tag name belonging to the given namespace. \nThe complete document is searched, \nincluding the root node.
+document.getSelection /// -
+hasFocus /// document.hasFocus\nfocused = document.hasFocus();\nhasFocus 属性は、指定したドキュメント内のどこかにフォーカスが当たっている場合は true を返します。
+document.hasFocus /// focused = document.hasFocus();\nhasFocus 属性は、指定したドキュメント内のどこかにフォーカスが当たっている場合は true を返します。
+importNode /// document.importNode\nvar node = document.importNode(externalNode, deep);\n外部ドキュメントからノードのコピーを作成し、現在のドキュメントに挿入できるようにします。
+document.importNode /// var node = document.importNode(externalNode, deep);\n外部ドキュメントからノードのコピーを作成し、現在のドキュメントに挿入できるようにします。
+loadOverlay /// document.loadOverlay\n-
+document.loadOverlay /// -
+mozCancelFullScreen /// document.mozCancelFullScreen\n-
+document.mozCancelFullScreen /// -
+mozSetImageElement /// document.mozSetImageElement\n-
+document.mozSetImageElement /// -
+document.open /// document.open();\ndocument.open() メソッドは、書き込み (writing) のための文書を開きます。
+queryCommandEnabled /// document.queryCommandEnabled\n-
+document.queryCommandEnabled /// -
+queryCommandSupported /// document.queryCommandSupported\n-
+document.queryCommandSupported /// -
+querySelector /// document.querySelector\nelement = document.querySelector( selectors );\n与えられた CSS セレクタにマッチする文書中の最初の要素（※深さ優先の先行順走査によるもの）を返します。\n\nelement.querySelector\n-
+document.querySelector /// element = document.querySelector( selectors );\n与えられた CSS セレクタにマッチする文書中の最初の要素（※深さ優先の先行順走査によるもの）を返します。
+querySelectorAll /// document.querySelectorAll\nelementList = document.querySelectorAll(selectors);\n与えられた CSS セレクタにマッチする文書中の要素（※深さ優先の先行順走査によるもの）の全てのリスト (NodeList) を返します。\n\nelement.querySelectorAll\n-
+document.querySelectorAll /// elementList = document.querySelectorAll(selectors);\n与えられた CSS セレクタにマッチする文書中の要素（※深さ優先の先行順走査によるもの）の全てのリスト (NodeList) を返します。
+registerElement /// document.registerElement\n-
+document.registerElement /// -
+releaseCapture /// document.releaseCapture\n-
+document.releaseCapture /// -
+write /// document.write\ndocument.write(markup);\nテキストの文字列を document.open() で開かれた文書ストリームに書き込みます。
+document.write /// document.write(markup);\nテキストの文字列を document.open() で開かれた文書ストリームに書き込みます。
+writeln /// document.writeln\ndocument.writeln(line)\nテキストの文字列とその直後に続く改行文字を文書に書き込みます。
+document.writeln /// document.writeln(line)\nテキストの文字列とその直後に続く改行文字を文書に書き込みます。
+cookie /// document.cookie\nallCookies = document.cookie;\ndocument.cookie = updatedCookie;\n現在の文書に関連する、クッキーの読み書きを行います。
+document.cookie /// allCookies = document.cookie;\ndocument.cookie = updatedCookie;\n現在の文書に関連する、クッキーの読み書きを行います。
+;API・element https://developer.mozilla.org/ja/docs/Web/API/Element\n 
+element /// Element インターフェイスは Document の一部分を表現します。\nこのインターフェイスは個々の種類の要素に共通するメソッドとプロパティを記述するものです。\n特異な挙動は Element から継承した特異なインターフェイスで記述します。\n例えば HTML 要素には HTMLElement インターフェイス、SVG要素には SVGElement インターフェイスなど。
+accessKey /// element.accessKey\nThe Element.accessKey property sets the keystroke by which a user can press to jump to this element.
+element.accessKey /// The Element.accessKey property sets the keystroke by which a user can press to jump to this element.
+attributes /// element.attributes\nvarattrs =element.attributes;\n与えられた要素の属性のコレクションを返します。
+element.attributes /// varattrs =element.attributes;\n与えられた要素の属性のコレクションを返します。
+element.childElementCount /// var elCount = elementNodeReference.childElementCount; \n読み取り専用の ParentNode.childElementCount プロパティは、与えられた要素の子要素の数を表す unsigned long 値を返します。
+element.children /// -
+classList /// element.classList\nvar elementClasses = elementNodeReference.classList;\nclassList は、要素の class 属性のトークンリストを返します。
+element.classList /// var elementClasses = elementNodeReference.classList;\nclassList は、要素の class 属性のトークンリストを返します。
+className /// element.className\ncName = elementNodeReference.className;\nelementNodeReference.className = cName;\nclassName は要素の class 属性の値の取得 / 設定に用います。
+element.className /// cName = elementNodeReference.className;\nelementNodeReference.className = cName;\nclassName は要素の class 属性の値の取得 / 設定に用います。
+clientHeight /// element.clientHeight\n-
+element.clientHeight /// -
+clientLeft /// element.clientLeft\n-
+element.clientLeft /// -
+clientTop /// element.clientTop\n-
+element.clientTop /// -
+clientWidth /// element.clientWidth\n-
+element.clientWidth /// -
+currentStyle /// element.currentStyle\n-
+element.currentStyle /// -
+element.firstElementChild /// -
+id /// element.id\nidStr =element.id; // 取得element.id = idStr; // 設定\n要素の 識別子 (identifier) を取得 / 設定します。\n\nnavigator.id\n-
+element.id /// idStr =element.id; // 取得element.id = idStr; // 設定\n要素の 識別子 (identifier) を取得 / 設定します。
+innerHTML /// element.innerHTML\nvar content = element.innerHTML;\nelement.innerHTML = content;\nElement.innerHTML プロパティは、要素の子孫を記述する HTML 構文を設定または取得します。
+element.innerHTML /// var content = element.innerHTML;\nelement.innerHTML = content;\nElement.innerHTML プロパティは、要素の子孫を記述する HTML 構文を設定または取得します。
+element.lastElementChild /// -
+localName /// element.localName\n-
+element.localName /// -
+element.name /// HTMLElement.name = string;\nvar elName = HTMLElement.name;\nvar fControl = HTMLFormElement.elementName;\nvar controlCollection = HTMLFormElement.elements.elementName;\nname はDOM オブジェクトのname 属性を取得または設定します。\nただし、この属性が適用されるのは次の要素に限られます。\n<a>, \n<applet>, \n<form>, \n<frame>, \n<iframe>, \n<img>, \n<input>, \n<map>, \n<meta>, \n<object>, \n<option>, \n<param>, \n<select>, \n<textarea>.name は、 document.getElementsByName() メソッドか、 form と form.elements のコレクションで使用することができます。\n form や form.elements のコレクションで使われた場合、一つの要素かコレクションを返します。
+namespaceURI /// element.namespaceURI\n-
+element.namespaceURI /// -
+nextElementSibling /// element.nextElementSibling\n-
+element.nextElementSibling /// -
+ongotpointercapture /// element.ongotpointercapture\n-
+element.ongotpointercapture /// -
+onlostpointercapture /// element.onlostpointercapture\n-
+element.onlostpointercapture /// -
+onwheel /// element.onwheel\n-
+element.onwheel /// -
+outerHTML /// element.outerHTML\nvar content = element.outerHTML;\nelement.outerHTML = content;\nelement DOM インターフェースの outerHTML 属性は、その要素及び子孫を表す、シリアライズされた HTML 断片を得ることができます。\nまた、与えられた文字列をパースしたノードで要素を置換するため、値を設定することもできます。
+element.outerHTML /// var content = element.outerHTML;\nelement.outerHTML = content;\nelement DOM インターフェースの outerHTML 属性は、その要素及び子孫を表す、シリアライズされた HTML 断片を得ることができます。\nまた、与えられた文字列をパースしたノードで要素を置換するため、値を設定することもできます。
+prefix /// element.prefix\n-
+element.prefix /// -
+previousElementSibling /// element.previousElementSibling\n-
+element.previousElementSibling /// -
+runtimeStyle /// element.runtimeStyle\n-
+element.runtimeStyle /// -
+scrollHeight /// element.scrollHeight\n-
+element.scrollHeight /// -
+scrollLeft /// element.scrollLeft\n-
+element.scrollLeft /// -
+scrollLeftMax /// element.scrollLeftMax\n-
+element.scrollLeftMax /// -
+scrollTop /// element.scrollTop\n-
+element.scrollTop /// -
+scrollTopMax /// element.scrollTopMax\n-
+element.scrollTopMax /// -
+scrollWidth /// element.scrollWidth\n-
+element.scrollWidth /// -
+tabStop /// element.tabStop\n-
+element.tabStop /// -
+tagName /// element.tagName\nelementName = element.tagName\n要素の名前を返します。
+element.tagName /// elementName = element.tagName\n要素の名前を返します。
+after /// element.after\n-
+element.after /// -
+animate /// element.animate\n-
+element.animate /// -
+append /// element.append\n-
+element.append /// -
+before /// element.before\n-
+element.before /// -
+closest /// element.closest\n-
+element.closest /// -
+getAttribute /// element.getAttribute\nvar attribute = element.getAttribute(attributeName)\ngetAttribute() は指定の要素について名前付けされた属性の値を返します。\n名前付けされた属性が存在しなければ、返される値は null もしくは ""(空文字列)となります。\n詳細は 注記 を参照。
+element.getAttribute /// var attribute = element.getAttribute(attributeName)\ngetAttribute() は指定の要素について名前付けされた属性の値を返します。\n名前付けされた属性が存在しなければ、返される値は null もしくは ""(空文字列)となります。\n詳細は 注記 を参照。
+getAttributeNode /// element.getAttributeNode\nattrNode =element.getAttributeNode(attrName)\n指定の要素の指定の属性をAttr ノードとして返します。
+element.getAttributeNode /// attrNode =element.getAttributeNode(attrName)\n指定の要素の指定の属性をAttr ノードとして返します。
+getAttributeNodeNS /// element.getAttributeNodeNS\nattributeNode = element.getAttributeNodeNS(namespace, nodeName)\ngetAttributeNodeNS は指定の名前空間と名前の属性に対する Attr ノードを返します。
+element.getAttributeNodeNS /// attributeNode = element.getAttributeNodeNS(namespace, nodeName)\ngetAttributeNodeNS は指定の名前空間と名前の属性に対する Attr ノードを返します。
+getAttributeNS /// element.getAttributeNS\nattrVal =element.getAttributeNS(namespace,name)\ngetAttributeNS は指定の名前空間と名前の属性の文字列値を返します。\nもし指定の名前の属性が存在しなければ、戻り値は null または ""(空文字列) のいずれかとなります。\n詳細は注記 を参照。
+element.getAttributeNS /// attrVal =element.getAttributeNS(namespace,name)\ngetAttributeNS は指定の名前空間と名前の属性の文字列値を返します。\nもし指定の名前の属性が存在しなければ、戻り値は null または ""(空文字列) のいずれかとなります。\n詳細は注記 を参照。
+getBoundingClientRect /// element.getBoundingClientRect\n-
+element.getBoundingClientRect /// -
+getClientRects /// element.getClientRects\n-
+element.getClientRects /// -
+element.getElementsByClassName /// var elements = element.getElementsByClassName(names);\nThe Element.getElementsByClassName() method returns a live HTMLCollection containing all child elements which have all of the given class names. \nWhen called on the document object, \nthe complete document is searched, \nincluding the root node.
+element.getElementsByTagName /// elements =element.getElementsByTagName(tagName)\n指定された タグ名 による要素のリストを返します。\n指定された要素以下のサブツリーが検索対象となり、その要素自体は除外されます。
+element.getElementsByTagNameNS /// elements =element.getElementsByTagNameNS(namespaceURI,localName)\n与えられた名前空間に属し、与えられたタグの名前を持つ要素のリストを返します。
+hasAttribute /// element.hasAttribute\nvar result = element.hasAttribute(attName);\nhasAttributeは指定の要素が指定の属性を持つか否かを示す真偽値を返します。
+element.hasAttribute /// var result = element.hasAttribute(attName);\nhasAttributeは指定の要素が指定の属性を持つか否かを示す真偽値を返します。
+hasAttributeNS /// element.hasAttributeNS\nresult =element.hasAttributeNS(namespace,localName)\nhasAttributeNS は現在の要素が指定した属性を所有するか否かを示す boolean 値を返します。
+element.hasAttributeNS /// result =element.hasAttributeNS(namespace,localName)\nhasAttributeNS は現在の要素が指定した属性を所有するか否かを示す boolean 値を返します。
+hasAttributes /// element.hasAttributes\nresult = targetNode.hasAttributes(attrString);\nhasAttributes は現在の要素が何らかの属性を持つか否かを示す真偽値を返します。
+element.hasAttributes /// result = targetNode.hasAttributes(attrString);\nhasAttributes は現在の要素が何らかの属性を持つか否かを示す真偽値を返します。
+insertAdjacentElement /// element.insertAdjacentElement\nelement.insertAdjacentElement(position, element);\nThe insertAdjacentElement() method inserts a given element node at a given position relative to the element it is invoked upon.
+element.insertAdjacentElement /// element.insertAdjacentElement(position, element);\nThe insertAdjacentElement() method inserts a given element node at a given position relative to the element it is invoked upon.
+insertAdjacentHTML /// element.insertAdjacentHTML\nelement.insertAdjacentHTML(posision, text);\ninsertAdjacentHTML() は、第二引数で指定するテキストを HTML または XML としてパースし、その結果であるノードを DOM ツリー内の指定された位置（第一引数で指定）に挿入します。\nこれは挿入先の要素を再度パースするものでなく、即ち既存の要素や要素内部の破壊を伴いません。\n余分なシリアル化のステップを回避出来る分、 innerHTML への代入による直接的な操作よりもはるかに高速な動作となります。
+element.insertAdjacentHTML /// element.insertAdjacentHTML(posision, text);\ninsertAdjacentHTML() は、第二引数で指定するテキストを HTML または XML としてパースし、その結果であるノードを DOM ツリー内の指定された位置（第一引数で指定）に挿入します。\nこれは挿入先の要素を再度パースするものでなく、即ち既存の要素や要素内部の破壊を伴いません。\n余分なシリアル化のステップを回避出来る分、 innerHTML への代入による直接的な操作よりもはるかに高速な動作となります。
+insertAdjacentText /// element.insertAdjacentText\nelement.insertAdjacentText(position, element);\nThe insertAdjacentText() method inserts a given text node at a given position relative to the element it is invoked upon.
+element.insertAdjacentText /// element.insertAdjacentText(position, element);\nThe insertAdjacentText() method inserts a given text node at a given position relative to the element it is invoked upon.
+matches /// element.matches\n-
+element.matches /// -
+prepend /// element.prepend\n-
+element.prepend /// -
+element.querySelector /// -
+element.querySelectorAll /// -
+releasePointerCapture /// element.releasePointerCapture\n-
+element.releasePointerCapture /// -
+remove /// element.remove\n-
+element.remove /// -
+removeAttribute /// element.removeAttribute\nelement.removeAttribute(attrName)\nremoveAttribute は指定の要素から属性を取り除きます。
+element.removeAttribute /// element.removeAttribute(attrName)\nremoveAttribute は指定の要素から属性を取り除きます。
+removeAttributeNode /// element.removeAttributeNode\nremovedAttr =element.removeAttributeNode(attributeNode)\nremoveAttributeNode removes the specified attribute from the current element.
+element.removeAttributeNode /// removedAttr =element.removeAttributeNode(attributeNode)\nremoveAttributeNode removes the specified attribute from the current element.
+removeAttributeNS /// element.removeAttributeNS\nelement.removeAttributeNS(namespace,attrName);\nremoveAttributeNS 要素から指定の属性を取り除きます。\nFirefox 3以降ではこのメソッドはDOMの値をデフォルト値にリセットします。
+element.removeAttributeNS /// element.removeAttributeNS(namespace,attrName);\nremoveAttributeNS 要素から指定の属性を取り除きます。\nFirefox 3以降ではこのメソッドはDOMの値をデフォルト値にリセットします。
+replaceWith /// element.replaceWith\n-
+element.replaceWith /// -
+requestFullscreen /// element.requestFullscreen\n-
+element.requestFullscreen /// -
+requestPointerLock /// element.requestPointerLock\n-
+element.requestPointerLock /// -
+scrollIntoView /// element.scrollIntoView\n-
+element.scrollIntoView /// -
+scrollIntoViewIfNeeded /// element.scrollIntoViewIfNeeded\n-
+element.scrollIntoViewIfNeeded /// -
+setAttribute /// element.setAttribute\nelement.setAttribute(name,value);\n指定の要素に新しい属性を追加します。\nまたは指定の要素に存在する属性の値を変更します。
+element.setAttribute /// element.setAttribute(name,value);\n指定の要素に新しい属性を追加します。\nまたは指定の要素に存在する属性の値を変更します。
+setAttributeNode /// element.setAttributeNode\nreplacedAttr =element.setAttributeNode(attribute)\nsetAttributeNode() adds a new Attr node to the specified element.
+element.setAttributeNode /// replacedAttr =element.setAttributeNode(attribute)\nsetAttributeNode() adds a new Attr node to the specified element.
+setAttributeNodeNS /// element.setAttributeNodeNS\nreplacedAttr = element.setAttributeNodeNS(attributeNode)\nsetAttributeNodeNS は指定の名前空間と名前で新しい属性ノードを追加します。
+element.setAttributeNodeNS /// replacedAttr = element.setAttributeNodeNS(attributeNode)\nsetAttributeNodeNS は指定の名前空間と名前で新しい属性ノードを追加します。
+setAttributeNS /// element.setAttributeNS\nelement.setAttributeNS(namespace,name,value)\nsetAttributeNS は指定の名前空間と名前で新しい属性を追加したり、属性の値を変更します。
+element.setAttributeNS /// element.setAttributeNS(namespace,name,value)\nsetAttributeNS は指定の名前空間と名前で新しい属性を追加したり、属性の値を変更します。
+setCapture /// element.setCapture\n-
+element.setCapture /// -
+setPointerCapture /// element.setPointerCapture\n-
+element.setPointerCapture /// -
+;API・screen https://developer.mozilla.org/ja/docs/Web/API/Screen\n 
+availHeight /// screen.availHeight\niAvail = window.screen.availHeight\n画面上でウィンドウが利用可能な垂直空間の大きさを返します。
+screen.availHeight /// iAvail = window.screen.availHeight\n画面上でウィンドウが利用可能な垂直空間の大きさを返します。
+availLeft /// screen.availLeft\niAvail = window.screen.availLeft\n画面の左端から利用できる最初の有効ピクセルを返します。
+screen.availLeft /// iAvail = window.screen.availLeft\n画面の左端から利用できる最初の有効ピクセルを返します。
+availTop /// screen.availTop\niAvail = window.screen.availTop\n固定あるいは半固定されているユーザインタフェース部分は含まない、最初のピクセルの y 座標を示します。
+screen.availTop /// iAvail = window.screen.availTop\n固定あるいは半固定されているユーザインタフェース部分は含まない、最初のピクセルの y 座標を示します。
+availWidth /// screen.availWidth\niAvail = window.screen.availWidth\nウィンドウで利用可能な水平空間の大きさをピクセル単位で返します。
+screen.availWidth /// iAvail = window.screen.availWidth\nウィンドウで利用可能な水平空間の大きさをピクセル単位で返します。
+colorDepth /// screen.colorDepth\nbitDepth = window.screen.colorDepth\n画面の色深度を返します。
+screen.colorDepth /// bitDepth = window.screen.colorDepth\n画面の色深度を返します。
+screen.height /// iHeight = window.screen.height\n画面の高さをピクセル単位で返します。
+left /// screen.left\nleft = window.screen.left;\nメイン画面の左端から現在の画面の左端までの距離をピクセル単位で返します。
+screen.left /// left = window.screen.left;\nメイン画面の左端から現在の画面の左端までの距離をピクセル単位で返します。
+mozBrightness /// screen.mozBrightness\n-
+screen.mozBrightness /// -
+mozEnabled /// screen.mozEnabled\n-
+screen.mozEnabled /// -
+onorientationchange /// screen.onorientationchange\n-
+screen.onorientationchange /// -
+orientation /// screen.orientation\n-
+screen.orientation /// -
+pixelDepth /// screen.pixelDepth\ndepth = window.screen.pixelDepth\n画面のビット深度を返します。
+screen.pixelDepth /// depth = window.screen.pixelDepth\n画面のビット深度を返します。
+screen.top /// Itop = window.screen.top\n現在の画面の上端からの距離をピクセル単位で返します。
+screen.width /// lWidth = window.screen.width\n画面の幅を返します。
+lockOrientation /// screen.lockOrientation\n-
+screen.lockOrientation /// -
+unlockOrientation /// screen.unlockOrientation\n-
+screen.unlockOrientation /// -
+;API・navigator https://developer.mozilla.org/ja/docs/Web/API/Navigator\n 
+appCodeName /// window.navigator.appCodeName\ncodeName = window.navigator.appCodeName\n現在のブラウザの内部 "コード" ネームを返します。
+window.navigator.appCodeName /// codeName = window.navigator.appCodeName\n現在のブラウザの内部 "コード" ネームを返します。
+appName /// window.navigator.appName\nappName = window.navigator.appName\nブラウザの公式な名前を返します。
+window.navigator.appName /// appName = window.navigator.appName\nブラウザの公式な名前を返します。
+appVersion /// window.navigator.appVersion\nwindow.navigator.appVersion\nブラウザのバージョンを表す文字列を返します。
+window.navigator.appVersion /// window.navigator.appVersion\nブラウザのバージョンを表す文字列を返します。
+battery /// window.navigator.battery\nvar battery = navigator.battery;\nbattery プロパティは非推奨であり、battery の Promise を返す Navigator.getBattery() に置き換わりました。\nこのサポートは部分的です。
+window.navigator.battery /// var battery = navigator.battery;\nbattery プロパティは非推奨であり、battery の Promise を返す Navigator.getBattery() に置き換わりました。\nこのサポートは部分的です。
+buildID /// buildID =navigator.buildID;\nブラウザのビルド識別子を返します。
+cookieEnabled /// var cookieEnabled = navigator.cookieEnabled;\nブラウザでクッキーが有効かどうかを示す真偽値を返します（読み込み専用）。
+doNotTrack /// Navigator.doNotTrack\n-
+Navigator.doNotTrack /// -
+geolocation /// Navigator.geolocation\ngeo = navigator.geolocation\nThe Navigator.geolocation read-only property returns a Geolocation object that gives Web content access to the location of the device. \nThis allows a Web site or app to offer customized results based on the user's location.\n\nGeolocation\nGeolocationインターフェースはデバイスの位置を取得する機能を提供します。\nこれはWebコンテンツからのデバイスの位置情報へのアクセスすることで。\nウェブサイトまたはアプリがユーザーの位置に基づいて、カスタマイズされた結果を提供することを可能にします。\nこのインターフェースを持つオブジェクトはNavigator オブジェクトに実装されたNavigatorGeolocation.geolocationプロパティによって得られます。
+Navigator.geolocation /// geo = navigator.geolocation\nThe Navigator.geolocation read-only property returns a Geolocation object that gives Web content access to the location of the device. \nThis allows a Web site or app to offer customized results based on the user's location.
+navigator.id /// -
+language /// window.navigator.language\nlanguageString = window.navigator.language \nブラウザの言語バージョンを表す文字列を返します。
+window.navigator.language /// languageString = window.navigator.language \nブラウザの言語バージョンを表す文字列を返します。
+languages /// navigator.languages\npreferredLanguages = navigator.languages\nnavigator.languages を参照することで、ユーザの使用する言語を表すタグを取得できます。
+navigator.languages /// preferredLanguages = navigator.languages\nnavigator.languages を参照することで、ユーザの使用する言語を表すタグを取得できます。
+maxTouchPoints /// Navigator.maxTouchPoints\n-
+Navigator.maxTouchPoints /// -
+mediaDevices /// Navigator.mediaDevices\n-
+Navigator.mediaDevices /// -
+mozAlarms /// Navigator.mozAlarms\n-
+Navigator.mozAlarms /// -
+mozApps /// window.navigator.mozApps\n-
+window.navigator.mozApps /// -
+mozAudioChannelManager /// Navigator.mozAudioChannelManager\n-
+Navigator.mozAudioChannelManager /// -
+mozBluetooth /// Navigator.mozBluetooth\n-
+Navigator.mozBluetooth /// -
+mozCamera /// Navigator.mozCamera\n-
+Navigator.mozCamera /// -
+mozCameras /// window.navigator.mozCameras\n-
+window.navigator.mozCameras /// -
+mozContacts /// Navigator.mozContacts\n-
+Navigator.mozContacts /// -
+mozFMRadio /// Navigator.mozFMRadio\n-
+Navigator.mozFMRadio /// -
+mozMobileConnections /// Navigator.mozMobileConnections\n-
+Navigator.mozMobileConnections /// -
+mozMobileMessage /// Navigator.mozMobileMessage\n-
+Navigator.mozMobileMessage /// -
+mozNetworkStats /// Navigator.mozNetworkStats\n-
+Navigator.mozNetworkStats /// -
+mozNfc /// Navigator.mozNfc\n-
+Navigator.mozNfc /// -
+mozNotification /// Navigator.mozNotification\n-
+Navigator.mozNotification /// -
+mozPermissionSettings /// Navigator.mozPermissionSettings\n-
+Navigator.mozPermissionSettings /// -
+mozPower /// Navigator.mozPower\n-
+Navigator.mozPower /// -
+mozSettings /// window.navigator.mozSettings\n-
+window.navigator.mozSettings /// -
+mozSms /// window.navigator.mozSms\n-
+window.navigator.mozSms /// -
+mozSocial /// navigator.mozSocial\n-
+navigator.mozSocial /// -
+mozTCPSocket /// Navigator.mozTCPSocket\n-
+Navigator.mozTCPSocket /// -
+mozTelephony /// Navigator.mozTelephony\n-
+Navigator.mozTelephony /// -
+mozTime /// Navigator.mozTime\n-
+Navigator.mozTime /// -
+mozVoicemail /// Navigator.mozVoicemail\n-
+Navigator.mozVoicemail /// -
+mozWifiManager /// Navigator.mozWifiManager\n-
+Navigator.mozWifiManager /// -
+onLine /// window.navigator.onLine\n-\n\nonline\nEvent\nThe browser has gained access to the network (but particular websites might be unreachable).
+window.navigator.onLine /// -
+oscpu /// window.navigator.oscpu\n-
+window.navigator.oscpu /// -
+platform /// window.navigator.platform\nplatform =navigator.platform\nブラウザのプラットフォームを表す文字列を返します。
+window.navigator.platform /// platform =navigator.platform\nブラウザのプラットフォームを表す文字列を返します。
+product /// window.navigator.product\nproductName = window.navigator.product\nこのプロパティは、現在のブラウザの製品名を返します。
+window.navigator.product /// productName = window.navigator.product\nこのプロパティは、現在のブラウザの製品名を返します。
+productSub /// window.navigator.productSub\nprodSub = window.navigator.productSub\nproductSub は、現在のブラウザのビルド番号を返します。\n！非標準
+window.navigator.productSub /// prodSub = window.navigator.productSub\nproductSub は、現在のブラウザのビルド番号を返します。\n！非標準
+Navigator.push /// -
+serviceWorker /// Navigator.serviceWorker\n-
+Navigator.serviceWorker /// -
+userAgent /// window.navigator.userAgent\nvar ua = window.navigator.userAgent;\n現在のブラウザでのユーザエージェントを表す文字列を返します。
+window.navigator.userAgent /// var ua = window.navigator.userAgent;\n現在のブラウザでのユーザエージェントを表す文字列を返します。
+vendor /// window.navigator.vendor\nvenString = window.navigator.vendor\n現在のブラウザのベンダー名を返します。
+window.navigator.vendor /// venString = window.navigator.vendor\n現在のブラウザのベンダー名を返します。
+vendorSub /// window.navigator.vendorSub\nvenSub = window.navigator.vendorSub\nvendorSub は、ベンダーバージョン番号を表す、ベンダー名の部分文字列です。
+window.navigator.vendorSub /// venSub = window.navigator.vendorSub\nvendorSub は、ベンダーバージョン番号を表す、ベンダー名の部分文字列です。
+addIdleObserver /// Navigator.addIdleObserver\n-
+Navigator.addIdleObserver /// -
+getBattery /// Navigator.getBattery\n-
+Navigator.getBattery /// -
+getDataStores /// Navigator.getDataStores\n-
+Navigator.getDataStores /// -
+getDeviceStorage /// Navigator.getDeviceStorage\n-
+Navigator.getDeviceStorage /// -
+getDeviceStorages /// Navigator.getDeviceStorages\n-
+Navigator.getDeviceStorages /// -
+getGamepads /// Navigator.getGamepads\n-
+Navigator.getGamepads /// -
+getUserMedia /// Navigator.getUserMedia\n-
+Navigator.getUserMedia /// -
+getVRDevices /// Navigator.getVRDevices\n-
+Navigator.getVRDevices /// -
+mozHasPendingMessage /// Navigator.mozHasPendingMessage\n-
+Navigator.mozHasPendingMessage /// -
+mozIsLocallyAvailable /// window.navigator.mozIsLocallyAvailable\n-
+window.navigator.mozIsLocallyAvailable /// -
+mozPay /// Navigator.mozPay\n-
+Navigator.mozPay /// -
+mozSetMessageHandler /// Navigator.mozSetMessageHandler\n-
+Navigator.mozSetMessageHandler /// -
+registerContentHandler /// window.navigator.registerContentHandler\n-
+window.navigator.registerContentHandler /// -
+registerProtocolHandler /// window.navigator.registerProtocolHandler(protocol,uri,title);\n特定のプロトコルと Web サイトを関連付けます。
+removeIdleObserver /// Navigator.removeIdleObserver\n-
+Navigator.removeIdleObserver /// -
+requestMediaKeySystemAccess /// Navigator.requestMediaKeySystemAccess\n-
+Navigator.requestMediaKeySystemAccess /// -
+requestWakeLock /// Navigator.requestWakeLock\n-
+Navigator.requestWakeLock /// -
+sendBeacon /// Navigator.sendBeacon\n-
+Navigator.sendBeacon /// -
+taintEnabled /// NavigatorID.taintEnabled\n-
+NavigatorID.taintEnabled /// -
+vibrate /// Navigator.vibrate\n-
+Navigator.vibrate /// -
+;API・EventTarget https://developer.mozilla.org/ja/docs/Web/API/EventTarget\n 
+EventTarget /// EventTarget は、イベントを受け取り、そのためのリスナーを持つ可能性があるオブジェクトにより実装されたインターフェースです。
+addEventListener /// EventTarget.addEventListener\ntarget.addEventListener(type, listener[, options]);\ntarget.addEventListener(type, listener [, useCapture]);\ntarget.addEventListener(type, listener [, useCapture, aWantsUntrusted  ]); // Gecko/Mozilla のみ\naddEventListener は、 1 つのイベントターゲットにイベントリスナーを 1 つ登録します。\nイベントターゲットは、ドキュメント上の単一のノード、ドキュメント自身、ウィンドウ、あるいは、XMLHttpRequest です。
+EventTarget.addEventListener /// target.addEventListener(type, listener[, options]);\ntarget.addEventListener(type, listener [, useCapture]);\ntarget.addEventListener(type, listener [, useCapture, aWantsUntrusted  ]); // Gecko/Mozilla のみ\naddEventListener は、 1 つのイベントターゲットにイベントリスナーを 1 つ登録します。\nイベントターゲットは、ドキュメント上の単一のノード、ドキュメント自身、ウィンドウ、あるいは、XMLHttpRequest です。
+attachEvent /// EventTarget.attachEvent\nattached = target.attachEvent(eventNameWithOn, callback)\nこれは標準のEventTarget.addEventListener()を代用するMicrosoft Internet Explorer専用の関数です。\n！非標準
+EventTarget.attachEvent /// attached = target.attachEvent(eventNameWithOn, callback)\nこれは標準のEventTarget.addEventListener()を代用するMicrosoft Internet Explorer専用の関数です。\n！非標準
+detachEvent /// EventTarget.detachEvent\ntarget.detachEvent(eventNameWithOn, callback)\nThis is a proprietary Microsoft Internet Explorer alternative to the standard EventTarget.removeEventListener() method.！非標準
+EventTarget.detachEvent /// target.detachEvent(eventNameWithOn, callback)\nThis is a proprietary Microsoft Internet Explorer alternative to the standard EventTarget.removeEventListener() method.！非標準
+dispatchEvent /// EventTarget.dispatchEvent\ncancelled = !target.dispatchEvent(event)\n特定の EventTarget に Event をディスパッチし、影響する EventListener を適切な順序で呼び出します。\n通常のイベント処理ルール（capturing フェーズと任意的な bubbling フェーズを含む）は dispatchEvent() で手動でディスパッチされたイベントにも適用されます。
+EventTarget.dispatchEvent /// cancelled = !target.dispatchEvent(event)\n特定の EventTarget に Event をディスパッチし、影響する EventListener を適切な順序で呼び出します。\n通常のイベント処理ルール（capturing フェーズと任意的な bubbling フェーズを含む）は dispatchEvent() で手動でディスパッチされたイベントにも適用されます。
+fireEvent /// EventTarget.fireEvent\ncancelled = target.fireEvent(eventNameWithOn, event)\nThis is a proprietary Microsoft Internet Explorer alternative to the standard EventTarget.dispatchEvent() method. \nUnlike EventTarget.dispatchEvent(), \nan event triggered via fireEvent() never triggers the default activation behavior of an event. \nFor example, \ntriggering a click event on an <input type="checkbox"> via fireEvent() will not toggle the checkedness of the checkbox.！非標準
+EventTarget.fireEvent /// cancelled = target.fireEvent(eventNameWithOn, event)\nThis is a proprietary Microsoft Internet Explorer alternative to the standard EventTarget.dispatchEvent() method. \nUnlike EventTarget.dispatchEvent(), \nan event triggered via fireEvent() never triggers the default activation behavior of an event. \nFor example, \ntriggering a click event on an <input type="checkbox"> via fireEvent() will not toggle the checkedness of the checkbox.！非標準
+removeEventListener /// EventTarget.removeEventListener\nelement.removeEventListener(type,listener,useCapture)\nremoveEventListener は、イベントターゲットからイベントリスナーを削除します。
+EventTarget.removeEventListener /// element.removeEventListener(type,listener,useCapture)\nremoveEventListener は、イベントターゲットからイベントリスナーを削除します。
+;API・Storage https://developer.mozilla.org/ja/docs/Web/API/Storage\n 
+Storage /// Web Storage API の Storage インターフェイスは、特定のドメインのセッションストレージまたはローカルストレージへのアクセス機能を提供して、例えば保存されているデータアイテムを追加、変更、削除することができます。\nドメインのセッションストレージを操作したい場合は、Window.sessionStorage メソッドを呼び出してください。\nドメインのローカルストレージを操作したい場合は、Window.localStorage を呼び出してください。\n\nstorage\nStorageEvent\nストレージエリアが変更された時 (localStorage もしくは sessionStorage)
+Storage.length /// var aLength = storage.length;\nStorage インターフェイスの読み取り専用プロパティ length は、Storage オブジェクトに保存されているデータアイテムの数を表す整数を返します。
+Storage.clear /// storage.clear();\nStorage インターフェイスの clear() メソッドを呼び出すと、ストレージ内のすべてのキーを消去します。
+getItem /// Storage.getItem\nvar aValue = storage.getItem(keyName);\nStorage インターフェイスの getItem() メソッドはキーの名称を渡すと、そのキーに対する値を返します。
+Storage.getItem /// var aValue = storage.getItem(keyName);\nStorage インターフェイスの getItem() メソッドはキーの名称を渡すと、そのキーに対する値を返します。
+key /// Storage.key\nvar aKeyName = storage.key(key);\nStorage インターフェイスの key() メソッドは数値 n を渡すと、ストレージ内で n 番目のキーの名称を返します。\nキーの順序はユーザエージェント依存であり、この順序に頼るべきではありません。
+Storage.key /// var aKeyName = storage.key(key);\nStorage インターフェイスの key() メソッドは数値 n を渡すと、ストレージ内で n 番目のキーの名称を返します。\nキーの順序はユーザエージェント依存であり、この順序に頼るべきではありません。
+removeItem /// Storage.removeItem\nstorage.removeItem(keyName);\nStorage インターフェイスの removeItem() メソッドはキーの名称を渡すと、ストレージからキーを削除します。
+Storage.removeItem /// storage.removeItem(keyName);\nStorage インターフェイスの removeItem() メソッドはキーの名称を渡すと、ストレージからキーを削除します。
+setItem /// Storage.setItem\nstorage.setItem(keyName, keyValue);\nStorage インターフェイスの setItem() メソッドはキーの名称と値を渡すと、ストレージにキーを追加する、またはキーがすでに存在する場合はキーに対する値を更新します。
+Storage.setItem /// storage.setItem(keyName, keyValue);\nStorage インターフェイスの setItem() メソッドはキーの名称と値を渡すと、ストレージにキーを追加する、またはキーがすでに存在する場合はキーに対する値を更新します。
+;API・Geolocation https://developer.mozilla.org/ja/docs/Web/API/Geolocation\n 
+clearWatch /// Geolocation.clearWatch\nnavigator.geolocation.clearWatch(id);\nGeolocation.clearWatch()メソッドは、前もってGeolocation.watchPosition()によって登録された位置情報/エラーのモニタリングハンドラを解除するために使用します。
+Geolocation.clearWatch /// navigator.geolocation.clearWatch(id);\nGeolocation.clearWatch()メソッドは、前もってGeolocation.watchPosition()によって登録された位置情報/エラーのモニタリングハンドラを解除するために使用します。
+getCurrentPosition /// Geolocation.getCurrentPosition\nnavigator.geolocation.getCurrentPosition(success, error, options)\nGeolocation.getCurrentPosition() メソッドは、デバイスの現在位置を取得するために使われます。
+Geolocation.getCurrentPosition /// navigator.geolocation.getCurrentPosition(success, error, options)\nGeolocation.getCurrentPosition() メソッドは、デバイスの現在位置を取得するために使われます。
+watchPosition /// Geolocation.watchPosition\nid = navigator.geolocation.watchPosition(success, error, options)\nThe Geolocation.watchPosition() メソッドはデバイスの位置が変化するたびに自動的に呼び出されるハンドラ関数を登録するために使用される。\nまた必要に応じてエラー処理コールバック関数を指定することができます。\nこのメソッドはGeolocation.clearWatch()メソッドに渡してハンドラの登録を解除するために使用する事ができるwatch IDを返します。
+Geolocation.watchPosition /// id = navigator.geolocation.watchPosition(success, error, options)\nThe Geolocation.watchPosition() メソッドはデバイスの位置が変化するたびに自動的に呼び出されるハンドラ関数を登録するために使用される。\nまた必要に応じてエラー処理コールバック関数を指定することができます。\nこのメソッドはGeolocation.clearWatch()メソッドに渡してハンドラの登録を解除するために使用する事ができるwatch IDを返します。
+;API・Coordinates https://developer.mozilla.org/ja/docs/Web/API/Coordinates\n 
+Coordinates /// The Coordinates interface represents the position and altitude of the device on Earth, \nas well as the accuracy with which these properties are calculated.
+accuracy /// Coordinates.accuracy\nacc = coordinates.accuracy\n水平方向の誤差
+Coordinates.accuracy /// acc = coordinates.accuracy\n水平方向の誤差
+altitude /// Coordinates.altitude\nalt = coordinates.altitude\n高度
+Coordinates.altitude /// alt = coordinates.altitude\n高度
+altitudeAccuracy /// Coordinates.altitudeAccuracy\naltAcc = coordinates.altitudeAccuracy\n垂直方向の誤差
+Coordinates.altitudeAccuracy /// altAcc = coordinates.altitudeAccuracy\n垂直方向の誤差
+heading /// Coordinates.heading\nheading = coordinates.heading\n方向
+Coordinates.heading /// heading = coordinates.heading\n方向
+latitude /// Coordinates.latitude\nlat = coordinates.latitude\n緯度
+Coordinates.latitude /// lat = coordinates.latitude\n緯度
+longitude /// Coordinates.longitude\nlon = coordinates.longitude\n経度
+Coordinates.longitude /// lon = coordinates.longitude\n経度
+speed /// Coordinates.speed\nspeed = coordinates.speed\n速度
+Coordinates.speed /// speed = coordinates.speed\n速度
+;API・Position https://developer.mozilla.org/en-US/docs/Web/API/Position\n 
+Position /// The Position interface represents the position of the concerned device at a given time. \nThe position, \nrepresented by a Coordinates object, \ncomprehends the 2D position of the device, \non a spheroid representing the Earth, \nbut also its altitude and its speed.
+coords /// Position.coords\ncoord = position.coords\nThe Position.coords read-only property, \na Coordinates object, \nrepresents a geographic attitude: it contains the location, \nthat is longitude and latitude on the Earth, \nthe altitude, \nand the speed of the object concerned, \nregrouped inside the returned value. \nIt also contains accuracy information about these values.
+Position.coords /// coord = position.coords\nThe Position.coords read-only property, \na Coordinates object, \nrepresents a geographic attitude: it contains the location, \nthat is longitude and latitude on the Earth, \nthe altitude, \nand the speed of the object concerned, \nregrouped inside the returned value. \nIt also contains accuracy information about these values.
+Position.timestamp /// coord = position.timestamp\nThe Position.timestamp read-only property, \na DOMTimeStamp object, \nrepresents the date and the time of the creation of the Position object it belongs to. \nThe precision is to the millisecond.
+;API・event https://developer.mozilla.org/ja/docs/Web/API/Event\n 
+bubbles /// bool = event.bubbles\nイベントが浮上(bubble up)するものかどうかを示しています。
+cancelable /// bool = event.cancelable\nイベントがキャンセル可能かどうかを示す真偽値を返します。
+cancelBubble /// -
+currentTarget /// イベントは DOM を横断するので、イベントの現在のターゲットを識別します。\nイベントが発生した要素を特定する event.target とは対照的に、常にイベントハンドラがアタッチされた要素を参照します。
+defaultPrevented /// bool = event.defaultPrevented\nイベントに対して event.preventDefault() が呼ばれているかを、 boolean で返します。
+eventPhase /// var phase = event.eventPhase;\nIndicates which phase of the event flow is currently being evaluated.
+explicitOriginalTarget /// -
+isTrusted /// var bool = event.isTrusted;\nThe isTrusted read-only property of the Event interface is a boolean that is true when the event was generated by a user action, \nand false when the event was created or modified by a script or dispatched via dispatchEvent.
+originalTarget /// -
+returnValue /// -
+srcElement /// -
+type /// var string = event.type;\nイベントタイプを含んだ文字列を返します。\nEventTarget.addEventListener() と EventTarget.removeEventListener() のイベントの属性は大文字小文字を問いません。
+initEvent /// event.initEvent(type,bubbles,cancelable)\ninitEvent メソッドは document.createEvent によって作成された event の値を初期化するために使われます。
+preventDefault /// event.preventDefault();\nイベントがキャンセル可能である場合、上位ノードへのイベントの 伝播 (propagation) を止めずに、そのイベントをキャンセルします。
+stopImmediatePropagation /// event.stopImmediatePropagation();\nPrevents other listeners of the same event from being called.
+stopPropagation /// event.stopPropagation();\n現在のイベントのさらなる伝播 (propagation) を止めます。
+;イベントリファレンス https://developer.mozilla.org/ja/docs/Web/Reference/Events\n 
+abort /// UIEvent\nリソースの読み込みが中止された時\n\nabort\nProgressEvent\nエラーによるものではなく進行が中止された時\n\nabort\nEvent\nトランザクションが中止された時
+afterprint /// Event\n印刷の開始時または印刷プレビューが閉じられた時
+animationend /// AnimationEvent\nCSS アニメーション が完了した時。
+animationiteration /// AnimationEvent\nCSS アニメーション が繰り返された時。
+animationstart /// AnimationEvent\nCSS アニメーション が開始した時。
+audioprocess /// AudioProcessingEvent\nScriptProcessorNode の入力バッファを処理する準備ができた時。
+audioend /// Event\nThe user agent has finished capturing audio for speech recognition.
+audiostart /// Event\nThe user agent has started to capture audio for speech recognition.
+beforeprint /// Event\nThe associated document is about to be printed or previewed for printing.
+beforeunload /// BeforeUnloadEvent\n-
+beginEvent /// TimeEvent\nA SMIL animation element begins.
+blocked ///  \nAn open connection to a database is blocking a versionchange transaction on the same database.
+boundary /// SpeechSynthesisEvent\nThe spoken utterance reaches a word or sentence boundary
+cached /// Event\nThe resources listed in the manifest have been downloaded, \nand the application is now cached.
+canplay /// Event\nThe user agent can play the media, \nbut estimates that not enough data has been loaded to play the media up to its end without having to stop for further buffering of content.
+canplaythrough /// Event\nThe user agent can play the media, \nand estimates that enough data has been loaded to play the media up to its end without having to stop for further buffering of content.
+change /// Event\nAn element loses focus and its value changed since gaining focus.
+chargingchange /// Event\nThe battery begins or stops charging.
+chargingtimechange /// Event\nThe chargingTime attribute has been updated.
+checking /// Event\nThe user agent is checking for an update, \nor attempting to download the cache manifest for the first time.
+click /// MouseEvent\nA pointing device button has been pressed and released on an element.
+compassneedscalibration /// SensorEvent\nThe compass used to obtain orientation data is in need of calibration.
+compositionend /// CompositionEvent\nThe composition of a passage of text has been completed or canceled.
+compositionstart  /// CompositionEvent\nThe composition of a passage of text is prepared (similar to keydown for a keyboard input, \nbut works with other inputs such as speech recognition).
+compositionupdate /// CompositionEvent\nA character is added to a passage of text being composed.
+complete ///  \nThe transaction successfully completed.
+contextmenu /// MouseEvent\nマウスの右ボタンがクリックされた時 (コンテキストメニューが表示される前)。
+copy /// ClipboardEvent\nThe text selection has been added to the clipboard.
+cut /// ClipboardEvent\nThe text selection has been removed from the document and added to the clipboard.
+dblclick /// MouseEvent\nA pointing device button is clicked twice on an element.
+devicelight /// SensorEvent\nFresh data is available from a light sensor.
+devicemotion /// SensorEvent\nFresh data is available from a motion sensor.
+deviceorientation /// SensorEvent\nFresh data is available from an orientation sensor.
+deviceproximity /// DeviceProximityEvent\nFresh data is available from a proximity sensor (indicates an approximated distance between the device and a nearby object).
+dischargingtimechange /// Event\nThe dischargingTime attribute has been updated.
+DOMActivate /// UIEvent\nA button, \nlink or state changing element is activated (use click instead).
+DOMAttributeNameChanged /// MutationNameEvent\nThe name of an attribute changed (use mutation observers instead).
+DOMAttrModified /// MutationEvent\nThe value of an attribute has been modified (use mutation observers instead).
+DOMCharacterDataModified /// MutationEvent\nA text or another CharacterData has changed (use mutation observers instead).
+DOMContentLoaded /// Event\nThe document has finished loading (but not its dependent resources).
+DOMElementNameChanged /// MutationNameEvent\nThe name of an element changed (use mutation observers instead).
+DOMFocusIn /// FocusEvent\nAn element has received focus (use focus or focusin instead).
+DOMFocusOut /// FocusEvent\nAn element has lost focus (use blur or focusout instead).
+DOMNodeInserted /// MutationEvent\nA node has been added as a child of another node (use mutation observers instead).
+DOMNodeInsertedIntoDocument /// MutationEvent\nA node has been inserted into the document (use mutation observers instead).
+DOMNodeRemoved /// MutationEvent\nA node has been removed from its parent node (use mutation observers instead).
+DOMNodeRemovedFromDocument /// MutationEvent\nA node has been removed from the document (use mutation observers instead).
+DOMSubtreeModified /// MutationEvent\nA change happened in the document (use mutation observers instead).
+downloading /// Event\nThe user agent has found an update and is fetching it, \nor is downloading the resources listed by the cache manifest for the first time.
+drag /// DragEvent\nAn element or text selection is being dragged (every 350ms).
+dragend /// DragEvent\nA drag operation is being ended (by releasing a mouse button or hitting the escape key).
+dragenter /// DragEvent\nA dragged element or text selection enters a valid drop target.
+dragleave /// DragEvent\nA dragged element or text selection enters a valid drop target.
+dragover /// DragEvent\nAn element or text selection is being dragged over a valid drop target (every 350ms).
+dragstart /// DragEvent\nThe user starts dragging an element or text selection.
+drop /// DragEvent\nAn element is dropped on a valid drop target.
+durationchange /// Event\nThe duration attribute has been updated.
+emptied /// Event\nThe media has become empty; for example, \nthis event is sent if the media has already been loaded (or partially loaded), \nand the load() method is called to reload it.
+end /// Event\nThe speech recognition service has disconnected.\n\nend\nSpeechSynthesisEvent\nThe utterance has finished being spoken.
+ended /// Event\nPlayback has stopped because the end of the media was reached.\n\nended\nEvent\n-
+endEvent /// TimeEvent\nA SMIL animation element ends.
+focusin /// FocusEvent\nAn element is about to receive focus (bubbles).
+focusout /// FocusEvent\nAn element is about to lose focus (bubbles).
+fullscreenchange /// Event\nAn element was turned to fullscreen mode or back to normal mode.
+fullscreenerror /// Event\nIt was impossible to switch to fullscreen mode for technical reasons or because the permission was denied.
+gamepadconnected /// GamepadEvent\nA gamepad has been connected.
+gamepaddisconnected /// GamepadEvent\nA gamepad has been disconnected.
+gotpointercapture /// PointerEvent\nElement receives pointer capture.
+hashchange /// HashChangeEvent\nThe fragment identifier of the URL has changed (the part of the URL after the #).
+lostpointercapture /// PointerEvent\nElement lost pointer capture.
+invalid /// Event\nA submittable element has been checked and doesn't satisfy its constraints.
+keydown /// KeyboardEvent\nキーが押された時。
+keypress /// KeyboardEvent\nA key is pressed down and that key normally produces a character value (use input instead).
+keyup /// KeyboardEvent\nキーが離された時。
+languagechange /// Event\n-
+levelchange /// Event\nThe level attribute has been updated.
+load /// UIEvent\nA resource and its dependent resources have finished loading.\n\nload\nProgressEvent\nProgression has been successful.
+loadeddata /// Event\nThe first frame of the media has finished loading.
+loadedmetadata /// Event\nThe metadata has been loaded.
+loadend /// ProgressEvent\nProgress has stopped (after "error", \n"abort" or "load" have been dispatched).
+loadstart /// ProgressEvent\nProgress has begun.
+mark /// SpeechSynthesisEvent\nThe spoken utterance reaches a named SSML "mark" tag.
+message /// MessageEvent\nA message is received through a WebSocket.\n\nmessage\nMessageEvent\nA message is received from a Web Worker.\n\nmessage\nMessageEvent\nA message is received from a child (i)frame or a parent window.\n\nmessage\nMessageEvent\nA message is received through an event source.\n\nmessage\nServiceWorkerMessageEvent or ExtendableMessageEvent, depending on context.\nA message is received from a service worker, \nor a message is received in a service worker from another context.
+mousedown /// MouseEvent\nA pointing device button (usually a mouse) is pressed on an element.
+mouseenter /// MouseEvent\nA pointing device is moved onto the element that has the listener attached.
+mouseleave /// MouseEvent\nA pointing device is moved off the element that has the listener attached.
+mousemove /// MouseEvent\nA pointing device is moved over an element.
+mouseout /// MouseEvent\nA pointing device is moved off the element that has the listener attached or off one of its children.
+mouseover /// MouseEvent\nA pointing device is moved onto the element that has the listener attached or onto one of its children.
+mouseup /// MouseEvent\nA pointing device button is released over an element.
+nomatch /// SpeechRecognitionEvent\nThe speech recognition service returns a final result with no significant recognition.
+notificationclick /// NotificationEvent\nA system notification spawned by ServiceWorkerRegistration.showNotification() has been clicked.
+noupdate /// Event\nThe manifest hadn't changed.
+obsolete /// Event\nThe manifest was found to have become a 404 or 410 page, \nso the application cache is being deleted.
+offline /// Event\nThe browser has lost access to the network.
+orientationchange /// Event\nThe orientation of the device (portrait/landscape) has changed
+pagehide /// PageTransitionEvent\nA session history entry is being traversed from.
+pageshow /// PageTransitionEvent\nA session history entry is being traversed to.
+paste /// ClipboardEvent\nData has been transfered from the system clipboard to the document.
+pause /// Event\nPlayback has been paused.\n\npause\nSpeechSynthesisEvent\nThe utterance is paused part way through.
+pointercancel /// PointerEvent\nThe pointer is unlikely to produce any more events.
+pointerdown /// PointerEvent\nThe pointer enters the active buttons state.
+pointerenter /// PointerEvent\nPointing device is moved inside the hit-testing boundary.
+pointerleave /// PointerEvent\nPointing device is moved out of the hit-testing boundary.
+pointerlockchange /// Event\nThe pointer was locked or released.
+pointerlockerror /// Event\nIt was impossible to lock the pointer for technical reasons or because the permission was denied.
+pointermove /// PointerEvent\nThe pointer changed coordinates.
+pointerout /// PointerEvent\nThe pointing device moved out of hit-testing boundary or leaves detectable hover range.
+pointerover /// PointerEvent\nThe pointing device is moved into the hit-testing boundary.
+pointerup /// PointerEvent\nThe pointer leaves the active buttons state.
+play /// Event\nPlayback has begun.
+playing /// Event\nPlayback is ready to start after having been paused or delayed due to lack of data.
+popstate /// PopStateEvent\nA session history entry is being navigated to (in certain cases).
+progress /// ProgressEvent\nIn progress.\n\nprogress\nProgressEvent\nThe user agent is downloading resources listed by the manifest.
+pushsubscriptionchange /// PushEvent\nA PushSubscription has expired.
+ratechange /// Event\nThe playback rate has changed.
+readystatechange /// Event\nThe readyState attribute of a document has changed.
+repeatEvent /// TimeEvent\nA SMIL animation element is repeated.
+reset /// Event\nA form is reset.
+resize /// UIEvent\nThe document view has been resized.
+resourcetimingbufferfull /// Performance\nThe browser's resource timing buffer is full.
+result /// SpeechRecognitionEvent\nThe speech recognition service returns a result ? a word or phrase has been positively recognized and this has been communicated back to the app.
+resume /// SpeechSynthesisEvent\nA paused utterance is resumed.
+seeked /// Event\nA seek operation completed.
+seeking /// Event\nA seek operation began.
+select /// UIEvent\nSome text is being selected.
+selectstart /// Event\nA selection just started.
+selectionchange /// Event\nThe selection in the document has been changed.
+show /// MouseEvent\nA contextmenu event was fired on/bubbled to an element that has a contextmenu attribute
+soundend /// Event\nAny sound ? recognisable speech or not ? has stopped being detected.
+soundstart /// Event\nAny sound ? recognisable speech or not ? has been detected.
+speechend /// Event\nSpeech recognised by the speech recognition service has stopped being detected.
+speechstart /// Event\nSound that is recognised by the speech recognition service as speech has been detected.
+stalled /// Event\nThe user agent is trying to fetch media data, \nbut data is unexpectedly not forthcoming.
+start /// Event\nThe speech recognition service has begun listening to incoming audio with intent to recognize grammars associated with the current SpeechRecognition.\n\nstart\nSpeechSynthesisEvent\nThe utterance has begun to be spoken.
+submit /// Event\nA form is submitted.
+success /// Event\nA request successfully completed.
+suspend /// Event\nMedia data loading has been suspended.
+SVGAbort /// SVGEvent\nPage loading has been stopped before the SVG was loaded.
+SVGError /// SVGEvent\nAn error has occurred before the SVG was loaded.
+SVGLoad /// SVGEvent\nAn SVG document has been loaded and parsed.
+SVGResize /// SVGEvent\nAn SVG document is being resized.
+SVGScroll /// SVGEvent\nAn SVG document is being scrolled.
+SVGUnload /// SVGEvent\nAn SVG document has been removed from a window or frame.
+SVGZoom /// SVGZoomEvent\nAn SVG document is being zoomed.
+timeout /// ProgressEvent\n-
+timeupdate /// Event\nThe time indicated by the currentTime attribute has been updated.
+touchcancel /// TouchEvent\nA touch point has been disrupted in an implementation-specific manners (too many touch points for example).
+touchend /// TouchEvent\nA touch point is removed from the touch surface.
+touchenter /// TouchEvent\nA touch point is moved onto the interactive area of an element.
+touchleave /// TouchEvent\nA touch point is moved off the interactive area of an element.
+touchmove /// TouchEvent\nA touch point is moved along the touch surface.
+touchstart /// TouchEvent\nA touch point is placed on the touch surface.
+transitionend /// TransitionEvent\nA CSS transition has completed.
+unload /// UIEvent\nThe document or a dependent resource is being unloaded.
+updateready /// Event\nThe resources listed in the manifest have been newly redownloaded, \nand the script can use swapCache() to switch to the new cache.
+upgradeneeded ///  \nAn attempt was made to open a database with a version number higher than its current version. \nA versionchange transaction has been created.
+userproximity /// SensorEvent\nFresh data is available from a proximity sensor (indicates whether the nearby object is near the device or not).
+voiceschanged /// Event\nThe list of SpeechSynthesisVoice objects that would be returned by the SpeechSynthesis.getVoices() method has changed (when the voiceschanged event fires.)
+versionchange ///  \nA versionchange transaction completed.
+visibilitychange /// Event\nThe content of a tab has become visible or has been hidden.
+volumechange /// Event\nThe volume has changed.
+waiting /// Event\nPlayback has stopped because of a temporary lack of data.
+wheel /// WheelEvent\nA wheel button of a pointing device is rotated in any direction.
