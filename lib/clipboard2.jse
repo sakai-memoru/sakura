@@ -1,0 +1,42 @@
+// reference
+// WSH よりクリップボード、次の手
+// http://frog.raindrop.jp/knowledge/archives/002561.html
+// **FIXME** もっと最近のClassの書き方で表現する
+
+// OLE Command ID
+var OLECMDID_COPY = 12;
+var OLECMDID_PASTE = 13;
+var OLECMDID_SELECTALL = 17;
+
+function Clipboard(){
+  // CLipboard class
+  // initialize IE
+  var objIE = new ActiveXObject('InternetExplorer.Application');
+  objIE.navigate("about:blank");
+  while (objIE.Busy){
+    WScript.Sleep(10);
+  }
+
+  // add textarea
+  var _textarea = objIE.document.createElement("textarea");
+  objIE.document.body.appendChild(_textarea);
+  _textarea.focus();
+
+  // CLipboard functions
+  this.setText = function(text){
+    _textarea.innerText = text;
+    objIE.execWB(OLECMDID_SELECTALL, 0);
+    objIE.execWB(OLECMDID_COPY, 0);    
+  }
+  
+  this.getText = function(){
+    _textarea.innerText = "";
+    objIE.execWB(OLECMDID_PASTE, 0);
+    return _textarea.innerText;
+  }
+  
+  this.release = function(){
+    objIE.Quit();
+    objIE = null;
+  }
+}

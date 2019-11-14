@@ -1,0 +1,137 @@
+(function(){
+
+// const
+var CONS_LIBPATH = '';
+var LIBS = [
+  "./lib/es5-shim.js",
+  "./lib/json2.js",
+  "./lib/date.jse",
+  "./lib/clipboard2.jse",
+  "./config/template.jse",
+  "./config/setting.js",
+]
+
+// commonalized for js   /////////////////////////////////////////////
+function check_env(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+
+// load external libraries
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_LIBPATH ? CONS_LIBPATH: './';
+  // require common moduje
+  with({
+    libs : LIBS, 
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    for (i in libs){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+var debug_mode = CONFIG.DEBUG_MODE;
+
+// pretend console.log 
+if(typeof(console) === "undefined"){
+  if(flag == "wsh")  console={log : function(str){WScript.Echo(str)}};
+  if(debug_mode){
+    if(flag == "sakura")  console={log : function(str){Editor.TraceOut(str)}};
+  }else{
+    if(flag == "sakura")  console={log : function(str){null}};
+  }
+}
+// pretend process.exit
+if(typeof(process) === "undefined"){
+  if(flag == "wsh")  process={exit : function(e){WScript.Quit(e)}};
+  if(debug_mode){
+    if(flag == "sakura")  process={exit : function(e){Editor.TraceOut('done')}};
+  }else{
+    if(flag == "sakura")  process={exit : function(e){'done'}};
+  }
+}
+
+// if would use clipboard, pretend clipboard
+// get clipboardData
+function get_clipboard(){
+  var ret;
+  if(flag == "wsh"){
+    var CLIP = new Clipboard();
+    ret = CLIP.getText();
+    // don't forgett to releace CLIP Object
+    CLIP.release();
+  }
+  if(flag == "sakura"){
+    ret = Editor.getClipboard();
+  }
+  return ret;
+}
+
+// set clipboard
+function set_clipboard(str){
+  if(flag == "wsh"){
+    var CLIP = new Clipboard();
+    CLIP.setText(str);
+    // don't forgett to releace CLIP Object
+    CLIP.release();
+  }
+  if(flag == "sakura"){
+    Editor.setClipboard(0,str);
+  }
+}
+
+// local functions
+
+// operate Editor screan (only sakura mode)
+function operate_screen(text){
+  // Operate Editor Screen 
+  Editor.GoFileEnd(0);
+  Editor.InsText(text);
+  Editor.Left(0);
+}
+
+
+// do process 
+function doProcess(){
+
+  // move cursor to file end
+  var date_str = get_todayString('/');
+  var time_str = get_nowTimeString(':');
+  var clip_text = get_clipboard();
+  var template = get_template();
+  var dic = {
+    "date_str" : date_str,
+    "time_str" : time_str,
+    "clip_text" : clip_text
+  }
+  //console.log(date_str);
+  //console.log(time_str);
+  //console.log(clip_text);
+  //console.log('"' + template + '"');
+  var formatted_text = merge_map(template, dic);
+  //console.log(formatted_text);
+  operate_screen(formatted_text)
+}
+
+// ------------------------------------------------ entry point
+// 
+process.exit(doProcess());
+
+}())

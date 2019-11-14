@@ -1,8 +1,10 @@
+(function(){
+
 // 
 // vim で編集ファイルを開く
-function process(expandParam){
-  target_path = Editor.ExpandParameter(expandParam);
-  var cmd_statement = "gvim.exe " + target_path
+function doProcess(expandParam){
+  var target_ = Editor.ExpandParameter(expandParam);
+  var cmd_statement = "gvim.exe " + target_
   Editor.ExecCommand(cmd_statement, 0)
 }
 
@@ -14,12 +16,14 @@ if(typeof(Editor) !== 'undefined'){
   // $b : opened file's extention
   // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
   //      選択中でない場合、カーソル位置の単語
-  process('$F');
+  doProcess('$F');
   
 } else {
   if(typeof(WScript) !== 'undefined'){
-    WScript.Echo('This script is for sakura macro. A env is maybe wsh.')
+    WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
   } else {
-    console.log('This script is for sakura macro. A env is maybe node.')
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
   }
 }
+
+}())

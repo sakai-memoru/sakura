@@ -1,0 +1,133 @@
+// library : template.jse
+// 
+// call from sakura Editor for WSH
+// dependency ./lib/es-shim.js
+// dependency ./lib/es-shim.js
+
+///////////////////////////////////////
+// here-string CRLF
+//  ↓↓↓↓↓↓↓↓↓
+var herestrings = function(){
+/*
+
+## {{date_str}} {{time_str}} :
+
+- {{clip_text}}
+
+*/
+}
+
+function get_template(){
+  var template = herestrings.toString().split("\r\n").slice(2,-2).join("\r\n")
+  return template;
+}
+
+function merge_map(template, map_){
+  var keys_ = Object.keys(map_);
+  for(key_ in keys_){
+    var value_ = map_[keys_[key_]];
+    template = template.replace( '{{' + keys_[key_] + '}}', value_);
+  };
+  return template;
+
+}
+
+function doTest(){
+  var template = get_template();
+  console.log(template);
+  var map_ = {
+    'date_str' : '19/11/14',
+    'time_str' : '22:30',
+    'clip_text' : 'dammy'
+  }
+  console.log(merge_map(template,map_));
+}
+
+
+// ------------------------------------------------ entry point
+// reference
+// Python “if __main__” in Node.js and WSH JScript
+// https://senooken.jp/blog/2016/08/20/
+// 
+function is_main(this_file_name){
+  var isModule = (typeof(module) !== "undefined" && !module.parent);
+  var isMain = (typeof(WScript) !==  "undefined" && WScript.ScriptName === this_file_name)
+  return isModule || isMain
+}
+
+var this_source = 'template.jse'; // set right name
+if(is_main(this_source)){
+
+WScript.Echo(this_source);
+
+var CONS_LIBPATH = '';
+var LIBS = [
+  "./lib/es5-shim.js",
+  "./lib/json2.js",
+  "./lib/date.jse",
+]
+// commonalized for js   /////////////////////////////////////////////
+function check_env(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+
+// load external libraries
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_LIBPATH ? CONS_LIBPATH: './';
+  // require common moduje
+  with({
+    libs : LIBS, 
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    for (i in libs){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+
+// pretend console.log 
+if(typeof(console) === "undefined"){
+  if(flag == "wsh")  console={log : function(str){WScript.Echo(str)}};
+  if(flag == "sakura")  console={log : function(str){Editor.TraceOut(str)}};
+}
+// pretend process.exit
+if(typeof(process) === "undefined"){
+  if(flag == "wsh")  process={exit : function(e){WScript.Quit(e)}};
+  if(flag == "sakura")  process={exit : function(e){Editor.TraceOut('done')}};
+}
+
+// FIXME : es5-shim.js don't extend Object.keys
+if(!Object.keys){
+    Object.keys = function(obj){
+        var keys = [];
+        for(var i in obj){
+            if(obj.hasOwnProperty(i)){
+                keys.push(i);
+            }
+        }
+        return keys;
+    };
+}
+
+// -------------------------------- do process
+process.exit(doTest());
+
+}

@@ -1,0 +1,24 @@
+function get_todayString(){
+  var sep = '';
+  if(arguments.length){
+    sep = arguments[0]
+  }
+  var dtm = new Date();
+  return [
+    ('' + dtm.getFullYear()).slice(-2),
+    ('0' + (dtm.getMonth() +1)).slice(-2),
+    ('0' + dtm.getDate()).slice(-2)
+  ].join(sep);
+}
+
+function get_nowTimeString(){
+  var sep = '';
+  if(arguments.length){
+    sep = arguments[0]
+  }
+  var dtm = new Date();
+  return [
+    ('0' + (dtm.getHours())).slice(-2),
+    ('0' + dtm.getMinutes()).slice(-2)
+  ].join(sep);
+}

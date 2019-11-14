@@ -1,11 +1,9 @@
-(function(){
-
 // 
-// Explorer で編集ファイルがあるフォルダを開く
-function doProcess(expandParam){
+// node で編集ファイルを実行する
+function process(expandParam){ 
   var target_ = Editor.ExpandParameter(expandParam);
-  var cmd_statement = "explorer.exe " + target_
-  Editor.ExecCommand(cmd_statement, 0)
+  var cmd_statement = "powershell.exe -noprofile " + target_
+  Editor.ExecCommand(cmd_statement, 1)
 }
 
 // -------------- entry point
@@ -16,15 +14,13 @@ if(typeof(Editor) !== 'undefined'){
   // $b : opened file's extention
   // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
   //      選択中でない場合、カーソル位置の単語
-  
-  doProcess('$e');
+  Editor.FileSave();
+  process('$F');
   
 } else {
   if(typeof(WScript) !== 'undefined'){
-    WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
+    WScript.Echo('This script is for sakura macro. A env is maybe wsh.')
   } else {
-    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
+    console.log('This script is for sakura macro. A env is maybe node.')
   }
 }
-
-}())

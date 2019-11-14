@@ -1,10 +1,14 @@
-﻿function process(){
-  
-  Editor.GoFileTop(0);
-  Editor.InsText(Editor.GetClipboard(0));
-  Editor.InsText("\r\n");
-  Editor.GoFileTop(0);
-  Editor.SelectAll();
+function process(){
+  Editor.Paste(0);
+  Editor.UP(0);
+  Editor.UP(0);
+  Editor.UP(0);
+  Editor.UP(0);
+  Editor.UP(0);
+  Editor.UP(0);
+  Editor.UP(0);
+  Editor.UP(0);
+  Editor.Right(0);
 }
 
 // -------------- entry point
