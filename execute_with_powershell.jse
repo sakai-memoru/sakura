@@ -1,3 +1,6 @@
+
+(function(){
+
 // 
 // node で編集ファイルを実行する
 function process(expandParam){ 
@@ -24,3 +27,5 @@ if(typeof(Editor) !== 'undefined'){
     console.log('This script is for sakura macro. A env is maybe node.')
   }
 }
+
+}())

@@ -3,11 +3,12 @@
 // 
 // powershell で編集フォルダをworkdirectoryとして開く
 function doProcess(expandParam){
-  var target_path = Editor.ExpandParameter(expandParam);
+  var target_ = Editor.ExpandParameter(expandParam);
   var objShell = new ActiveXObject("WScript.Shell");
-  objShell.CurrentDirectory = target_path;
-  var cmd_statement = "powershell.exe -noprofile "
-  Editor.ExecCommand(cmd_statement, 0)
+  objShell.CurrentDirectory = target_;
+  var cmd_statement = "powershell.exe -noprofile ";
+  Editor.ExecCommand(cmd_statement, 0);
+  objShell = null;
 }
 
 // -------------- entry point
