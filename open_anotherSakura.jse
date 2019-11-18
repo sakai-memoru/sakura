@@ -1,0 +1,48 @@
+(function(){
+// 
+// sakura で、clipboardの中身を、別のwindowのsakuraで開く
+
+// const
+var CONS_MACRO_FOLDER = "sakura";
+var CONS_MACRO_FILE = "paste_clipboard.jse";
+
+function get_sakuraMacroPath(){
+  var target_macro_name = CONS_MACRO_FILE;
+  var target_folder_name = CONS_MACRO_FOLDER;
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var appdata_folder = objShell.SpecialFolders("AppData");
+  var target_folder_path = objFS.BuildPath(appdata_folder, target_folder_name);
+  var target_macro_path = objFS.BuildPath(target_folder_path, target_macro_name);
+  objShell = null;
+  objFS = null;
+  return target_macro_path
+}
+
+function doBatch(target_){
+  var objShell = new ActiveXObject("WScript.Shell");
+  var cmd_statement = "sakura.exe -M=" + target_
+  //WScript.Echo(cmd_statement);
+  //"sakura.exe -M=G:\Users\sakai\AppData\Roaming\sakura\paste_clipboard.jse"
+  objShell.Run(cmd_statement, 1);
+  var objShell = null;
+}
+
+function doProcess(expandParam){
+  var target_macro = get_sakuraMacroPath();
+  doBatch(target_macro);
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  doProcess();
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    doProcess();
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())

@@ -1,19 +1,61 @@
-﻿function process(){
+(function(){
+
+// const 
+var CONS_ALL_SELECT = '$Z';
+
+// local function
+function get_target(expandParam){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  // 引数無し : 選択されている場合、選択された文字列。選択されていない場合、Clipboardにある文字列
+  // $Z : 独自expandPrameter : 全テキスト
+  var ret ='';
+  if(typeof(expandParam) === 'undefined'){
+    if(Editor.IsTextSelected){
+      ret = Editor.GetSelectedString(0);
+    }else{
+      ret = Editor.GetClipboard(0);
+    }
+  } else {
+    if(expandParam === CONS_ALL_SELECT){
+      Editor.SelectAll();
+      ret = Editor.GetSelectedString(0);
+      Editor.IsTextSelectingLock(0);
+      Editor.ExpandParameter(expandParam)
+    } else {
+      ret = Editor.ExpandParameter(expandParam)
+    }
+  }
+  return ret;
+}
+
+function operateScreen(text,sep){
+  if(typeof(sep) === 'undefined') sep = "\r\n";
   
-  Editor.GoFileTop(0);
-  Editor.InsText(Editor.GetClipboard(0));
-  Editor.InsText("\r\n");
-  Editor.GoFileTop(0);
-  Editor.SelectAll();
+  // On Screen 
+  Editor.AddTail(text + sep);
+  // Editor.SelectAll();
+}
+
+function doProcessForEditor(expandPram){
+  var text = get_target(expandPram);
+  operateScreen(text);
 }
 
 // -------------- entry point
 if(typeof(Editor) !== 'undefined'){
-  process()
+  doProcessForEditor();
 } else {
   if(typeof(WScript) !== 'undefined'){
-    WScript.Echo('This script is for sakura macro.')
+    WScript.Echo('This script is for sakura macro.');
   } else {
-    console.log('This script is for sakura macro.')
+    console.log('This script is for sakura macro.');
   }
 }
+
+}())
+// ----- end

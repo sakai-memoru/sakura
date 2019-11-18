@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 
 ///////////////////////////////////////
 // here-string CRLF
@@ -26,7 +26,11 @@ if(!Object.keys){
 }
 
 function get_template(){
-  var template = herestrings.toString().split("\r\n").slice(2,-2).join("\r\n")
+  var sep = '\r\n';
+  if(arguments.length){
+    sep = arguments[0]
+  }
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
   return template;
 }
 
@@ -59,7 +63,7 @@ function get_nowTimeString(){
   }
   var dtm = new Date();
   return [
-    ('0' + (dtm.getHours())).slice(-2),
+    ('0' + dtm.getHours()).slice(-2),
     ('0' + dtm.getMinutes()).slice(-2)
   ].join(sep);
 }
@@ -74,12 +78,14 @@ function get_todayDayString(){
 function doProcess(){
   // merge template
   var template = get_template();
-  var map_ = {};
-  map_.date_str = get_todayString('/');
-  map_.day_str = get_todayDayString();
-  map_.time_str = get_nowTimeString(':');
-  //map_.clip_text = Editor.GetClipboard(0);
-  map_.clip_text = '';
+  
+  var map_ = {
+    'date_str' : get_todayString('/'),
+    'day_str' : get_todayDayString(),
+    'time_str' : get_nowTimeString(':'),
+    //clip_text : Editor.GetClipboard(0),
+    'clip_text' : ''
+  };
   var merged_template = merge_map(template,map_);
   
   // screen operation

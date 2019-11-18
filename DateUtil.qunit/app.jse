@@ -1,14 +1,19 @@
+// Unit Test
+// + 好きなフォルダ配下
+//    + libs
+//      + DateUtil.jse
+//    + TestDateUtil
+//      + config
+//        + setting.js
+//      + app.jse
+// 
 (function(){
 
 // const
 var CONS_LIBPATH = '';
 var LIBS = [
-  "./lib/es5-shim.js",
-  "./lib/json2.js",
-  "./lib/date.jse",
-  "./lib/clipboard2.jse",
-  "./config/template.jse",
-  "./config/setting.js",
+  ".././lib/DateUtil.jse",
+  "./Config/setting.js",
 ]
 
 // commonalized for js   /////////////////////////////////////////////
@@ -22,7 +27,7 @@ function check_env(){
   return env_name;
 }
 var flag = check_env();
-
+var CONFIG = CONFIG || {};
 // load external libraries
 if(flag == "wsh"||flag == "sakura"){
   var objFS = new ActiveXObject("Scripting.FileSystemObject");
@@ -50,12 +55,28 @@ if(flag == "wsh"||flag == "sakura"){
 var debug_mode = CONFIG.DEBUG_MODE;
 
 // pretend console.log 
-if(typeof(console) === "undefined"){
-  if(flag == "wsh")  console={log : function(str){WScript.Echo(str)}};
+var console = console || {};
+if(console){
   if(debug_mode){
-    if(flag == "sakura")  console={log : function(str){Editor.TraceOut(str)}};
+    if(flag == "sakura"){
+      console.log=function(str){
+        var log_str = "[DEBUG] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.info=function(str){
+        var log_str = "[INFO] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+    };
+    if(flag == "wsh"){
+      console.info = function(str){WScript.Echo('[INFO] ' + str)};
+      console.log = function(str){WScript.Echo('[DEBUG] ' + str)};
+    }
   }else{
-    if(flag == "sakura")  console={log : function(str){null}};
+    if(flag == "wsh")  console.info = function(str){WScript.Echo(str)};
+    if(flag == "sakura")  console.info =function(str){Editor.InfoMsg(str)};
+    if(flag == "wsh")  console.log = function(str){null;};
+    if(flag == "sakura")  console.log = function(str){null;};
   }
 }
 // pretend process.exit
@@ -68,70 +89,38 @@ if(typeof(process) === "undefined"){
   }
 }
 
-// if would use clipboard, pretend clipboard
-// get clipboardData
-function get_clipboard(){
-  var ret;
-  if(flag == "wsh"){
-    var CLIP = new Clipboard();
-    ret = CLIP.getText();
-    // don't forgett to releace CLIP Object
-    CLIP.release();
-  }
-  if(flag == "sakura"){
-    ret = Editor.getClipboard();
-  }
-  return ret;
-}
-
-// set clipboard
-function set_clipboard(str){
-  if(flag == "wsh"){
-    var CLIP = new Clipboard();
-    CLIP.setText(str);
-    // don't forgett to releace CLIP Object
-    CLIP.release();
-  }
-  if(flag == "sakura"){
-    Editor.setClipboard(0,str);
-  }
-}
-
 // local functions
-
-// operate Editor screan (only sakura mode)
-function operate_screen(text){
-  // Operate Editor Screen 
-  Editor.GoFileEnd(0);
-  Editor.InsText(text);
-  Editor.Left(0);
-}
-
+// 
+null;
 
 // do process 
 function doProcess(){
 
   // move cursor to file end
-  var date_str = get_todayString('/');
-  var time_str = get_nowTimeString(':');
-  var clip_text = get_clipboard();
-  var template = get_template();
-  var dic = {
-    "date_str" : date_str,
-    "time_str" : time_str,
-    "clip_text" : clip_text
-  }
-  //console.log(date_str);
-  //console.log(time_str);
-  //console.log(clip_text);
-  //console.log('"' + template + '"');
-  var formatted_text = merge_map(template, dic);
-  //console.log(formatted_text);
-  operate_screen(formatted_text)
+  var date_str = DateUtil.get_todayString('/');
+  var time_str = DateUtil.get_nowTimeString(':');
+  var day_str =  DateUtil.get_todayDayString();
+  console.log(date_str);
+  console.log(time_str);  
+  console.log(day_str);  
+  var dtm = new Date("2019/11/18 07:04:04");
+  var format = "yy/MM/dd(ddd)hh:mm";
+  var format_str = DateUtil.format_date(dtm, format);
+  console.log('format_str = ' + format_str);
+  
 }
 
 // ------------------------------------------------ entry point
 // 
-process.exit(doProcess());
+if(typeof(Editor) !== 'undefined'){
+  process.exit(doProcess());
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    process.exit(doProcess());
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.'); // FIXME
+  }
+}
 
 }())

@@ -1,16 +1,46 @@
-﻿(function(){
+(function(){
 
 ///////////////////////////////////////
 // here-string CRLF
 //  ↓↓↓↓↓↓↓↓↓
 var herestrings = function(){
 /*
+---
+created: {{date_str3}}
+---
+
+# {{date_str2}}
 
 ## memo : {{date_str}} ({{day_str}}) {{time_str}} :
 
 - {{clip_text}}
 
 */
+}
+
+function replace_all(string, target, replacement) {
+  var result = "";
+  var offset = 0;
+  var target_length = target.length;
+  if (target_length === 0) {
+    for (var i = 0, c = string.length; i < c; i++) {
+      result += string[i];
+      result += replacement;
+    }
+    if (result.length)
+      return result.substr(0, result.length - replacement.length);
+    return result;
+  }
+  do {
+    var i = string.indexOf(target, offset);
+    if (i === -1) {
+      result += string.substring(offset);
+      return result;
+    }
+    result += string.substring(offset, i);
+    result += replacement;
+    offset = i + target_length;
+  } while (true);
 }
 
 if(!Object.keys){
@@ -26,7 +56,11 @@ if(!Object.keys){
 }
 
 function get_template(){
-  var template = herestrings.toString().split("\r\n").slice(2,-2).join("\r\n")
+  var sep = '\r\n';
+  if(arguments.length){
+    sep = arguments[0]
+  }
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
   return template;
 }
 
@@ -34,7 +68,7 @@ function merge_map(template, map_){
   var keys_ = Object.keys(map_);
   for(key_ in keys_){
     var value_ = map_[keys_[key_]];
-    template = template.replace( '{{' + keys_[key_] + '}}', value_);
+    template = replace_all(template, '{{' + keys_[key_] + '}}', value_);
   };
   return template;
 }
@@ -59,7 +93,7 @@ function get_nowTimeString(){
   }
   var dtm = new Date();
   return [
-    ('0' + (dtm.getHours())).slice(-2),
+    ('0' + dtm.getHours()).slice(-2),
     ('0' + dtm.getMinutes()).slice(-2)
   ].join(sep);
 }
@@ -74,12 +108,21 @@ function get_todayDayString(){
 function doProcess(){
   // merge template
   var template = get_template();
-  var map_ = {};
-  map_.date_str = get_todayString('/');
-  map_.day_str = get_todayDayString();
-  map_.time_str = get_nowTimeString(':');
-  //map_.clip_text = Editor.GetClipboard(0);
-  map_.clip_text = '';
+  
+  var date_str = get_todayString('/');
+  var day_str = get_todayDayString();
+  var time_str = get_nowTimeString(':');
+  var date_str2 = replace_all(date_str,'/','') + '.md';
+  var date_str3 = '20' + replace_all(date_str,'/','-') + 'T' + time_str + ':00+09:00';
+  var clip_text = Editor.GetClipboard(0);
+  var map_ = {
+    'date_str' : date_str,
+    'day_str' : day_str,
+    'time_str' : time_str,
+    'date_str2' : date_str2,
+    'date_str3' : date_str3,
+    'clip_text' : clip_text
+  }
   var merged_template = merge_map(template,map_);
   
   // screen operation

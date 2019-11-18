@@ -1,0 +1,129 @@
+// Template Utility for WSH and Editor
+//   function
+//     TEMPLATE.get_template()
+//     TEMPLATE.merge_map(template, map)
+//
+
+var TEMPLATE = TEMPLATE || {};
+
+TEMPLATE.sample_statement = function(){
+/*
+
+## {{date_str}} {{time_str}} :
+
+- {{clip_text}}
+
+*/
+}
+
+// private function
+TEMPLATE.replace_all = function(string, target, replacement) {
+  var result = "";
+  var offset = 0;
+  var target_length = target.length;
+  if (target_length === 0) {
+    for (var i = 0, c = string.length; i < c; i++) {
+      result += string[i];
+      result += replacement;
+    }
+    if (result.length)
+      return result.substr(0, result.length - replacement.length);
+    return result;
+  }
+  do {
+    var i = string.indexOf(target, offset);
+    if (i === -1) {
+      result += string.substring(offset);
+      return result;
+    }
+    result += string.substring(offset, i);
+    result += replacement;
+    offset = i + target_length;
+  } while (true);
+}
+
+// Extend Object.Keys
+if(!Object.keys){
+    Object.keys = function(obj){
+        var keys = [];
+        for(var i in obj){
+            if(obj.hasOwnProperty(i)){
+                keys.push(i);
+            }
+        }
+        return keys;
+    };
+}
+
+// public function
+TEMPLATE.get_template = function(template_statement,sep){
+  sep = sep || '\r\n';
+  var template = template_statement.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+TEMPLATE.merge_map = function(template, map_){
+  var keys_ = Object.keys(map_);
+  merged = template;
+  for(key_ in keys_){
+    var value_ = map_[keys_[key_]];
+    merged = TEMPLATE.replace_all(merged, '{{' + keys_[key_] + '}}', value_);
+  };
+  return merged;
+}
+
+// ---------------------- do debug
+function doDebugForWSH(){
+  var statement = TEMPLATE.sample_statement;
+  var template = TEMPLATE.get_template(statement);
+  WScript.Echo(template);
+  var map_ = {
+    'date_str' : '19/11/14',
+    'time_str' : '22:30',
+    'clip_text' : 'dammy'
+  }
+  var merged = TEMPLATE.merge_map(template,map_);
+  
+  WScript.Echo('merged = ' + merged);
+}
+
+function doDebugForEditor(){
+  var statement = TEMPLATE.sample_statement;
+  var template = TEMPLATE.get_template(statement);
+  Editor.TraceOut(template);
+  var map_ = {
+    'date_str' : '19/11/16',
+    'time_str' : '11:54',
+    'clip_text' : 'dammydammy'
+  }
+  var merged = TEMPLATE.merge_map(template,map_);
+  
+  Editor.TraceOut('merged = ' + merged);
+}
+
+
+// ----------------------- entry point
+var file_name = 'Template.jse';         // Set your module name collectly.
+                                        // Notice! If you rename this module file name.
+
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  return (isWSH || isEditor)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(file_name)){
+    doDebugForEditor();
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    if (is_module(file_name)){
+      doDebugForWSH();
+    }
+  } else {
+    console.log('[Warn] This script is available for jscript environment. A env is maybe node.')
+  }
+}

@@ -1,0 +1,117 @@
+(function(){
+
+///////////////////////////////////////
+// here-string CRLF
+//  ↓↓↓↓↓↓↓↓↓
+var herestrings = function(){
+/*
+
+## memo : {{date_str}} ({{day_str}}) {{time_str}} :
+
+- {{clip_text}}
+
+*/
+}
+function replace_all(string, target, replacement) {
+  var result = "";
+  var offset = 0;
+  var target_length = target.length;
+  if (target_length === 0) {
+    for (var i = 0, c = string.length; i < c; i++) {
+      result += string[i];
+      result += replacement;
+    }
+    if (result.length)
+      return result.substr(0, result.length - replacement.length);
+    return result;
+  }
+  do {
+    var i = string.indexOf(target, offset);
+    if (i === -1) {
+      result += string.substring(offset);
+      return result;
+    }
+    result += string.substring(offset, i);
+    result += replacement;
+    offset = i + target_length;
+  } while (true);
+}
+
+function get_template(sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+function merge_map(template, map_){
+  for(key_ in map_){
+    if(map_.hasOwnProperty(key_)){
+      var value_ = map_[key_];
+      template = replace_all(template, '{{' + key_ + '}}', value_);
+    }
+  };
+  return template;
+}
+
+function get_todayString(sep){
+  sep = sep || '/';
+  var dtm = new Date();
+  return [
+    ('' + dtm.getFullYear()).slice(-2),
+    ('0' + (dtm.getMonth() +1)).slice(-2),
+    ('0' + dtm.getDate()).slice(-2)
+  ].join(sep);
+}
+
+function get_nowTimeString(sep){
+  sep = sep || ':';
+  var dtm = new Date();
+  return [
+    ('0' + dtm.getHours()).slice(-2),
+    ('0' + dtm.getMinutes()).slice(-2)
+  ].join(sep);
+}
+
+function get_todayDayString(){
+  if(typeof(num) === 'undefined') num=3;
+  var aryDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  var dtm = new Date();
+  var dw = dtm.getDay();
+  var ret = aryDay[dw];
+  if(num !== 0){
+    ret = ret.substr(0, num);
+  }
+  return ret;
+}
+
+function doProcess(){
+  // merge template
+  var template = get_template();
+  
+  var map_ = {
+    'date_str' : get_todayString('/'),
+    'day_str' : get_todayDayString(),
+    'time_str' : get_nowTimeString(':'),
+    //clip_text : Editor.GetClipboard(0),
+    'clip_text' : ''
+  };
+  var merged_template = merge_map(template,map_);
+  
+  // screen operation
+  Editor.GoFileEnd(0);
+  Editor.InsText(merged_template);
+  Editor.Left(0);
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  doProcess();
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('This script is for sakura macro.');
+  } else {
+    console.log('This script is for sakura macro.');
+  }
+}
+
+}())

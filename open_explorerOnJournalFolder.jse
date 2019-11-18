@@ -1,0 +1,46 @@
+(function(){
+
+var CONS_TARGET_FOLDER = "journal";
+
+function get_journalFolder(){
+  var target_folder_name = CONS_TARGET_FOLDER;
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var doc_folder = objShell.SpecialFolders("MyDocuments");
+  var target_folder_path = objFS.BuildPath(doc_folder, target_folder_name);
+  objShell = null;
+  objFS = null;
+  return target_folder_path;
+}
+
+// 
+// Explorer でjournalフォルダを開く
+function doProcess(){
+  var target_ = get_journalFolder();
+  var cmd_statement = "explorer.exe " + target_
+  var objShell = new ActiveXObject("WScript.Shell");
+  
+  objShell.Run(cmd_statement, 1);
+  var objShell = null;
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  
+  doProcess();
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    doProcess();
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.');
+  }
+}
+
+}())

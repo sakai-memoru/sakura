@@ -1,8 +1,11 @@
+(function(){
+
 // 
 // node で編集ファイルを実行する
-function process(expandParam){ 
+function doProcess(expandParam){ 
   var target_ = Editor.ExpandParameter(expandParam);
   var cmd_statement = "node.exe " + target_
+  Editor.TraceOut(cmd_statement);
   Editor.ExecCommand(cmd_statement, 1)
 }
 
@@ -15,7 +18,7 @@ if(typeof(Editor) !== 'undefined'){
   // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
   //      選択中でない場合、カーソル位置の単語
   Editor.FileSave();
-  process('$F');
+  doProcess('$F');
   
 } else {
   if(typeof(WScript) !== 'undefined'){
@@ -24,3 +27,5 @@ if(typeof(Editor) !== 'undefined'){
     console.log('This script is for sakura macro. A env is maybe node.')
   }
 }
+
+}())

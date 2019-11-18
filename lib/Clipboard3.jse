@@ -1,0 +1,147 @@
+// Clipboard Utility for WSH and Editor
+//   function
+//     CLIP.get_clipboard()
+//     CLIP.set_clipboard(str)
+//
+
+// reference
+// WSH よりクリップボード、次の手
+// http://frog.raindrop.jp/knowledge/archives/002561.html
+
+var CLIP = CLIP || {};
+
+// OLE Command ID
+CLIP.OLECMDID_COPY = 12;
+CLIP.OLECMDID_PASTE = 13;
+CLIP.OLECMDID_SELECTALL = 17;
+
+CLIP.check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+CLIP.flag = CLIP.check_env();
+
+
+CLIP.Clipboard = function(){
+  // CLipboard class
+  // initialize IE
+  var objIE = new ActiveXObject('InternetExplorer.Application');
+  objIE.navigate("about:blank");
+  while (objIE.Busy){
+    WScript.Sleep(10);
+  }
+  
+  // add textarea
+  var _textarea = objIE.document.createElement("textarea");
+  objIE.document.body.appendChild(_textarea);
+  _textarea.focus();
+  
+  // CLipboard functions
+  this.setText = function(text){
+    _textarea.innerText = text;
+    objIE.execWB(CLIP.OLECMDID_SELECTALL, 0);
+    objIE.execWB(CLIP.OLECMDID_COPY, 0);    
+  }
+  
+  this.getText = function(){
+    _textarea.innerText = "";
+    objIE.execWB(CLIP.OLECMDID_PASTE, 0);
+    return _textarea.innerText;
+  }
+  
+  this.release = function(){
+    objIE.Quit();
+    objIE = null;
+  }
+};
+
+// if would use clipboard, pretend clipboard
+// get clipboardData
+CLIP.get_clipboard = function(){
+  var ret;
+  if(CLIP.flag == "wsh"){
+    var Clip = new CLIP.Clipboard();
+    ret = Clip.getText();
+    // don't forgett to releace CLIP Object
+    Clip.release();
+  }
+  if(CLIP.flag == "sakura"){
+    ret = Editor.getClipboard();
+  }
+  return ret;
+}
+
+// set clipboard
+CLIP.set_clipboard = function(str){
+  if(CLIP.flag == "wsh"){
+    var Clip = new CLIP.Clipboard();
+    Clip.setText(str);
+    // don't forgett to releace CLIP Object
+    Clip.release();
+  }
+  if(CLIP.flag == "sakura"){
+    Editor.ClipboardEmpty();
+    Editor.setClipboard(0,str);
+  }
+}
+
+// ---------------------- do debug
+function doDebugForWSH(){
+  // for WSH
+  WScript.Echo('------------------------// start debug');
+  var Clip = new CLIP.Clipboard();
+  WScript.Echo('pre = ' + Clip.getText());
+  var dummy1 = 'Dummy statement for putting into clipbord 1';
+  Clip.setText(dummy1);
+  WScript.Echo('post = ' + Clip.getText());
+  Clip.release(); // must do
+  
+  // for Both Editor and WSH
+  // WSH
+  WScript.Echo('get_clipboard = ' + CLIP.get_clipboard());
+  var dummy2 = 'Dummy statement for putting into clipbord 2';
+  CLIP.set_clipboard(dummy2);
+  WScript.Echo('get_clipboard = ' + CLIP.get_clipboard());
+}
+
+function doDebugForEditor(){
+  // Editor
+  Editor.TraceOut('get_clipboard = ' + CLIP.get_clipboard());
+  var dummy3 = 'Dummy statement for putting into clipbord from Editor 3';
+  CLIP.set_clipboard(dummy3);
+  Editor.TraceOut('get_clipboard = ' + CLIP.get_clipboard());
+  var dummy4 = 'Dummy statement for putting into clipbord from Editor 4';
+  CLIP.set_clipboard(dummy4);
+  Editor.TraceOut('get_clipboard = ' + CLIP.get_clipboard());
+}
+
+// ----------------------- entry point
+var file_name = 'Clipboard3.jse';         // Set your module name collectly.
+                                          // Notice! If you rename this module file name.
+
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  return (isWSH || isEditor)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(file_name)){
+    doDebugForEditor();
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    if (is_module(file_name)){
+      doDebugForWSH();
+    }
+  } else {
+    console.log('[Warn] This script is available for jscript environment. A env is maybe node.')
+  }
+}
