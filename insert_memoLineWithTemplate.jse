@@ -54,7 +54,7 @@ function merge_map(template, map_){
 }
 
 function get_todayString(sep){
-  sep = sep || '/';
+  if(typeof(sep) === 'undefined') sep='/';
   var dtm = new Date();
   return [
     ('' + dtm.getFullYear()).slice(-2),
@@ -64,7 +64,7 @@ function get_todayString(sep){
 }
 
 function get_nowTimeString(sep){
-  sep = sep || ':';
+  if(typeof(sep) === 'undefined') sep=':';
   var dtm = new Date();
   return [
     ('0' + dtm.getHours()).slice(-2),

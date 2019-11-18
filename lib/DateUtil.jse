@@ -1,4 +1,4 @@
-// DateUtil simply for WSH/Editor 
+// Simple DateUtil for WSH/Editor 
 //   function
 //     - DateUtil.get_todayString()
 //     - DateUtil.get_nowTimeString()
