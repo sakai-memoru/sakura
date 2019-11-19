@@ -1,8 +1,8 @@
 // Unit Test
 // + 好きなフォルダ配下
-//    + lib
-//      + DateUtil.jse
-//    + DateUtil.qunit
+//    + libs
+//      + Clipboard3.jse
+//    + Clipboard3.qunit
 //      + config
 //        + setting.js
 //      + app.jse
@@ -12,7 +12,7 @@
 // const
 var CONS_LIBPATH = '';
 var LIBS = [
-  ".././lib/DateUtil.jse",
+  ".././lib/Clipboard3.jse",
   "./Config/setting.js",
 ]
 
@@ -97,18 +97,11 @@ null;
 function doProcess(){
 
   // move cursor to file end
-  var DateUtil = exports.DateUtil;
-  
-  var date_str = DateUtil.get_todayString('/');
-  var time_str = DateUtil.get_nowTimeString(':');
-  var day_str =  DateUtil.get_todayDayString();
-  console.log(date_str);
-  console.log(time_str);  
-  console.log(day_str);  
-  var dtm = new Date("2019/11/18 07:04:04");
-  var format = "yy/MM/dd(ddd)hh:mm";
-  var format_str = DateUtil.format_date(dtm, format);
-  console.log('format_str = ' + format_str);
+  var CLIP = exports.CLIP;
+  var str = 'test for clipboard3 ....';
+  CLIP.set_clipboard(str);
+  var str_get = CLIP.get_clipboard();
+  console.log('str_get = ' + str_get);
   
 }
 

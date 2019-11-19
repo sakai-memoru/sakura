@@ -1,0 +1,11 @@
+QUnit.test( "Date Util Test", function( assert ) {
+  var CLIP = exports.CLIP;
+  var str = 'test for clipboard3 ....';
+  CLIP.set_clipboard(str);
+  var str_get = CLIP.get_clipboard();
+  //console.log('str_get = ' + str_get);
+  
+  // assert 1
+  assert.equal(str_get, str, "Clipboard3 - Passed! vaule = " + str_get);
+  
+});

@@ -1,0 +1,81 @@
+var exports = exports || {};
+
+(function(){
+
+// reference
+//   クリップボードのテキストを取り出して、VBScriptで扱う
+//   https://qiita.com/int_main_void/items/27c5d250f24cbc6ca025
+
+var CLS_ = {};
+
+// const
+var CONS_EXE_PWSH = "powershell.exe -noprofile -sta -command ";
+
+///////////////////////////////////////
+// here-string CRLF
+//  ↓↓↓↓↓↓↓↓↓
+var herestrings_GetText = function(){
+/*
+Add-Type -Assembly System.Windows.Forms;
+[System.Windows.Forms.Clipboard]::GetText();
+*/
+}
+
+var get_template_GetText = function(sep){
+  sep = sep || '\r\n';
+  var template = herestrings_GetText.toString().split(sep).slice(2,-2).join(' '); // 改行なし
+  return template;
+}
+
+var doBatchAndGetStdOut = function(target_){
+  var cmd_statement = CONS_EXE_PWSH + target_;
+  // WScript.Echo(cmd_statement);
+  var objShell = new ActiveXObject("WScript.Shell");
+  var objExec = objShell.Exec(cmd_statement);
+  objExec.StdIn.Close();
+  var text = objExec.StdOut.ReadAll()
+  objExec = null;
+  objShell = null;
+  return text;
+}
+
+CLS_.get_clipboard = function(){
+  var target_get_ = get_template_GetText();
+  var ret = doBatchAndGetStdOut(target_get_);
+  return ret;
+}
+
+exports.CLIPGETTER = CLS_;
+
+}())
+
+// ----------------------- entry point
+var file_name = 'ClipboardGetter.jse';         // Set your module name collectly.
+                                          // Notice! If you rename this module file name.
+
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  var isBrowser = (typeof(alert) !== "undefined");
+  return (isWSH || isEditor || isBrowser)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(file_name)){
+    var CLIPGETTER = exports.CLIPGETTER;
+    var text = CLIPGETTER.get_clipboard();
+    Editor.TraceOut('L069 = get_clipboard = ' + text);
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+      if (is_module(file_name)){
+      var CLIPGETTER = exports.CLIPGETTER;
+      var text = CLIPGETTER.get_clipboard();
+      WScript.Echo('L076 = get_clipboard = ' + text);
+    }
+  } else {
+    console.log('Test on IE11')
+  }
+}

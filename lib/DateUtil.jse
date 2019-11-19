@@ -1,5 +1,5 @@
 // Simple DateUtil for WSH/Editor 
-//   function
+//   static method
 //     - DateUtil.get_todayString()
 //     - DateUtil.get_nowTimeString()
 //     - DateUtil.get_todayDayString()
@@ -14,10 +14,14 @@
 //       + mm    : minutes 2 digit (ex)19
 //       + ss    : seconds 2 digit (ex)39
 //
-var DateUtil = DateUtil || {};
+var exports = exports || {};
+
+(function(){
+
+var CLS_ = {};
 
 // private function
-DateUtil.replace_all = function(string, target, replacement) {
+var replace_all = function(string, target, replacement) {
   var result = "";
   var offset = 0;
   var target_length = target.length;
@@ -42,30 +46,30 @@ DateUtil.replace_all = function(string, target, replacement) {
   } while (true);
 }
 
-DateUtil.convertTo_statement =function(format){
+var convertTo_statement =function(format){
   var statement = format;
   var aryForKey = ['yyyy', 'yy', 'MM', 'dddd', 'ddd', 'dd', 'hh', 'mm', 'ss'];
   var aryForVal = ['{{YYYY}}', '{{yy}}', '{{MM}}', '{{aaaa}}', '{{DDD}}', '{{dd}}', '{{hh}}', '{{mm}}', '{{ss}}'];
-  for(i in aryForKey){
+  for(var i in aryForKey){
     var key_ = aryForKey[i];
     var val_ = aryForVal[i];
-    statement = DateUtil.replace_all(statement, key_, val_);
+    statement = replace_all(statement, key_, val_);
   }
   return statement;
 }
 
-DateUtil.merge_map = function(template, map_){
+var merge_map = function(template, map_){
   var merged = template;
-  for(key_ in map_){
+  for(var key_ in map_){
     if(map_.hasOwnProperty(key_)){
       var value_ = map_[key_];
-      merged = DateUtil.replace_all(merged, '{{' + key_ + '}}', value_);
+      merged = replace_all(merged, '{{' + key_ + '}}', value_);
     }
   };
   return merged;
 }
 
-DateUtil.get_dateMap = function(dtm){
+var get_dateMap = function(dtm){
   var retMap = {};
   retMap.YYYY = '' + dtm.getFullYear();
   retMap.yy = retMap.YYYY.slice(-2);
@@ -74,13 +78,13 @@ DateUtil.get_dateMap = function(dtm){
   retMap.hh = ('0' + dtm.getHours()).slice(-2);
   retMap.mm = ('0' + dtm.getMinutes()).slice(-2);
   retMap.ss = ('0' + dtm.getSeconds()).slice(-2);
-  retMap.DDD = DateUtil.get_dayString(dtm);
-  retMap.aaaa = DateUtil.get_dayString(dtm, 0);
+  retMap.DDD = CLS_.get_dayString(dtm);
+  retMap.aaaa = CLS_.get_dayString(dtm, 0);
   return retMap;
 }
 
 // public
-DateUtil.get_todayString =  function(sep){
+CLS_.get_todayString =  function(sep){
   if(typeof(sep) === 'undefined') sep='/';
   var dtm = new Date();
   return [
@@ -90,7 +94,7 @@ DateUtil.get_todayString =  function(sep){
   ].join(sep);
 }
 
-DateUtil.get_nowTimeString = function(sep){
+CLS_.get_nowTimeString = function(sep){
   if(typeof(sep) === 'undefined') sep=':';
   if(arguments.length){
     sep = arguments[0]
@@ -102,7 +106,7 @@ DateUtil.get_nowTimeString = function(sep){
   ].join(sep);
 }
 
-DateUtil.get_todayDayString = function(num){
+CLS_.get_todayDayString = function(num){
   if(typeof(num) === 'undefined') num=3;
   var aryDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   var dtm = new Date();
@@ -114,27 +118,34 @@ DateUtil.get_todayDayString = function(num){
   return ret;
 }
 
-DateUtil.format_date = function(dtm, format){
+CLS_.format_date = function(dtm, format){
   var ret = '';
-  var map_ = DateUtil.get_dateMap(dtm);
-  var template = DateUtil.convertTo_statement(format);
-  ret = DateUtil.merge_map(template, map_);
+  //WScript.Echo('L123 dtm = ' + dtm.toString())
+  var map_ = get_dateMap(dtm);
+  var template = convertTo_statement(format);
+  ret = merge_map(template, map_);
   return ret;
 }
 
-DateUtil.get_dayString = function(dtm,num){
+CLS_.get_dayString = function(dtm,num){
   if(typeof(num) === 'undefined') num=3;
   var aryDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   var dw = dtm.getDay();
   var ret = aryDay[dw];
-  if(num !== 0){
+  //WScript.Echo(ret);
+  if(num){
     ret = ret.substr(0, num);
   }
   return ret;
 }
 
-// ---------------------- do debug
+exports.DateUtil = CLS_;
+
+}())
+
+// ----------------------- for debug 
 function doDebugForWSH(){
+  var DateUtil = exports.DateUtil;
   WScript.Echo('------------------------// start debug');
   WScript.Echo(DateUtil.get_todayString());
   WScript.Echo(DateUtil.get_todayString(''));
@@ -146,19 +157,21 @@ function doDebugForWSH(){
   WScript.Echo(DateUtil.get_todayDayString(2));
   WScript.Echo(DateUtil.get_todayDayString(0));
   
-  var dtm = new Date("1999-12-31 23:59:59");
+  var dtm = new Date("Mon Nov 18 18:00:00 UTC+0900 2018");
+  //var dtm = new Date();
   var format = 'yyyy-MM-dd(ddd)hh:mm:ss';
   var formatted = DateUtil.format_date(dtm, format);
   WScript.Echo(formatted);
 }
 
 function doDebugForEditor(){
-  var dtm = new Date("1999-12-31 23:59:59");
+  var DateUtil = exports.DateUtil;
+  //var dtm = new Date("1999-12-31 23:59:59");
+  var dtm = new Date("Mon Nov 19 18:00:00 UTC+0900 2019");
   var format = 'yy/MM/dd(ddd)hh:mm';
   var formatted = DateUtil.format_date(dtm, format);
   Editor.TraceOut(formatted);
 }
-
 
 // ----------------------- entry point
 var file_name = 'DateUtil.jse';         // Set your module name collectly.

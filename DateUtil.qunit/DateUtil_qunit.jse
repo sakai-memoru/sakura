@@ -1,35 +1,36 @@
 QUnit.test( "Date Util Test", function( assert ) {
+  var DateUtil = exports.DateUtil;
   // arrange
-  var dtm = new Date("2019/11/18 07:04:04");
+  var dtm = new Date("Tue Nov 19 18:00:00 UTC+0900 2019");
   var format = "yy/MM/dd(ddd)hh:mm";
   // act
   var format_str = DateUtil.format_date(dtm, format);
-  // assert
-  assert.equal(format_str,"19/11/18(Mon)07:04", "DateUtil.format_date - Passed! vaule = " + format_str);
+  // assert 1
+  assert.equal(format_str,"19/11/19(Tue)18:00", "DateUtil.format_date - Passed! vaule = " + format_str);
 
   // arrange
   var format = "yyyy-MM-ddThh:mm:00";
   // act
   var format_str = DateUtil.format_date(dtm, format);
-  // assert
-  assert.equal(format_str,"2019-11-18T07:04:00", "DateUtil.format_date - Passed! vaule = " + format_str);
+  // assert 2
+  assert.equal(format_str,"2019-11-19T18:00:00", "DateUtil.format_date - Passed! vaule = " + format_str);
   
   // arrange
   var now_ = new Date()
   // act
-  now_time_str = DateUtil.format_date(now_,'hh:mm')
-  now_time_str2 = DateUtil.format_date(now_,'hhmm')
-  now_date_str = DateUtil.format_date(now_,'yy/MM/dd')
-  now_date_str2 = DateUtil.format_date(now_,'yyMMdd')
-  now_date_str3 = DateUtil.format_date(now_,'yyyy年MM月dd日')
-  now_day_str = DateUtil.format_date(now_,'(ddd)')
-  now_day_str2 = DateUtil.format_date(now_,'dddd')
-  // assert
+  var now_time_str = DateUtil.format_date(now_,'hh:mm')
+  var now_time_str2 = DateUtil.format_date(now_,'hhmm')
+  var now_date_str = DateUtil.format_date(now_,'yy/MM/dd')
+  var now_date_str2 = DateUtil.format_date(now_,'yyMMdd')
+  var now_date_str3 = DateUtil.format_date(now_,'yyyy年MM月dd日')
+  var now_day_str = DateUtil.format_date(now_,'(ddd)')
+  var now_day_str2 = DateUtil.format_date(now_,'dddd')
+  // assert 3-9
   assert.equal(now_time_str,  DateUtil.get_nowTimeString(), "DateUtil.get_nowTimeString - Passed! vaule = " + now_time_str);
   assert.equal(now_time_str2, DateUtil.get_nowTimeString(''), "DateUtil.get_nowTimeString - Passed! vaule = " + now_time_str2);
   assert.equal(now_date_str,  DateUtil.get_todayString(), "DateUtil.get_todayString - Passed! vaule = " + now_date_str);
   assert.equal(now_date_str2,  DateUtil.get_todayString(''), "DateUtil.get_todayString - Passed! vaule = " + now_date_str2);
-  assert.equal(now_date_str3,  '2019年11月17日', "DateUtil.get_todayString - Passed! vaule = " + now_date_str3);
+  assert.equal(now_date_str3,  '2019年11月18日', "DateUtil.get_todayString - Passed! vaule = " + now_date_str3);
   assert.equal(now_day_str,  '(' + DateUtil.get_todayDayString() + ')', "DateUtil.get_todayDayString - Passed! vaule = " + now_day_str);
   assert.equal(now_day_str2,  DateUtil.get_todayDayString(0), "DateUtil.get_todayDayString - Passed! vaule = " + now_day_str2);
   

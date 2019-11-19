@@ -1,0 +1,324 @@
+
+var exports = exports || {};
+
+// Set your module name collectly.
+var this_file_name = 'Dialog.jse';  // Notice! If you rename this module file name.
+
+/////////////////////////////////////////////////////////////////  
+// Dialog.jse  
+// Dialog utility for Editor / WSH  
+//   19/11/19 memoru  
+//   
+//   static method  
+//     - DIALOG.show_messageBox(message_, windowTitle, buttons, icon)  
+//     - DIALOG.show_inputBox(message_, windowTitle, defaultText)  
+//     - DIALOG.show_multiLineInbox(message_, windowTitle, defaultText)  
+//     - DIALOG.show_openFileDialog()  
+//     - DIALOG.show_browseForFolder(message_, initialDirectory, noNewFolderButton)  
+//  
+
+var CONS = {};
+
+// dailog constant variables
+CONS.MB_ABORTRETRYIGNORE = 0x2;
+CONS.MB_OK               = 0x0;
+CONS.MB_OKCANCEL         = 0x1;
+CONS.MB_RETRYCANCEL      = 0x5;
+CONS.MB_YESNO            = 0x4;
+CONS.MB_YESNOCANCEL      = 0x3;
+
+CONS.MB_ICONEXCLAMATION  = 0x30;
+CONS.MB_ICONASTERISK     = 0x40;
+CONS.MB_ICONINFORMATION  = 0x40;
+CONS.MB_ICONQUESTION     = 0x20;
+CONS.MB_ICONERROR        = 0x10;
+CONS.MB_ICONHAND         = 0x10;
+CONS.MB_ICONSTOP         = 0x10;
+CONS.MB_ICONMASK         = 0xF0;
+
+CONS.MB_DEFBUTTON0 = 0x0;
+CONS.MB_DEFBUTTON1 = 0x100;
+CONS.MB_DEFBUTTON2 = 0x200;
+CONS.MB_DEFBUTTON3 = 0x300;
+
+CONS.IDABORT    = 3;
+CONS.IDCANCEL   = 2;
+CONS.IDCLOSE    = 8;
+CONS.IDCONTINUE = 1;
+CONS.IDHELP     = 9;
+CONS.IDIGNORE   = 5;
+CONS.IDNO       = 7;
+CONS.IDOK       = 10;
+CONS.IDRETRY    = 4;
+CONS.IDTRYAGAIN = 1;
+CONS.IDYES      = 6;
+CONS.IDTIMEOUT  = 32000;
+
+(function(){
+
+// **reference**  
+//  
+// JScript on WSHでファイル選択ダイアログを表示する方法のまとめ  
+//   https://eel3.hatenablog.com/entry/20090207/1233932887  
+// PowerShell Multi-Line Input Box Dialog, Open File Dialog,
+// Folder Browser Dialog, Input Box, and Message Box  
+//   https://blog.danskingdom.com/powershell-multi-line-input-box-dialog-open-file-dialog-folder-browser-dialog-input-box-and-message-box/  
+
+var CLS_ = {};
+
+// const --------------------------------------------------------
+// 
+var CONS_CMD_EXE = 'powershell -noprofile -Sta -command '
+var CONS_CMD_EXE_WITH_FILE = 'powershell -noprofile -Sta -file '
+var CONS_EXTERNAL_SCRIPT_PATH = '../scripts/Read-MultiLineInputBoxDialog.ps1 '
+
+// herestrings for code temnplate -------------------------------
+// 
+var herestrings_OpenFileDialog = function(){
+/*
+Set-StrictMode -version Latest
+
+Add-Type -assemblyName System.Windows.Forms
+
+$dialog = New-Object System.Windows.Forms.OpenFileDialog
+$dialog.Filter = 'Text Files|*.txt|Csv Files|*.csv|All Files|*.*'
+$dialog.InitialDirectory = '.'
+
+[void] $dialog.ShowDialog()
+$dialog.FileName
+*/
+}
+
+var herestrings_BrowseForFolder = function(){
+/*
+$browseForFolderOptions = 0
+if ({{NoNewFolderButton}}) { $browseForFolderOptions += 512 }
+
+$objShell = New-Object -ComObject Shell.Application
+$folder = $objShell.BrowseForFolder(0, '{{message}}', $browseForFolderOptions, '{{initialDirectory}}')
+if ($folder) { $selectedDirectory = $folder.Self.Path } else { $selectedDirectory = '' }
+[System.Runtime.Interopservices.Marshal]::ReleaseComObject($objShell) > $null
+$selectedDirectory
+*/
+}
+
+var herestrings_MessageBox = function(){
+/*
+Set-StrictMode -version Latest
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.MessageBox]::Show('{{message}}', '{{windowTitle}}', {{buttons}}, {{icon}} )
+*/
+}
+
+var herestrings_InputBox = function(){
+/*
+Add-Type -AssemblyName Microsoft.VisualBasic
+return [Microsoft.VisualBasic.Interaction]::InputBox('{{message}}', '{{windowTitle}}', '{{defaultText}}')
+*/
+}
+
+var herestrings_ReadMultiLineInputBoxDialog = function(){
+/*
+-message '{{message}}'
+-windowTitle '{{windowTitle}}'
+-defaultText '{{defaultText}}'
+*/
+}
+
+// private methods ----------------------------------------------
+// 
+function replace_all(string, target, replacement) {
+  var result = "";
+  var offset = 0;
+  var target_length = target.length;
+  if (target_length === 0) {
+    for (var i = 0, c = string.length; i < c; i++) {
+      result += string[i];
+      result += replacement;
+    }
+    if (result.length)
+      return result.substr(0, result.length - replacement.length);
+    return result;
+  }
+  do {
+    var i = string.indexOf(target, offset);
+    if (i === -1) {
+      result += string.substring(offset);
+      return result;
+    }
+    result += string.substring(offset, i);
+    result += replacement;
+    offset = i + target_length;
+  } while (true);
+}
+
+if(!Object.keys){
+    Object.keys = function(obj){
+        var keys = [];
+        for(var i in obj){
+            if(obj.hasOwnProperty(i)){
+                keys.push(i);
+            }
+        }
+        return keys;
+    };
+}
+
+function merge_map(template, map_){
+  var keys_ = Object.keys(map_);
+  for(key_ in keys_){
+    var value_ = map_[keys_[key_]];
+    template = replace_all(template, '{{' + keys_[key_] + '}}', value_);
+  };
+  return template;
+}
+
+function get_template(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+var doBatchAndGetStdOut = function(target_){
+  // WScript.Echo(target_);
+  var objShell = new ActiveXObject("WScript.Shell");
+  var objExec = objShell.Exec(target_);
+  objExec.StdIn.Close();
+  var text = objExec.StdOut.ReadAll()
+  objExec = null;
+  objShell = null;
+  return text;
+}
+
+// static methods -----------------------------------------------
+// 
+CLS_.show_openFileDialog = function(){
+  var target_ = get_template(herestrings_OpenFileDialog);
+  var cmd_statement = CONS_CMD_EXE + target_;
+  var ret = doBatchAndGetStdOut(cmd_statement);
+  return ret;
+}
+
+CLS_.show_messageBox = function(message_, windowTitle, buttons, icon){
+  var target_ = get_template(herestrings_MessageBox);
+  var map_ = {
+    'message' : message_,
+    'windowTitle' : windowTitle,
+    'buttons' : buttons, //CONS
+    'icon' : icon  //CONS
+  };
+  var target_ = merge_map(target_, map_);
+  var cmd_statement = CONS_CMD_EXE + target_;
+  var ret = doBatchAndGetStdOut(cmd_statement);
+  return ret;
+}
+
+CLS_.show_inputBox = function(message_, windowTitle, defaultText){
+  var target_ = get_template(herestrings_InputBox);
+  var map_ = {
+    'message' : message_,
+    'windowTitle' : windowTitle,
+    'defaultText' : defaultText
+  };
+  var target_ = merge_map(target_, map_);
+  var cmd_statement = CONS_CMD_EXE + target_;
+  var ret = doBatchAndGetStdOut(cmd_statement);
+  return ret;
+}
+
+CLS_.show_browseForFolder = function(message_, initialDirectory, noNewFolderButton){
+  var target_ = get_template(herestrings_BrowseForFolder);
+  var map_ = {
+    'message' : message_,
+    'initialDirectory' : initialDirectory,
+    'noNewFolderButton' : noNewFolderButton //bool
+  };
+  var target_ = merge_map(target_, map_);
+  var cmd_statement = CONS_CMD_EXE + target_;
+  var ret = doBatchAndGetStdOut(cmd_statement);
+  return ret;
+}
+
+CLS_.show_multiLineInbox  = function(message_, windowTitle, defaultText){
+  var target_ = get_template(herestrings_ReadMultiLineInputBoxDialog, ' '); // 改行なし
+  var map_ = {
+    'message' : message_,
+    'windowTitle' : windowTitle,
+    'defaultText' : defaultText
+  };
+  var target_ = merge_map(target_, map_);
+  var cmd_statement_with_file = CONS_CMD_EXE_WITH_FILE + CONS_EXTERNAL_SCRIPT_PATH + target_;
+  //WScript.Echo('L242 : ' + cmd_statement_with_file);
+  var ret = doBatchAndGetStdOut(cmd_statement_with_file);
+  return ret;
+}
+
+exports.DIALOG = CLS_;
+
+}())
+
+
+// --------------------------------------------------- entry point
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  var isBrowser = (typeof(alert) !== "undefined");
+  return (isWSH || isEditor || isBrowser)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(this_file_name)){
+    var DIALOG = exports.DIALOG;
+    var text = DIALOG.show_openFileDialog();
+    Editor.TraceOut('L275 = openFileDialog = ' + text);
+    
+    var message_ = 'Yes or No or Cancel?';
+    var windowTitle = 'Choice';
+    var buttons = CONS.MB_YESNOCANCEL;
+    var icon = CONS.MB_ICONQUESTION;
+    var res = DIALOG.show_messageBox(message_, windowTitle, buttons, icon);
+    Editor.TraceOut('L282 = res = ' + res);
+    
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    if (is_module(this_file_name)){
+      var DIALOG = exports.DIALOG;
+      var text = DIALOG.show_openFileDialog();
+      WScript.Echo('L290 : filename = ' + text);
+      
+      var message_ = 'Yes or No or Cancel?';
+      var windowTitle = 'Choice';
+      var buttons = CONS.MB_YESNOCANCEL;
+      //WScript.Echo('L295 : buttons = ' + buttons);
+      var icon = CONS.MB_ICONQUESTION;
+      
+      var res = DIALOG.show_messageBox(message_, windowTitle, buttons, icon);
+      WScript.Echo('L299 : res = ' + res);
+      
+      var message_ = 'Please put your message.';
+      var windowTitle = 'Message InputBox';
+      var defaultText = 'Hello Box!';
+      var input_ = DIALOG.show_inputBox(message_, windowTitle, defaultText);
+      WScript.Echo('L305 : input_ = ' + input_);
+      
+      
+      var message_ = 'Please select a directory.';
+      var initialDirectory = './';
+      var noNewFolderButton = false;
+      var floder_name = DIALOG.show_browseForFolder(message_, initialDirectory, noNewFolderButton);
+      WScript.Echo('L312 : floder_name = ' + floder_name);
+      
+      var message_ = 'Please put your message.';
+      var windowTitle = 'Message InputBox';
+      var defaultText = 'Hello Multi line Box!';
+      var input_ = DIALOG.show_multiLineInbox(message_, windowTitle, defaultText);
+      WScript.Echo('L318 : input_ = ' + input_);
+
+    }
+  } else {
+    console.log('Test on IE11')
+  }
+}
