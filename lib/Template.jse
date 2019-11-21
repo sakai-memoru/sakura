@@ -4,9 +4,13 @@
 //     TEMPLATE.merge_map(template, map)
 //
 
-var TEMPLATE = TEMPLATE || {};
+var exports = exports || {};
 
-TEMPLATE.sample_statement = function(){
+(function(){
+
+var CLS_ = {};
+
+CLS_.sample_statement = function(){
 /*
 
 ## {{date_str}} {{time_str}} :
@@ -17,7 +21,7 @@ TEMPLATE.sample_statement = function(){
 }
 
 // private function
-TEMPLATE.replace_all = function(string, target, replacement) {
+var replace_all = function(string, target, replacement) {
   var result = "";
   var offset = 0;
   var target_length = target.length;
@@ -56,24 +60,29 @@ if(!Object.keys){
 }
 
 // public function
-TEMPLATE.get_template = function(template_statement,sep){
+CLS_.get_template = function(template_statement,sep){
   sep = sep || '\r\n';
   var template = template_statement.toString().split(sep).slice(2,-2).join(sep);
   return template;
 }
 
-TEMPLATE.merge_map = function(template, map_){
+CLS_.merge_map = function(template, map_){
   var keys_ = Object.keys(map_);
   merged = template;
   for(key_ in keys_){
     var value_ = map_[keys_[key_]];
-    merged = TEMPLATE.replace_all(merged, '{{' + keys_[key_] + '}}', value_);
+    merged = replace_all(merged, '{{' + keys_[key_] + '}}', value_);
   };
   return merged;
 }
 
+exports.TEMPLATE = CLS_;
+
+}())
+
 // ---------------------- do debug
 function doDebugForWSH(){
+  var TEMPLATE = exports.TEMPLATE;
   var statement = TEMPLATE.sample_statement;
   var template = TEMPLATE.get_template(statement);
   WScript.Echo(template);
@@ -88,6 +97,7 @@ function doDebugForWSH(){
 }
 
 function doDebugForEditor(){
+  var TEMPLATE = exports.TEMPLATE;
   var statement = TEMPLATE.sample_statement;
   var template = TEMPLATE.get_template(statement);
   Editor.TraceOut(template);
@@ -124,6 +134,6 @@ if(typeof(Editor) !== 'undefined'){
       doDebugForWSH();
     }
   } else {
-    console.log('[Warn] This script is available for jscript environment. A env is maybe node.')
+    console.log('on IE 11')
   }
 }

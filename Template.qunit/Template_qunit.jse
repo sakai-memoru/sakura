@@ -1,0 +1,11 @@
+QUnit.test( "Date Util Test", function( assert ) {
+  var CLIP = exports.CLIPGETTER;
+  var str = 'test for clipboard3 ....';
+  //CLIP.set_clipboard(str);
+  var str_get = CLIP.get_clipboard();
+  console.log('str_get = ' + str_get);
+  
+  // assert 1
+  assert.equal(1, 1, "glabal variable check");
+  
+});

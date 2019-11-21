@@ -1,0 +1,732 @@
+var exports = exports || {};
+
+// Set your module name collectly.
+var this_file_name = 'StringUtil.jse';  // Notice! ifyou rename this module file name.
+
+// StringUtil.jse  
+// Simple StringUtil for WSH/Editor  
+//   judge and operating strings, cant not be available for number, object, etc
+//   19/11/20
+//   
+//   以下、単体実施済のStatic Method
+//  
+//   static method  
+//     StringUtil.abbreviate = function(str, num, addstr)  
+//     StringUtil.camelize = function(str, sep, concat_sep)  
+//     StringUtil.capitalize = function(str, sep)  
+//     StringUtil.chopHead = function(str, num)  
+//     StringUtil.chopTail = function(str, num)  
+//     StringUtil.contains = function(str, search_str, start_num)  
+//     StringUtil.convertto_float = function(str,radix)  
+//     StringUtil.convertto_int = function(str)  
+//     StringUtil.defaultString = function(str, replacement)  
+//     StringUtil.defaultValue = function(obj, replacement)  
+//     StringUtil.encodeXmlChar = function(str)  
+//     StringUtil.endsWith = function(str, suffix_, start_num)  
+//     StringUtil.isAlpha = function(str)  
+//     StringUtil.isEMail = function(str)  
+//     StringUtil.isEmpty =  function(str)  
+//     StringUtil.isNull =  function(str)  
+//     StringUtil.isNumber = function(str)  
+//     StringUtil.isNumeric = function(str)   
+//     StringUtil.isString =  function(str)  
+//     StringUtil.left = function(str, len)  
+//     StringUtil.lpad = function(str, len, padstr)  
+//     StringUtil.ltrim = function(str)  
+//     StringUtil.put_bracket = function(str, bra, bra_closed)  
+//     StringUtil.repeat = function(str, len)  
+//     StringUtil.right = function(str, len)  
+//     StringUtil.rpad = function(str, len, padstr)  
+//     StringUtil.rtrim = function(str)  
+//     StringUtil.snakelize = function(str, sep, concat_sep)  
+//     StringUtil.snakelize_forCapital = function(str, sep, concat_sep)  
+//     StringUtil.startsWith = function(str, prefix_)  
+//     StringUtil.trim = function(str)  
+//     StringUtil.uncapitalize = function(str, sep)  
+// 
+
+
+(function(){
+
+var CLS_ = {};
+
+// private function
+// 
+var vbEval = function(expression){
+  var objSC = new ActiveXObject("ScriptControl");
+  objSC.language = "VBScript";
+  var ret = objSC.Eval(expression);
+  return ret;
+};
+
+var vbRun = function(str, func_name, expression, charset){ // FIXME
+  var objSC = new ActiveXObject("ScriptControl");
+  objSC.language = "VBScript";
+  objSC.AddCode(expression);
+  var ret = objSC.Run(func_name, str, charset);
+  objS = null;
+  return ret;
+};
+
+var get_template = function(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+var merge_map = function(template, map_){
+  var keys_ = Object.keys(map_);
+  for(key_ in keys_){
+    var value_ = map_[keys_[key_]];
+    template = template.replace( '{{' + keys_[key_] + '}}', value_);
+  };
+  return template;
+}
+
+// public
+// 
+CLS_.isNull =  function(str){
+  return (typeof(str) === "undefined" || str === null)
+}
+
+CLS_.isString =  function(str){
+  return (CLS_.isNull(str) || typeof(str) === "string")
+}
+
+CLS_.isEmpty =  function(str){
+  if(!CLS_.isString(str)) return false;
+  return (str.length == 0 || str.match(/(\S{1,})/) == null)
+}
+
+CLS_.isNumeric = function(str) { // FIXME
+  if(!CLS_.isString(str)) return false;
+  if(CLS_.isEmpty(str)) return false;
+  return !isNaN(str.replace(/\,/gi, ""));
+};
+
+CLS_.isNumber = function(str){
+  if(!CLS_.isNumeric(str)) return false;
+  return !str.match(/[^0-9]/gi);
+};
+
+CLS_.isAlpha = function(str){
+  if(!CLS_.isString(str)) return false;
+  if(CLS_.isEmpty(str)) return false;
+  return !str.match(/[^a-z]/gi);
+};
+
+CLS_.defaultString = function(str, replacement){
+  if(CLS_.isNull(str)) return replacement;
+  if(!CLS_.isString(str)) return str;
+  return (CLS_.isEmpty(str) ? replacement : str);
+};
+
+CLS_.defaultValue = function(obj, replacement){
+  if(CLS_.isNull(obj)) return replacement;
+  return (CLS_.isEmpty(obj) ? replacement : obj);
+};
+
+CLS_.left = function(str, len){
+  if(CLS_.isNull(str)) return str;
+  if(!CLS_.isString(str)) return str;
+  return (str.slice(0, len));
+};
+
+CLS_.right = function(str, len){
+  if(CLS_.isNull(str)) return str;
+  if(!CLS_.isString(str)) return str;
+  return (str.slice(len * -1));
+};
+
+CLS_.repeat = function(str, len){
+  if(!CLS_.isString(str)) return str;
+  var ret = '';
+  for (var i=0; i < len; ++i){
+    ret += str;
+  }
+  return ret;
+};
+
+CLS_.trim = function(str){
+  if(!CLS_.isString(str)) return str;
+  return str.replace(/^\s+|\s+$/g, "");
+};
+
+CLS_.ltrim = function(str){
+  if(!CLS_.isString(str)) return str;
+  return str.replace(/^\s+/, "");
+};
+
+CLS_.rtrim = function(str){
+  if(!CLS_.isString(str)) return str;
+  return str.replace(/\s+$/, "");
+};
+
+CLS_.rpad = function(str, len, padstr){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(padstr) === 'undefined') padstr = ' ';
+  return CLS_.right((CLS_.repeat(padstr, len) + str),len);
+};
+
+CLS_.lpad = function(str, len, padstr){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(padstr) === 'undefined') padstr = ' ';
+  return CLS_.left((str + CLS_.repeat(padstr, len)), len);
+};
+
+CLS_.startsWith = function(str, prefix_){
+  if(!CLS_.isString(str)) return str;
+  return (str.lastIndexOf(prefix_, 0) === 0);
+};
+
+CLS_.endsWith = function(str, suffix_, start_num){
+  if(!CLS_.isString(str)) return str;
+  var len_str = str.length;
+  var len_suf = suffix_.length;
+  var pos = len_str;
+  if (arguments.length > 2){
+    if(typeof(start_num) !== 'undefined'){
+      pos = start_num ? parseInt(start_num) : 0;
+      if(isNaN(pos)){
+        pos = 0;
+      }
+    }
+  }
+  var pos_end = Math.min(Math.max(pos,0), len_str);
+  var pos_start = pos_end - len_suf;
+  if(pos_start < 0){
+    return false;
+  }
+  return (str.lastIndexOf(suffix_, pos_start) == pos_start);
+};
+
+CLS_.chopHead = function(str, num){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(num) === 'undefined') num = 1;
+  var len = str.length;
+  return str.substr(num, len);
+};
+
+CLS_.chopTail = function(str, num){
+  if(!CLS_.isString(str)) return str;
+  var len = str.length;
+  return str.substr(0,len - num);
+};
+
+CLS_.abbreviate = function(str, num, addstr){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(addstr) === 'undefined') addstr = ' ...' ;
+  if(str.length < addstr.length) return str; // FIXME no abbreviate
+  var ret = '';
+  if (str.length <= num) {return str;}
+  
+  if (str.length + addstr.length >= num){
+    var len = num - addstr.length;
+    return CLS_.lpad(str, len) + addstr;
+  } else {
+    return str;
+  }
+};
+
+CLS_.contains = function(str, search_str, start_num){
+  if(!CLS_.isString(str)) return false;
+  if(!CLS_.isString(search_str)) return false;
+  var pos = 0;
+  if(typeof(start_num) !== 'undefined'){
+    pos = start_num ? parseInt(start_num) : 0;
+    if(isNaN(pos)){
+      pos = 0;
+    }
+  }
+  return (str.indexOf(search_str, pos) != -1);
+};
+
+CLS_.capitalize = function(str, sep){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(sep) === 'undefined') sep = ' ';
+  var ary = str.split(sep);
+  var len = ary.length;
+  for(var i = 0; i < len; i++){
+    ary[i] = (ary[i].substr(0,1).toUpperCase() + CLS_.chopHead(ary[i])).toString();
+  }
+  var ret = ary.join(sep);
+  //console.log(ret);
+  return ret;
+};
+
+CLS_.uncapitalize = function(str, sep){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(sep) === 'undefined') sep = ' ';
+  var ary = str.split(sep);
+  var len = ary.length;
+  for(var i = 0; i < len; i++){
+    ary[i] = ary[i].substr(0,1).toLowerCase() + CLS_.chopHead(ary[i]);
+  }
+  return ary.join(sep);
+};
+
+CLS_.camelize = function(str, sep, concat_sep){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(sep) === 'undefined') sep = ' ';
+  if(typeof(concat_sep) === 'undefined') concat_sep = '';
+  var ary = str.split(sep);
+  var len = ary.length;
+  ary[0] = CLS_.uncapitalize(ary[0]);
+  
+  if(len == 1) return ary.join(concat_sep);
+  for(var i = 1; i < len; i++){
+    ary[i] = CLS_.capitalize(ary[i]);
+  }
+  return ary.join(concat_sep);
+}
+
+CLS_.snakelize = function(str, sep, concat_sep){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(sep) === 'undefined') sep = ' ';
+  if(typeof(concat_sep) === 'undefined') concat_sep = '_';
+  var ary = str.split(sep);
+  var len = ary.length;
+  for(var i = 0; i < len; i++){
+    ary[i] = ary[i].toLowerCase();
+  }
+  return ary.join(concat_sep);
+}
+
+CLS_.snakelize_forCapital = function(str, sep, concat_sep){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(sep) === 'undefined') sep = ' ';
+  if(typeof(concat_sep) === 'undefined') concat_sep = '_';
+  var ary = str.split(sep);
+  var len = ary.length;
+  for(i = 0; i < len; i++){
+    ary[i] = ary[i].toUpperCase();
+  }
+  return ary.join(concat_sep);
+}
+
+CLS_.put_bracket = function(str, bra, bra_closed){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(bra) === 'undefined')  bra = '"';
+  if(typeof(bra_closed) === 'undefined') bra_closed = bra;
+  return bra + str + bra_closed;
+}
+
+CLS_.convertto_int = function(str){
+  var num = parseInt(str);
+  return (num ? num : str);
+};
+
+CLS_.convertto_float = function(str,radix){
+  var num = parseFloat(str, radix);
+  return (num ? num : str);
+};
+
+// ------------------------------- below module , not yet tested.
+//////////////////////////////////////////////////////////////////
+// // ---- 以下は、単体未実施  
+// StringUtil.convert_charSet = function(str, charset)  
+// StringUtil.convertto_date = function(obj, sep)  
+// StringUtil.decodeXmlChar = function(str)  
+// StringUtil.formatCurrency = function(str, numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits)  
+// StringUtil.formatDateTime = function(str, namedFormat)  
+// StringUtil.formatNumber = function(str, numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits)  
+// StringUtil.formatPercent = function(numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits)  
+// StringUtil.isDate = function(obj,sep)  
+// StringUtil.isTime = function(obj,sep)  
+// StringUtil.toHankaku = function(str)  
+// StringUtil.toZenkaku = function(obj)  
+var CONS = {};
+CONS.vbTristateTrue       = -1;
+CONS.vbTristateFalse      =  0;
+CONS.vbTristateUseDefault = -2;
+
+CONS.vbGeneralDate = 0;
+CONS.vbLongDate    = 1;
+CONS.vbShortDate   = 2;
+CONS.vbLongTime    = 3;
+CONS.vbShortTime   = 4;
+
+CONS.fullSize1 = function(){
+/*
+０１２３４５６７８
+ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ
+ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ
+をぁぃぅぇぉゃゅょっあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん
+ヲァィゥェォャュョッアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン
+　！”“＃＄％＆’‘（）＊＋，－．／：；＜＝＞？＠［￥］＾＿｛｜｝～。「」、・ー‐‘"
+*/
+}
+
+CONS.halfSize1 = function(){
+/*
+0123456789
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ
+ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ
+ !\"\"#$%&''()*+,-./:;<=>?@[\\]^_{|}~｡｢｣,･ｰ-`
+*/
+}
+
+CONS.fullSize2 = function(){
+/*
+がぎぐげござじずぜぞだぢづでどばびぶべぼ
+ぱぴぷぺぽ
+ガギグゲゴザジズゼゾダヂヅデドバビブベボ
+パピプペポ
+ヴ
+*/
+}
+
+CONS.halfSize2 =  function(){
+/*
+ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞ
+ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ
+ｶﾞｷﾞｸﾞｹﾞｺﾞｻﾞｼﾞｽﾞｾﾞｿﾞﾀﾞﾁﾞﾂﾞﾃﾞﾄﾞﾊﾞﾋﾞﾌﾞﾍﾞﾎﾞ
+ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ
+ｳﾞ
+*/
+}
+
+
+var herestrings_convert_charSet_function = function(){
+/*
+Function convert_charSet(str, charset);
+   Set objADOStream = new ActiveXObject("ADODB.Stream");
+   
+   objADOStream.Type = 2;
+   objADOStream.Charset = charset;
+   objADOStream.Open();
+   objADOStream.WriteText(str);
+   
+   objADOStream.Position = 0;
+   objADOStream.Type = 1;
+   Select Case UCase(charset);
+   Case "UNICODE" objADOStream.Position = 2;
+   Case "UTF-16"  objADOStream.Position = 2;
+   Case "UTF-8"   objADOStream.Position = 3;
+   Case Else      objADOStream.Position = 0;
+   End Select;
+   
+   Dim strInputBuffer = objADOStream.Read();
+   For i = 1 to LenB(strInputBuffer);
+      convert = convert & \"%\" & Right(\"00\" & UCase(Hex(AscB(MidB(strInputBuffer, i, 1)))), 2);
+   Next;
+   
+   objADOStream.Close();
+   Set objADOStream = Nothing;
+End Function;
+*/
+}
+
+CLS_.toHankaku = function(str){
+  if(CLS_.isEmpty(str)){return str;}
+  var ret = str.toString();
+  var char_ = "";
+  var pos = 0;
+  
+  var fullSize1 = get_template(CONS.fullSize1);
+  var halfSize1 = get_template(CONS.halfSize1);
+  var len1 = fullSize1.length;
+  for (var i=0 ; i < len1; ++i){
+    char_ = fullSize1.charAt(i);
+    while ((pos = ret.indexOf(char_)) >= 0){
+      ret = ret.substr(0, pos) + halfSize1.charAt(i) + str.substr(pos + 1);
+    }
+  }
+  var fullSize2 = get_template(CONS.fullSize2);
+  var halfSize2 = get_template(CONS.halfSize2);
+  var len2 = fullSize2.length;
+  for (var i=0, l=CONS.fullSize2.length; i<l; ++i){
+    char_ = fullSize2.charAt(i);
+    while ((pos = ret.indexOf(char_)) >= 0){
+      ret = ret.substr(0, pos) + halfSize2.substring(i * 2, i * 2 + 2) + ret.substr(pos + 1);
+    }
+  }
+  return ret;
+};
+
+CLS_.toZenkaku = function(obj){
+  if(CLS_.isEmpty(obj)){return obj;}
+  var ret = obj.toString();
+  var char_ = "";
+  var pos = 0;
+  var fullSize1 = get_template(CONS.fullSize1);
+  var halfSize1 = get_template(CONS.halfSize1);
+  var len1 = CONS.halfSize1.length
+  for (var i=0; i < len1; i+=2){
+    char_ = halfSize1.substring(i, i + 2);
+    while ((pos = ret.indexOf(char_)) >= 0){
+      ret = ret.substr(0, pos) + fullSize1.charAt(i / 2) + ret.substr(pos + 2);
+    }
+  }
+  var fullSize2 = get_template(CONS.fullSize2);
+  var halfSize2 = get_template(CONS.halfSize2);
+  var len2 = CONS.halfSize2.length
+  for (var i=0; i < len2; ++i){
+    char_ = halfSize2.charAt(i);
+    while ((pos = ret.indexOf(char_)) >= 0){
+      ret = ret.substr(0, pos) + fullSize2.charAt(i) + ret.substr(pos + 1);
+    }
+  }
+  return ret;
+};
+
+CLS_.isEMail = function(str){
+  if(CLS_.isEmpty(str)){return false;}
+  if(str.match(/[^0-9a-z_\x2D.@]/i)){return false;}
+  if(!str.match(/[0-9a-z_\x2D.]+@[0-9a-z_\x2D.]+\.[0-9a-z_\x2D]+/i)){return false;}
+  if(str.match(/@/g).length >= 2){return false;}
+  return true;
+};
+
+CLS_.isDate = function(obj,sep){
+  //if(!CLS_.isEmpty(obj)){return false;}
+  var aryDtm = [];
+  var objDtm = null;
+  var dtm_str = '';
+  var y = 0, m = 0, d = 0;
+  if(typeof(obj) === 'string'){
+    dtm_str = obj;
+  } else {
+    dtm_str = obj.toString();
+  }
+  console.log(dtm_str);
+  if(sep && sep != "/"){
+    dtm_str = dtm_str.replace(new RegExp("\\" + sep, "g"), "/"); //FIXME
+  }
+  var regex = new RegExp("(年|月)", "g")
+  dtm_str = dtm_str.replace(regex,"/");
+  var regex = new RegExp("(日)", "g")
+  dtm_str = dtm_str.replace(regex,"");
+  if(dtm_str.indexOf("/") < 0){
+    if(dtm_str.length < 6 || 8 < dtm_str.length){
+      return false;
+    }
+    
+    dtm_str = ("00000000" + dtm_str).slice(-8);
+    aryDtm = [dtm_str.substr(0, 4), dtm_str.substr(4, 2), dtm_str.substr(6, 2)];
+  } else {
+    if((dtm_str = dtm_str.split(/\//)).length < 3){
+      return false;
+    }
+  }
+  
+  y = Number(aryDtm[0]); 
+  if(y < 99) y += 2000;
+  m = Number(aryDtm[1]);
+  d = Number(aryDtm[2]);
+  
+  objDtm = new Date(y + "/" + m + "/" + d);
+  
+  return (y == objDtm.getFullYear() && m == (objDtm.getMonth()+1) && d == objDtm.getDate());
+};
+
+CLS_.isTime = function(obj,sep){
+  if(obj.isEmpty()){return false;}
+  var aryTime = [];
+  var objTime = null;
+  var d = 0, h = 0, m = 0, s = 0;
+  var timeStr = obj.toString();
+  if(sep && sep != ":"){
+    timeStr = timeStr.replace(new RegExp("\\" + sep, "g"), ":");
+  }
+  var regex = new RegExp("(時|分)", "g")
+  timeStr = timeStr.replace(regex , ":");
+  var regex2 = new RegExp("(秒)", "g")
+  timeStr = timeStr.replace(regex2 ,"");
+  
+  if(timeStr.indexOf(":") < 0){
+    if(timeStr.length != 6){
+      return false;
+    }
+    aryTime = [timeStr.substr(0, 2), timeStr.substr(2, 2), timeStr.substr(4, 2)];
+  } else {
+    if(aryTime = timeStr.split(/:/).length < 3){
+      return false;
+    }
+  }
+  
+  h = Number(aryTime[0]);
+  m = Number(aryTime[1]);
+  s = Number(aryTime[2]);
+  
+  if(s >= 60){
+    m += Math.floor(s / 60);
+    s  = s % 60;
+  }
+  if(m >= 60){
+    h += Math.floor(m / 60);
+    m  = m % 60;
+  }
+  if(h >= 24){
+    d += Math.floor(h / 24);
+    h  = h % 24;
+  }
+  
+  objTime = new Date("1900/01/01 " + h + ":" + m + ":" + s);
+  
+  return (h == objTime.getHours() && m == objTime.getMinutes() && s == objTime.getSeconds());
+  if(aryTime) delete aryTime; aryTime = null;
+  if(objTime) delete objTime; objTime = null;
+};
+
+CLS_.convertto_date = function(obj, sep){
+  var aryDate = null;
+  var str = "", y = 0, m = 0, d = 0;
+  
+  try {
+    if(!CLS_.isDate(obj,sep)){
+      return null;
+    }
+    dtmStr = obj.toString();
+    if(sep && sep != "/"){
+      dtmStr = dtmStr.replace(new RegExp("\\" + sep, "g"), "/");
+    }
+    
+    var regex = new RegExp("(年|月)", "g")
+    dtm_str = dtm_str.replace(regex,"/");
+    dtm_str = dtm_str.replace(/日/g,"");
+    
+    if(dtmStr.indexOf("/") < 0){
+      if(dtmStr.length < 6 || 8 < dtmStr.length){
+        return null;
+      }
+      
+      str = ("00000000" + str).slice(-8);
+      
+      aryDate = [dtmStr.substr(0, 4), dtmStr.substr(4, 2), dtmStr.substr(6, 2)];
+    } else {
+      if((aryDate = dtmStr.split(/\//)).length < 3){
+        return null;
+      }
+    }
+    y = Number(aryDate[0]); if(y < 99) y += 2000;
+    m = Number(aryDate[1]);
+    d = Number(aryDate[2]);
+    return new Date(y + "/" + m + "/" + d);
+  }
+  catch(e){
+    throw e;
+  }
+  finally {
+    if(aryDate) delete aryDate; aryDate = null;
+  }
+};
+
+CLS_.encodeXmlChar = function(str){
+  if(CLS_.isEmpty(str)){return str;}
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&apos;").replace(/\"/g, "&quot;");  //'
+};
+
+CLS_.decodeXmlChar = function(str){
+  if(CLS_.isEmpty(str)){return str;}
+  return str.replace(/&quot;/g,"\"").replace(/&apos;/g, "'").replace(/&gt;/g,">").replace(/&lt;/g,"<").replace(/&amp;/g,"&");
+};
+
+CLS_.convert_charSet = function(str, charset){ // FIXME
+  if(CLS_.isEmpty(str)){return str;}
+  var expression = get_template(herestrings_convert_charSet_function);
+  var func_name = 'convert_charSet';
+  return vbRun(str, func_name, expression, charset);
+};
+
+CLS_.formatCurrency = function(str, numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits){
+  if(CLS_.isEmpty(str)){return str;}
+  var template = "FormatCurrency( {{str}},{{numDigitsAfterDecimal}},{{includeLeadingDigit}},{{useParensForNegativeNumbers}},{{groupDigits}} )";
+  numDigitsAfterDecimal = CLS_.defaultValue(numDigitsAfterDecimal, CONS.jsTristateTrue);
+  includeLeadingDigit = CLS_.defaultValue(includeLeadingDigit, CONS.jsTristateUseDefault);
+  useParensForNegativeNumbers = CLS_.defaultValue(useParensForNegativeNumbers, CONS.jsTristateUseDefault);
+  groupDigits = CLS_.defaultValue(groupDigits, CONS.jsTristateUseDefault);
+  var map_ = {
+    "str" : str ,
+    "numDigitsAfterDecimal" : numDigitsAfterDecimal,
+    "includeLeadingDigit" : includeLeadingDigit,
+    "useParensForNegativeNumbers" : useParensForNegativeNumbers
+  }
+  var expression = merge_map(tempalte, map_);
+  return vbEval(expression);
+};
+
+CLS_.formatNumber = function(str, numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits){
+  if(CLS_.isEmpty(str)){return str;}
+  var template = "FormatNumber( {{str}},{{numDigitsAfterDecimal}},{{includeLeadingDigit}},{{useParensForNegativeNumbers}},{{groupDigits}} )";
+  numDigitsAfterDecimal = CLS_.defaultValue(numDigitsAfterDecimal, CONS.jsTristateTrue);
+  includeLeadingDigit = CLS_.defaultValue(includeLeadingDigit, CONS.jsTristateUseDefault);
+  useParensForNegativeNumbers = CLS_.defaultValue(useParensForNegativeNumbers, CONS.jsTristateUseDefault);
+  groupDigits = CLS_.defaultValue(groupDigits, CONS.jsTristateUseDefault);
+  var map_ = {
+    "str" : str ,
+    "numDigitsAfterDecimal" : numDigitsAfterDecimal,
+    "includeLeadingDigit" : includeLeadingDigit,
+    "useParensForNegativeNumbers" : useParensForNegativeNumbers
+  }
+  var expression = merge_map(tempalte, map_);
+  return vbEval(expression);
+};
+
+CLS_.formatPercent = function(numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits){
+  if(CLS_.isEmpty(str)){return str;}
+  var template = "FormatPercent( {{str}},{{numDigitsAfterDecimal}},{{includeLeadingDigit}},{{useParensForNegativeNumbers}},{{groupDigits}} )";
+  numDigitsAfterDecimal = CLS_.defaultValue(numDigitsAfterDecimal, CONS.jsTristateTrue);
+  includeLeadingDigit = CLS_.defaultValue(includeLeadingDigit, CONS.jsTristateUseDefault);
+  useParensForNegativeNumbers = CLS_.defaultValue(useParensForNegativeNumbers, CONS.jsTristateUseDefault);
+  groupDigits = CLS_.defaultValue(groupDigits, CONS.jsTristateUseDefault);
+  var map_ = {
+    "str" : str ,
+    "numDigitsAfterDecimal" : numDigitsAfterDecimal,
+    "includeLeadingDigit" : includeLeadingDigit,
+    "useParensForNegativeNumbers" : useParensForNegativeNumbers
+  }
+  var expression = merge_map(tempalte, map_);
+  return vbEval(expression);
+};
+
+CLS_.formatDateTime = function(str, namedFormat){
+  if(CLS_.isEmpty(str)){return str;}
+  var template = "FormatDateTime( {{str}}, {{namedFormat}} )";
+  namedFormat = CLS_.defaultValue(namedFormat, CONS.jsGeneralDate);
+  var expression = merge_map(tempalte, map_);
+  return vbEval(expression);
+};
+
+
+exports.StringUtil = CLS_;
+
+}())
+
+// ----------------------- for debug 
+function doDebugForWSH(){
+  var StringUtil = exports.StringUtil;
+  WScript.Echo('------------------------// start debug');
+  WScript.Echo(StringUtil.isNull('123'));
+}
+
+function doDebugForEditor(){
+  var StringUtil = exports.StringUtil;
+  Editor.TraceOut('------------------------// start debug');
+  Editor.TraceOut(StringUtil.isNull('123'));
+}
+
+// ----------------------- entry point
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  return (isWSH || isEditor)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if(is_module(this_file_name)){
+    doDebugForEditor();
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    if(is_module(this_file_name)){
+      doDebugForWSH();
+    }
+  } else {
+    console.log('[Warn] This script is available for jscript environment. A env is maybe node.')
+  }
+}

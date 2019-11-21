@@ -1,0 +1,14 @@
+///////////////////////////////////////
+// template statement CRLF
+//  ↓↓↓↓↓↓↓↓↓
+var TemplateStatement = {};
+
+TemplateStatement.statement = function(){
+/*
+
+## {{date_str}} {{time_str}} :
+
+- {{clip_text}}
+
+*/
+}

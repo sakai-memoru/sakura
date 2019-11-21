@@ -1,0 +1,608 @@
+var StringUtil = exports.StringUtil;
+
+QUnit.test( "StringUtil Global variable Test", function( assert ) {
+  var str = 'test for StringUtil ....';
+  //CLIP.set_clipboard(str);
+  console.log('str = ' + str);
+  
+  // assert 1
+  assert.equal(1, 1, "glabal variable check");
+  
+});
+
+QUnit.test( "StringUtil isNull Test", function( assert ) {
+  // assert 0 
+  // undefined のテストの方法が不明
+  // assert 1
+  var str = null;
+  assert.equal(StringUtil.isNull(str), true, "null check :" + str);
+  // assert 2
+  var str = '';
+  assert.equal(StringUtil.isNull(str), false, "null check :" + str);
+  // assert 3
+  var obj = {};
+  assert.equal(StringUtil.isNull(obj), false, "null check :" + obj);
+  
+});
+
+QUnit.test( "StringUtil isString Test", function( assert ) {
+  // assert 2
+  var str = "";
+  assert.equal(StringUtil.isString(str), true, "String check :" + str);
+  // assert 3
+  var obj = {};
+  assert.equal(StringUtil.isString(obj), false, "String check :" + obj);
+  // assert 4
+  var str = '123';
+  assert.equal(StringUtil.isString(str), true, "String check :" + str);
+  // assert 5
+  var str = '1234';
+  assert.equal(StringUtil.isString(str), true, "String check :" + str);
+  // assert 8
+  var str = ' 1,234A ';
+  assert.equal(StringUtil.isString(str), true, "string check :" + str);
+  
+});
+
+QUnit.test( "StringUtil isEmpty Test", function( assert ) {
+  // assert 2
+  var str = "";
+  assert.equal(StringUtil.isEmpty(str), true, "empty check :" + str);
+  // assert 2-2
+  var str = " ";
+  assert.equal(StringUtil.isEmpty(str), true, "empty check :" + str);
+  // assert 3 空のobjectは、Emptyでないとして判断する
+  var obj = {};
+  assert.equal(StringUtil.isEmpty(obj), false, "empty check :" + obj);
+  // assert 4
+  var str = '123';
+  assert.equal(StringUtil.isEmpty(str), false, "empty check :" + str);
+  
+});
+
+QUnit.test( "StringUtil isNumeric Test", function( assert ) {
+  // assert 2
+  var str = "";
+  assert.equal(StringUtil.isNumeric(str), false, "numeric check :" + str);
+  // assert 2-2
+  var str = " ";
+  assert.equal(StringUtil.isNumeric(str), false, "numeric check :" + str);
+  // assert 3 空のobjectは、numericでないとして判断する
+  var obj = {};
+  assert.equal(StringUtil.isNumeric(obj), false, "numeric check :" + obj);
+  
+  // assert 4
+  var str = '123';
+  assert.equal(StringUtil.isNumeric(str), true, "numeric check :" + str);
+  // assert 5
+  var str = '1234';
+  assert.equal(StringUtil.isNumeric(str), true, "numeric check :" + str);
+  // assert 6
+  var str = '1,234';
+  assert.equal(StringUtil.isNumeric(str), true, "numeric check :" + str);
+  // assert 7
+  var str = ' 1,234 ';
+  assert.equal(StringUtil.isNumeric(str), true, "numeric check :" + str);
+  // assert 8
+  var str = ' 1,234A ';
+  assert.equal(StringUtil.isNumeric(str), false, "numeric check :" + str);
+  
+});
+
+
+QUnit.test( "StringUtil isNumber Test", function( assert ) {
+  // assert 2
+  var str = "";
+  assert.equal(StringUtil.isNumber(str), false, "number check :" + str);
+  // assert 3 空のobjectは、numberでないとして判断する
+  var obj = {};
+  assert.equal(StringUtil.isNumber(obj), false, "number check :" + obj);
+  // assert 4
+  var str = '123';
+  assert.equal(StringUtil.isNumber(str), true, "number check :" + str);
+  // assert 5
+  var str = '1234';
+  assert.equal(StringUtil.isNumber(str), true, "number check :" + str);
+  // assert 5-2
+  var str = '001234';
+  assert.equal(StringUtil.isNumber(str), true, "number check :" + str);
+  // assert 5-3
+  var str = '  1234';
+  assert.equal(StringUtil.isNumber(str), false, "number check :" + str);
+  // assert 6
+  var str = '1,234';
+  assert.equal(StringUtil.isNumber(str), false, "number check :" + str);
+  // assert 7
+  var str = ' 1,234 ';
+  assert.equal(StringUtil.isNumber(str), false, "number check :" + str);
+  // assert 8
+  var str = ' 1,234A ';
+  assert.equal(StringUtil.isNumber(str), false, "number check :" + str);
+  
+});
+
+QUnit.test( "StringUtil isAlpha Test", function( assert ) {
+  // assert 4
+  var str = '123';
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  // assert 5
+  var str = '1234';
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  // assert 6
+  var str = '1,234';
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  // assert 7
+  var str = ' 1,234 ';
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  // assert 8
+  var str = ' 1,234A ';
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  // assert 9
+  var str = 'ABCD';
+  assert.equal(StringUtil.isAlpha(str), true, "alphabet check :" + str);
+  // assert 9
+  var str = 'abcd';
+  assert.equal(StringUtil.isAlpha(str), true, "alphabet check :" + str);
+  // assert 9-2
+  var str = ' ABCD ';
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  // assert 10
+  var str = ' +*-/ ';
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  // assert 11
+  var str = "あいうえお";
+  assert.equal(StringUtil.isAlpha(str), false, "alphabet check :" + str);
+  
+});
+
+// QUnit.test( "StringUtil isDate Test", function( assert ) {
+//   // assert 12  //FIXME
+//   var str = '2019/11/20';
+//   assert.equal(StringUtil.isDate(str,'/'), true, "date check :" + str);
+//   
+// });
+
+
+QUnit.test( "StringUtil isEMail Test", function( assert ) {
+  // assert 100
+  var str = 'sample@email.com';
+  assert.equal(StringUtil.isEMail(str), true, "email check :" + str);
+  // assert 101
+  var str = 'sample.sample@email.com';
+  assert.equal(StringUtil.isEMail(str), true, "email check :" + str);
+  // assert 102
+  var str = 'sample.sample＠email.com';
+  assert.equal(StringUtil.isEMail(str), false, "email check :" + str);
+  // assert 102
+  var str = 'sample.sample@email';
+  assert.equal(StringUtil.isEMail(str), false, "email check :" + str);
+  
+});
+
+
+QUnit.test( "StringUtil defaultString Test", function( assert ) {
+  // assert 100
+  var str = null;
+  var replacement = 'dummy';
+  assert.deepEqual(StringUtil.defaultString(str,replacement), replacement, "defaultString check :" + str);
+  // assert 101
+  var str = '';
+  var replacement = 'dummy';
+  assert.deepEqual(StringUtil.defaultString(str,replacement), replacement, "defaultString check :" + str);
+  // assert 102
+  var str = '  ';
+  var replacement = 'dummy';
+  assert.deepEqual(StringUtil.defaultString(str,replacement), replacement, "defaultString check :" + str);
+  // assert 102
+  var str = ' a ';
+  var replacement = 'dummy';
+  assert.deepEqual(StringUtil.defaultString(str,replacement), str, "defaultString check :" + str);
+});
+
+QUnit.test( "StringUtil defaultValue Test", function( assert ) {
+  // assert 110
+  var obj = null;
+  var replacement = {'name': 'default'};
+  assert.deepEqual(StringUtil.defaultValue(obj,replacement), replacement, "defaultvalue check :" + obj);
+  // assert 111 // FIXME 空オブジェクト判定
+  // var obj = {};
+  // var replacement = {'name': 'default'};
+  // assert.deepEqual(StringUtil.defaultValue(obj,replacement), replacement, "defaultString check :" + obj);
+  // assert 110
+  var obj = {'name': 'sample'};
+  var replacement = {'name': 'default'};
+  assert.deepEqual(StringUtil.defaultValue(obj,replacement), obj, "defaultValue check :" + obj);
+});
+
+QUnit.test( "StringUtil left Test", function( assert ) {
+  // assert 200
+  var str = null;
+  assert.equal(StringUtil.left(str,1), str, "left check :" + str);
+  // assert 201
+  var str = '';
+  assert.equal(StringUtil.left(str,1), str, "left check :" + str);
+  // assert 202
+  var str = '123';
+  assert.equal(StringUtil.left(str,1), '1', "left check :" + str);
+  // assert 203
+  var str = '123';
+  assert.equal(StringUtil.left(str,2), '12', "left check :" + str);
+  // assert 204
+  var str = '123';
+  assert.equal(StringUtil.left(str,3), '123', "left check :" + str);
+  // assert 205
+  var str = '123';
+  assert.equal(StringUtil.left(str,4), '123', "left check :" + str);
+
+});
+
+QUnit.test( "StringUtil right Test", function( assert ) {
+  // assert 210
+  var str = null;
+  assert.equal(StringUtil.right(str,1), str, "check :" + str);
+  // assert 211
+  var str = '';
+  assert.equal(StringUtil.right(str,1), str, "check :" + str);
+  // assert 212
+  var str = '123';
+  assert.equal(StringUtil.right(str,1), '3', "check :" + str);
+  // assert 213
+  var str = '123';
+  assert.equal(StringUtil.right(str,2), '23', "check :" + str);
+  // assert 214
+  var str = '123';
+  assert.equal(StringUtil.right(str,3), '123', "check :" + str);
+  // assert 215
+  var str = '123';
+  assert.equal(StringUtil.right(str,4), '123', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil repeat Test", function( assert ) {
+  // assert 220
+  var str = '*';
+  assert.equal(StringUtil.repeat(str,1), '*', "check :" + str);
+  // assert 221
+  var str = '*';
+  assert.equal(StringUtil.repeat(str,2), '**', "check :" + str);
+  // assert 222
+  var str = '*';
+  assert.equal(StringUtil.repeat(str,3), '***', "check :" + str);
+  // assert 223
+  var str = '*';
+  assert.equal(StringUtil.repeat(str,10), '**********', "check :" + str);
+  // assert 224
+  var str = '-+';
+  assert.equal(StringUtil.repeat(str,2), '-+-+', "check :" + str);
+  // assert 224
+  var str = '----+';
+  assert.equal(StringUtil.repeat(str,4), '----+----+----+----+', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil trim Test", function( assert ) {
+  // assert 230
+  var str = ' ';
+  assert.equal(StringUtil.trim(str), '', "check :" + str);
+  // assert 231
+  var str = "   ";
+  assert.equal(StringUtil.trim(str), '', "check :" + str);
+  // assert 232
+  var str = " \t\r\n  ";
+  assert.equal(StringUtil.trim(str), '', "check :" + str);
+  // assert 233
+  var str = " 123  ";
+  assert.equal(StringUtil.trim(str), '123', "check :" + str);
+  // assert 234
+  var str = " 123";
+  assert.equal(StringUtil.trim(str), '123', "check :" + str);
+  // assert 235
+  var str = "123  ";
+  assert.equal(StringUtil.trim(str), '123', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil rtrim Test", function( assert ) {
+  // assert 240
+  var str = ' ';
+  assert.equal(StringUtil.rtrim(str), '', "check :" + str);
+  // assert 241
+  var str = "   ";
+  assert.equal(StringUtil.rtrim(str), '', "check :" + str);
+  // assert 242
+  var str = " \t\r\n  ";
+  assert.equal(StringUtil.rtrim(str), '', "check :" + str);
+  // assert 243
+  var str = "  123  ";
+  assert.equal(StringUtil.rtrim(str), '  123', "check :" + str);
+  // assert 244
+  var str = "  123";
+  assert.equal(StringUtil.rtrim(str), '  123', "check :" + str);
+  // assert 245
+  var str = "123  ";
+  assert.equal(StringUtil.rtrim(str), '123', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil ltrim Test", function( assert ) {
+  // assert 240
+  var str = ' ';
+  assert.equal(StringUtil.ltrim(str), '', "check :" + str);
+  // assert 241
+  var str = "   ";
+  assert.equal(StringUtil.ltrim(str), '', "check :" + str);
+  // assert 242
+  var str = " \t\r\n  ";
+  assert.equal(StringUtil.ltrim(str), '', "check :" + str);
+  // assert 243
+  var str = "  123  ";
+  assert.equal(StringUtil.ltrim(str), '123  ', "check :" + str);
+  // assert 244
+  var str = "  123";
+  assert.equal(StringUtil.ltrim(str), '123', "check :" + str);
+  // assert 245
+  var str = "123  ";
+  assert.equal(StringUtil.ltrim(str), '123  ', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil rpad Test", function( assert ) {
+  // assert 250
+  var str = '123';
+  assert.equal(StringUtil.rpad(str,5), '  123', "check :" + str);
+  // assert 251
+  var str = "1234";
+  assert.equal(StringUtil.rpad(str,5), ' 1234', "check :" + str);
+  // assert 252
+  var str = "12345";
+  assert.equal(StringUtil.rpad(str,5), '12345', "check :" + str);
+  // assert 253
+  var str = "123456";
+  assert.equal(StringUtil.rpad(str,5), '23456', "check :" + str);
+  // assert 254
+  var str = "1234567";
+  assert.equal(StringUtil.rpad(str,5), '34567', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil lpad Test", function( assert ) {
+  // assert 250
+  var str = '123';
+  assert.equal(StringUtil.lpad(str,5), '123  ', "check :" + str);
+  // assert 251
+  var str = "1234";
+  assert.equal(StringUtil.lpad(str,5), '1234 ', "check :" + str);
+  // assert 252
+  var str = "12345";
+  assert.equal(StringUtil.lpad(str,5), '12345', "check :" + str);
+  // assert 253
+  var str = "123456";
+  assert.equal(StringUtil.lpad(str,5), '12345', "check :" + str);
+  // assert 254
+  var str = "1234567";
+  assert.equal(StringUtil.lpad(str,5), '12345', "check :" + str);
+  // assert 255
+  var str = "あいうえお";
+  assert.equal(StringUtil.lpad(str,5), 'あいうえお', "check :" + str);
+  // assert 256
+  var str = "あいうえおかきくけこ";
+  assert.equal(StringUtil.lpad(str,5), 'あいうえお', "check :" + str);
+
+});
+
+//QUnit.test( "StringUtil toHankaku Test", function( assert ) {
+//  // assert 300
+//  var str = "１２３４５";
+//  assert.equal(StringUtil.toHankaku(str), '12345', "check :" + str);
+//  // assert 301
+//  var str = "ＡＢＣＤＥ";
+//  assert.equal(StringUtil.toHankaku(str), 'ABCDE', "check :" + str);
+//  // assert 301-2
+//  var str = "ＡＢＣｄｅ";
+//  assert.equal(StringUtil.toHankaku(str), 'ABCDE', "check :" + str);
+//  // assert 302
+//  var str = "あいうえおカキクケコ";
+//  assert.equal(StringUtil.toHankaku(str),'ｱｲｳｴｵｶｷｸｹｺ', "check :" + str);
+//  // assert 302-2
+//  var str = "ガギグゲコ";
+//  assert.equal(StringUtil.toHankaku(str),'ｶﾞｷﾞｸﾞｹﾞｺ', "check :" + str);
+//  // assert 302-3
+//  var str = "ぱぴぷペポ";
+//  assert.equal(StringUtil.toHankaku(str),'ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ', "check :" + str);
+//
+//});
+
+QUnit.test( "StringUtil convertto_int Test", function( assert ) {
+  // assert 400
+  var str = '123';
+  assert.deepEqual(StringUtil.convertto_int(str), 123, "check :" + str);
+  // assert 402
+  var str = '123.4';
+  assert.deepEqual(StringUtil.convertto_int(str), 123, "check :" + str);
+  // assert 402-2
+  var str = '123.4 cm';
+  assert.deepEqual(StringUtil.convertto_int(str), 123, "check :" + str);
+  // assert 403
+  var str = '123.5 cm';
+  assert.deepEqual(StringUtil.convertto_int(str), 123, "check :" + str);
+  // assert 403
+  var str = 'a123.5 cm';
+  assert.deepEqual(StringUtil.convertto_int(str), str, "check :" + str);
+
+});
+
+QUnit.test( "StringUtil convertto_float Test", function( assert ) {
+  var radix = 10;
+  // assert 400
+  var str = '123';
+  assert.deepEqual(StringUtil.convertto_float(str,radix), 123, "check :" + str);
+  // assert 402
+  var str = '123.4';
+  assert.deepEqual(StringUtil.convertto_float(str,radix), 123.4, "check :" + str);
+  // assert 403
+  var str = '123.5f cm';
+  assert.deepEqual(StringUtil.convertto_float(str,radix), 123.5, "check :" + str);
+  // assert 403
+  var str = 'a123.5 cm';
+  assert.deepEqual(StringUtil.convertto_float(str,radix), str, "check :" + str);
+
+});
+
+QUnit.test( "StringUtil startsWith Test", function( assert ) {
+  // assert 500
+  var str = '## 123';
+  var prefix_ = '#'
+  assert.deepEqual(StringUtil.startsWith(str,prefix_), true, "check :" + str);
+  // assert 501
+  var str = '## 123';
+  var prefix_ = '##'
+  assert.deepEqual(StringUtil.startsWith(str,prefix_), true, "check :" + str);
+  // assert 502
+  var str = '## 123';
+  var prefix_ = '###'
+  assert.deepEqual(StringUtil.startsWith(str,prefix_), false, "check :" + str);
+
+});
+
+QUnit.test( "StringUtil endsWith Test", function( assert ) {
+  // assert 510
+  var str = '## 123 ##';
+  var suffix_ = '#'
+  assert.deepEqual(StringUtil.endsWith(str,suffix_), true, "check :" + str);
+  // assert 511
+  var str = '## 123 ##';
+  var suffix_ = '##'
+  assert.deepEqual(StringUtil.endsWith(str,suffix_), true, "check :" + str);
+  // assert 512
+  var str = '## 123 ##';
+  var suffix_ = '###'
+  assert.deepEqual(StringUtil.endsWith(str,suffix_), false, "check :" + str);
+  // assert 513
+  var str = '## 123 ##';
+  var suffix_ = '3 ##'
+  assert.deepEqual(StringUtil.endsWith(str,suffix_), true, "check :" + str);
+
+});
+
+QUnit.test( "StringUtil chopHead Test", function( assert ) {
+  // assert 520
+  var str = '## 123 ##';
+  var num = 0
+  assert.deepEqual(StringUtil.chopHead(str,num), '## 123 ##', "check :" + str);
+  // assert 521
+  var str = '## 123 ##';
+  var num = 1
+  assert.deepEqual(StringUtil.chopHead(str,num), '# 123 ##', "check :" + str);
+  // assert 522
+  var str = '## 123 ##';
+  var num = 2
+  assert.deepEqual(StringUtil.chopHead(str,num), ' 123 ##', "check :" + str);
+  // assert 523
+  var str = '## 123 ##';
+  var num = 3
+  assert.deepEqual(StringUtil.chopHead(str,num), '123 ##', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil chopTail Test", function( assert ) {
+  // assert 520
+  var str = '## 123 ##';
+  var num = 0
+  assert.deepEqual(StringUtil.chopTail(str,num), '## 123 ##', "check :" + str);
+  // assert 521
+  var str = '## 123 ##';
+  var num = 1
+  assert.deepEqual(StringUtil.chopTail(str,num), '## 123 #', "check :" + str);
+  // assert 522
+  var str = '## 123 ##';
+  var num = 2
+  assert.deepEqual(StringUtil.chopTail(str,num), '## 123 ', "check :" + str);
+  // assert 523
+  var str = '## 123 ##';
+  var num = 3
+  assert.deepEqual(StringUtil.chopTail(str,num), '## 123', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil abbreviate Test", function( assert ) {
+  // assert 530
+  var str = '## 123 ##'; // 9 chars
+  var num = 14;
+  assert.deepEqual(StringUtil.abbreviate(str,num), '## 123 ##', "check :" + str);
+  // assert 530
+  var str = '## 123 ##';
+  var num = 12;
+  assert.deepEqual(StringUtil.abbreviate(str,num), '## 123 ##', "check :" + str);
+  // assert 530
+  var str = '## 123 ##';
+  var num = 10;
+  assert.deepEqual(StringUtil.abbreviate(str,num), '## 123 ##', "check :" + str);
+  // assert 531
+  var str = '## 123 ##';
+  var num = 8;
+  assert.deepEqual(StringUtil.abbreviate(str,num), '## 1 ...', "check :" + str);
+  // assert 532
+  var str = '## 123 ##';
+  var num = 6;
+  assert.deepEqual(StringUtil.abbreviate(str,num), '## ...', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil contains Test", function( assert ) {
+  // assert 600
+  var str = '## 123 ##'; // 9 chars
+  var search_str = '12';
+  assert.deepEqual(StringUtil.contains(str,search_str), true, "check :" + str);
+  // assert 602
+  var str = '## 123 ##'; // 9 chars
+  var search_str = '123';
+  assert.deepEqual(StringUtil.contains(str,search_str), true, "check :" + str);
+  // assert 603
+  var str = '## 123 ##'; // 9 chars
+  var search_str = '1234';
+  assert.deepEqual(StringUtil.contains(str,search_str), false, "check :" + str);
+
+});
+
+QUnit.test( "StringUtil capitalize Test", function( assert ) {
+  // assert 610
+  var str = 'I want to do what I WANT'; // 9 chars
+  assert.deepEqual(StringUtil.capitalize(str), 'I Want To Do What I WANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil uncapitalize Test", function( assert ) {
+  // assert 610
+  var str = 'I want to do what I WANT'; // 9 chars
+  assert.deepEqual(StringUtil.uncapitalize(str), 'i want to do what i wANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil camelize Test", function( assert ) {
+  // assert 610
+  var str = 'I want to do what I WANT'; // 9 chars
+  assert.deepEqual(StringUtil.camelize(str), 'iWantToDoWhatIWANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil snakelize Test", function( assert ) {
+  // assert 610
+  var str = 'I want to do what I WANT'; // 9 chars
+  assert.deepEqual(StringUtil.snakelize(str), 'i_want_to_do_what_i_want', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil snakelize_forCapital Test", function( assert ) {
+  // assert 610
+  var str = 'I want to do what I WANT'; // 9 chars
+  assert.deepEqual(StringUtil.snakelize_forCapital(str), 'I_WANT_TO_DO_WHAT_I_WANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil put_bracket Test", function( assert ) {
+  // assert 610
+  var str = 'I want to do what I WANT'; // 9 chars
+  assert.deepEqual(StringUtil.put_bracket(str, '{{', '}}'), '{{I want to do what I WANT}}', "check :" + str);
+
+});
+

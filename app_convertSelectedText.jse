@@ -1,0 +1,254 @@
+// app_convertSelectedText.jse
+// + sakura macro folder
+//    + app_convertSelectedText.jse  
+//    + lib  
+//      + StringUtil.jse
+//    + app_convertSelectedText  
+//      + config  
+//        + setting.js  
+// 
+(function(){
+
+// const
+var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
+var CONS_COMMON_LIBS = [
+  //"./lib/es5-shim.js",
+  //"./lib/json2.js",
+  //"./lib/DateUtil.jse",
+  "./lib/StringUtil.jse",
+  //"./lib/Template.jse",
+  //"./lib/Dialog.jse",
+  "./app_convertSelectedText/config/setting.js",
+  ]
+var CONS_LOCAL_LIBPATH = '';
+var CONS_LOCAL_LIBS = [
+  //"./config/setting.js",
+]
+
+// commonalized for js   /////////////////////////////////////////////
+var check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+var CONFIG = {};
+
+// load external libraries
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
+  var llib_path = CONS_LOCAL_LIBPATH ? CONS_LOCAL_LIBPATH: './';
+  // require common module
+  with({
+    libs : CONS_COMMON_LIBS, 
+    llibs : CONS_LOCAL_LIBS,
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    var len = libs.length;
+    for (var i = 0; i < len; i++){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+    var llen = llibs.length;
+    for (var i = 0; i < llen; i++){
+      try {
+        var module_path = objFS.BuildPath(llib_path,llibs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+var debug_mode = CONFIG.DEBUG_MODE;
+
+// pretend console.log 
+var console = console || {};
+if(console){
+  if(debug_mode){
+    if(flag == "sakura"){
+      console.log=function(str){
+        var log_str = "[DEBUG] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.info=function(str){
+        var log_str = "[INFO] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+    };
+    if(flag == "wsh"){
+      console.info = function(str){WScript.Echo('[INFO] ' + str)};
+      console.log = function(str){WScript.Echo('[DEBUG] ' + str)};
+    }
+  }else{
+    if(flag == "wsh")  console.info = function(str){WScript.Echo(str)};
+    if(flag == "sakura")  console.info =function(str){Editor.InfoMsg(str)};
+    if(flag == "wsh")  console.log = function(str){null;};
+    if(flag == "sakura")  console.log = function(str){null;};
+  }
+}
+// pretend process.exit
+if(typeof(process) === "undefined"){
+  if(flag == "wsh")  process={exit : function(e){WScript.Quit(e)}};
+  if(debug_mode){
+    if(flag == "sakura")  process={exit : function(e){Editor.TraceOut('done')}};
+  }else{
+    if(flag == "sakura")  process={exit : function(e){'done'}};
+  }
+}
+
+// local functions
+// 
+var get_target = function(expandParam){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  // 引数無し : 選択されている場合、選択された文字列。選択されていない場合、Clipboardにある文字列
+  // $Z : 独自expandPrameter : 全テキスト
+  var ret ='';
+  if(typeof(expandParam) === 'undefined'){
+    if(Editor.IsTextSelected){
+      ret = Editor.GetSelectedString(0);
+    }else{
+      ret = Editor.GetClipboard(0);
+    }
+  } else {
+    if(expandParam === '$Z'){
+      Editor.SelectAll();
+      ret = Editor.GetSelectedString(0);
+      Editor.IsTextSelectingLock(0);
+      Editor.ExpandParameter(expandParam)
+    } else {
+      ret = Editor.ExpandParameter(expandParam)
+    }
+  }
+  return ret;
+}
+
+var get_template = function(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+var show_menu = function(){
+  var menu_statement = function(){
+/**
+1. toLowerCase(&l),
+2. toUpperCase(&u),-,
+3. camelize(&a),
+4. capitalize(&c),
+5. uncapitalize(&p),
+6. snakelize(&s),
+7. snakelize_forCapital(&f),-,
+8. put_bracket "" (&b),
+9. put_bracket{{}}(&m)
+*/
+  }
+  var menu_ = get_template(menu_statement)
+  var ope = Editor.CreateMenu( 1, menu_);
+  // console.log(menu_statement);
+  // console.log(ope);
+  return ope;
+}
+
+var operate_screen = function(str){
+  if(Editor.isTextSelected){
+    if(debug_mode){
+      Editor.TraceOut(str);
+    } else {
+      Editor.InsText(str);
+    }
+  } else {
+    Editor.TraceOut(str);
+  }
+}
+
+// do process 
+function doProcess(){
+  console.log('------------------------- start');
+  console.log('APP : ' + CONFIG.APP_NAME);
+  var StringUtil = exports.StringUtil;
+  var target_ = get_target('$C');
+  var ope = show_menu();
+  var formatted = target_;
+  if(ope == 1){
+    // 1. toLowerCase(&l),
+    formatted = formatted.toLowerCase();
+  }
+  if(ope == 2){
+    // 2. toUpperCase(&u),-,
+    formatted = formatted.toUpperCase();
+  }
+  if(ope == 3){
+    // 3. camelize(&a),
+    formatted = StringUtil.camelize(formatted);
+  }
+  if(ope == 4){
+    // 4. capitalize(&c),
+    formatted = StringUtil.capitalize(formatted);
+  }
+  if(ope == 5){
+    // 5. uncapitalize(&p),
+    formatted = StringUtil.uncapitalize(formatted);
+  }
+  if(ope == 6){
+    // 6. snakelize(&s),
+    formatted = StringUtil.snakelize(formatted);
+  }
+  if(ope == 7){
+    // 7. snakelize_forCapital(&f),-,
+    formatted = StringUtil.snakelize_forCapital(formatted);
+  }
+  if(ope == 8){
+    // 8. put_bracket "" (&b),
+    formatted = StringUtil.put_bracket(formatted);
+  }
+  if(ope == 9){
+    // 9. put_bracket{{}}(&m)
+    formatted = StringUtil.put_bracket(formatted,"{{","}}");
+  }
+  
+  if(ope !== 0){
+    if(debug_mode){
+      console.log('ope = ' + ope);
+      console.log(target_);
+      console.log(formatted);
+    }else{
+      operate_screen(formatted);
+    }
+  }
+}
+
+// ------------------------------------------------ entry point
+// 
+if(typeof(Editor) !== 'undefined'){
+  process.exit(doProcess());
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('Opps! Sorry. This app is for Sakura Ediotr.');
+  } else {
+    console.log('Opps! Sorry. This app is for Sakura Ediotr.');
+  }
+}
+
+}())

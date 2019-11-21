@@ -1,0 +1,3 @@
+## {{date_str}} {{time_str}} :
+
+- {{clip_text}}
