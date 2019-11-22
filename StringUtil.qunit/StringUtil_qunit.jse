@@ -155,6 +155,56 @@ QUnit.test( "StringUtil isAlpha Test", function( assert ) {
   
 });
 
+QUnit.test( "StringUtil isAscii Test", function( assert ) {
+  // assert 4
+  var str = ' 1,234 ';
+  assert.equal(StringUtil.isAscii(str), true, "alphabet check :" + str);
+  // assert 8
+  var str = ' 1,234A ';
+  assert.equal(StringUtil.isAscii(str), true, "alphabet check :" + str);
+  // assert 9
+  var str = 'ABCD';
+  assert.equal(StringUtil.isAscii(str), true, "alphabet check :" + str);
+  // assert 9
+  var str = 'abcd';
+  assert.equal(StringUtil.isAscii(str), true, "alphabet check :" + str);
+  // assert 9-2
+  var str = ' ABCD ';
+  assert.equal(StringUtil.isAscii(str), true, "alphabet check :" + str);
+  // assert 10
+  var str = ' +*-/ ';
+  assert.equal(StringUtil.isAscii(str), true, "alphabet check :" + str);
+  // assert 11
+  var str = "あいうえお";
+  assert.equal(StringUtil.isAscii(str), false, "alphabet check :" + str);
+  
+});
+
+QUnit.test( "StringUtil isAlphanumeric Test", function( assert ) {
+  // assert 4
+  var str = ' 1,234 ';
+  assert.equal(StringUtil.isAlphanumeric(str), true, "alphabet check :" + str);
+  // assert 8
+  var str = ' 1,234A. ';
+  assert.equal(StringUtil.isAlphanumeric(str), true, "alphabet check :" + str);
+  // assert 9
+  var str = 'AB_CD';
+  assert.equal(StringUtil.isAlphanumeric(str), true, "alphabet check :" + str);
+  // assert 9
+  var str = 'ab-cd';
+  assert.equal(StringUtil.isAlphanumeric(str), true, "alphabet check :" + str);
+  // assert 9-2
+  var str = ' ABCD ';
+  assert.equal(StringUtil.isAlphanumeric(str), true, "alphabet check :" + str);
+  // assert 10
+  var str = ' +*-/ ';
+  assert.equal(StringUtil.isAlphanumeric(str), false, "alphabet check :" + str);
+  // assert 11
+  var str = "あいうえお";
+  assert.equal(StringUtil.isAlphanumeric(str), false, "alphabet check :" + str);
+  
+});
+
 // QUnit.test( "StringUtil isDate Test", function( assert ) {
 //   // assert 12  //FIXME
 //   var str = '2019/11/20';
@@ -255,6 +305,59 @@ QUnit.test( "StringUtil right Test", function( assert ) {
   // assert 215
   var str = '123';
   assert.equal(StringUtil.right(str,4), '123', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil mid Test", function( assert ) {
+  // assert 210
+  var str = null;
+  assert.equal(StringUtil.mid(str,1), str, "check :" + str);
+  // assert 211
+  var str = '';
+  assert.equal(StringUtil.mid(str,1), str, "check :" + str);
+  // assert 212
+  var str = '12345';
+  assert.equal(StringUtil.mid(str,1), '2345', "check :" + str);
+  // assert 212
+  var str = '12345';
+  assert.equal(StringUtil.mid(str,1,1), '2', "check :" + str);
+  // assert 213
+  var str = '12345';
+  assert.equal(StringUtil.mid(str,1,2), '23', "check :" + str);
+  // assert 214
+  var str = '12345';
+  assert.equal(StringUtil.mid(str,1,3), '234', "check :" + str);
+  // assert 214
+  var str = '12345';
+  assert.equal(StringUtil.mid(str,1,4), '2345', "check :" + str);
+  // assert 214
+  var str = '12345';
+  assert.equal(StringUtil.mid(str,1,5), '2345', "check :" + str);
+  // assert 214
+  var str = '12345';
+  assert.equal(StringUtil.mid(str,1,6), '2345', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil formatNumberSimple Test", function( assert ) {
+  // assert 220 FIXME
+  // var str = null;
+  // assert.deepEqual(StringUtil.formatNumberSimple(str), str, "check :" + str);
+  // assert 221
+  var str = {};
+  assert.deepEqual(StringUtil.formatNumberSimple(str), str, "check :" + str);
+  // assert 222
+  var str = '';
+  assert.equal(StringUtil.formatNumberSimple(str), str, "check :" + str);
+  // assert 223
+  var str = 12345;
+  assert.equal(StringUtil.formatNumberSimple(str), '12,345', "check :" + str);
+  // assert 224
+  var str = '12345';
+  assert.equal(StringUtil.formatNumberSimple(str), '12,345', "check :" + str);
+  // assert 225
+  var str = 'a12345';
+  assert.equal(StringUtil.formatNumberSimple(str), str, "check :" + str);
 
 });
 
@@ -390,6 +493,50 @@ QUnit.test( "StringUtil lpad Test", function( assert ) {
 
 });
 
+QUnit.test( "StringUtil padCentered Test", function( assert ) {
+  // assert 251
+  var str = '123';
+  assert.equal(StringUtil.padCentered(str,5), ' 123 ', "check :" + str);
+  // assert 252
+  var str = '123';
+  assert.equal(StringUtil.padCentered(str,6), ' 123  ', "check :" + str);
+  // assert 253
+  var str = '123';
+  assert.equal(StringUtil.padCentered(str,7), '  123  ', "check :" + str);
+  // assert 254
+  var str = '123';
+  assert.equal(StringUtil.padCentered(str,8), '  123   ', "check :" + str);
+  // assert 255
+  var str = '123';
+  assert.equal(StringUtil.padCentered(str,9), '   123   ', "check :" + str);
+  // assert 256
+  var str = "1234";
+  assert.equal(StringUtil.padCentered(str,5), '1234 ', "check :" + str);
+  // assert 257
+  var str = "12345";
+  assert.equal(StringUtil.padCentered(str,5), '12345', "check :" + str);
+  // assert 258
+  var str = "123456";
+  assert.equal(StringUtil.padCentered(str,5), '12345', "check :" + str);
+  // assert 259
+  var str = "1234567";
+  assert.equal(StringUtil.padCentered(str,5), '12345', "check :" + str);
+  // assert 25A
+  var str = "あいうえお";
+  assert.equal(StringUtil.padCentered(str,5), 'あいうえお', "check :" + str);
+  // assert 25B
+  var str = "あいうえおかきくけこ";
+  assert.equal(StringUtil.padCentered(str,5), 'あいうえお', "check :" + str);
+  // assert 258C
+  var str = "あいう"; // FIXME byte文字対応
+  assert.equal(StringUtil.padCentered(str,5), ' あいう ', "check :" + str);
+  // assert 259D
+  var str = "あいう";
+  assert.equal(StringUtil.padCentered(str,5), ' あいう ', "check :" + str);
+
+});
+
+
 //QUnit.test( "StringUtil toHankaku Test", function( assert ) {
 //  // assert 300
 //  var str = "１２３４５";
@@ -524,6 +671,26 @@ QUnit.test( "StringUtil chopTail Test", function( assert ) {
 
 });
 
+QUnit.test( "StringUtil chopDouble Test", function( assert ) {
+  // assert 520
+  var str = '## 123 ##';
+  var num = 0
+  assert.deepEqual(StringUtil.chopDouble(str,num), '## 123 ##', "check :" + str);
+  // assert 521
+  var str = '## 123 ##';
+  var num = 1
+  assert.deepEqual(StringUtil.chopDouble(str,num), '# 123 #', "check :" + str);
+  // assert 522
+  var str = '## 123 ##';
+  var num = 2
+  assert.deepEqual(StringUtil.chopDouble(str,num), ' 123 ', "check :" + str);
+  // assert 523
+  var str = '## 123 ##';
+  var num = 3
+  assert.deepEqual(StringUtil.chopDouble(str,num), '123', "check :" + str);
+
+});
+
 QUnit.test( "StringUtil abbreviate Test", function( assert ) {
   // assert 530
   var str = '## 123 ##'; // 9 chars
@@ -572,37 +739,151 @@ QUnit.test( "StringUtil capitalize Test", function( assert ) {
 });
 
 QUnit.test( "StringUtil uncapitalize Test", function( assert ) {
-  // assert 610
+  // assert 620
   var str = 'I want to do what I WANT'; // 9 chars
   assert.deepEqual(StringUtil.uncapitalize(str), 'i want to do what i wANT', "check :" + str);
 
 });
 
 QUnit.test( "StringUtil camelize Test", function( assert ) {
-  // assert 610
+  // assert 630
   var str = 'I want to do what I WANT'; // 9 chars
   assert.deepEqual(StringUtil.camelize(str), 'iWantToDoWhatIWANT', "check :" + str);
+  // assert 631
+  var str = 'some_database_field_name';
+  var expected = 'someDatabaseFieldName';
+  assert.deepEqual(StringUtil.camelize(str), expected, "check :" + str);
+  // assert 632
+  var str = 'Some label that needs to be camelized';
+  var expected = 'someLabelThatNeedsToBeCamelized';
+  assert.deepEqual(StringUtil.camelize(str), expected, "check :" + str);
+  // assert 633
+  var str = 'some-javascript-property';
+  var expected = 'someJavascriptProperty';
+  assert.deepEqual(StringUtil.camelize(str), expected, "check :" + str);
+  // assert 634
+  var str = 'some-mixed_string with spaces_underscores-and-hyphens';
+  var expected = 'someMixedStringWithSpacesUnderscoresAndHyphens';
+  assert.deepEqual(StringUtil.camelize(str), expected, "check :" + str);
+  // assert 635
+  var str = 'WHAT-some-Mixed_String';
+  var expected = 'wHATSomeMixedString';
+  assert.deepEqual(StringUtil.camelize(str), expected, "check :" + str);
+  // assert 636
+  var str = 'some-Mixed_String CLASS';
+  var expected = 'someMixedStringCLASS';
+  assert.deepEqual(StringUtil.camelize(str), expected, "check :" + str);
 
 });
 
-QUnit.test( "StringUtil snakelize Test", function( assert ) {
-  // assert 610
-  var str = 'I want to do what I WANT'; // 9 chars
-  assert.deepEqual(StringUtil.snakelize(str), 'i_want_to_do_what_i_want', "check :" + str);
+QUnit.test( "StringUtil decamelize Test", function( assert ) {
+  // assert 640
+  var str = 'someDatabaseFiledName'; 
+  assert.deepEqual(StringUtil.decamelize(str,' '), 'some database filed name', "check :" + str);
+  // assert 641
+  var str = 'someLabelThatNeedsToBeCamelized'; 
+  assert.deepEqual(StringUtil.decamelize(str,'-'), 'some-label-that-needs-to-be-camelized', "check :" + str);
+  // assert 642
+  var str = 'someJavascriptProperty'; 
+  assert.deepEqual(StringUtil.decamelize(str), 'some_javascript_property', "check :" + str);
+  // assert 643
+  var str = 'SomeJavascriptProperty'; 
+  assert.deepEqual(StringUtil.decamelize(str), 'some_javascript_property', "check :" + str);
 
 });
 
-QUnit.test( "StringUtil snakelize_forCapital Test", function( assert ) {
-  // assert 610
+QUnit.test( "StringUtil snakeLowerCase Test", function( assert ) {
+  // assert 700
   var str = 'I want to do what I WANT'; // 9 chars
-  assert.deepEqual(StringUtil.snakelize_forCapital(str), 'I_WANT_TO_DO_WHAT_I_WANT', "check :" + str);
+  assert.deepEqual(StringUtil.snakeLowerCase(str), 'i_want_to_do_what_i_want', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil snakeUpperCase Test", function( assert ) {
+  // assert 710
+  var str = 'I want to do what I WANT'; // 9 chars
+  assert.deepEqual(StringUtil.snakeUpperCase(str), 'I_WANT_TO_DO_WHAT_I_WANT', "check :" + str);
 
 });
 
 QUnit.test( "StringUtil put_bracket Test", function( assert ) {
-  // assert 610
+  // assert 720
   var str = 'I want to do what I WANT'; // 9 chars
   assert.deepEqual(StringUtil.put_bracket(str, '{{', '}}'), '{{I want to do what I WANT}}', "check :" + str);
 
 });
+
+QUnit.test( "StringUtil equalIgnoreCare Test", function( assert ) {
+  // assert 800
+  var str = 'I want to do what I WANT';
+  assert.equal(StringUtil.equalIgnoreCase(str, str.toUpperCase()), true, "check :" + str);
+  // assert 801
+  var str = 'I want to do what I WANT';
+  assert.equal(StringUtil.equalIgnoreCase(str, StringUtil.capitalize(str)), true, "check :" + str);
+
+});
+
+QUnit.test( "StringUtil deleteWhiteSpace Test", function( assert ) {
+  // assert 810
+  var str = 'I want to do what I WANT';
+  assert.equal(StringUtil.deleteWhiteSpace(str), 'IwanttodowhatIWANT', "check :" + str);
+  // assert 811
+  var str = 'I   want to \t do \r\nwhat I WANT';
+  assert.equal(StringUtil.deleteWhiteSpace(str), 'IwanttodowhatIWANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil squeezeSpaceTab Test", function( assert ) {
+  // assert 820
+  var str = 'I want  to do    what I WANT';
+  assert.equal(StringUtil.squeezeSpaceTab(str), 'I want to do what I WANT', "check :" + str);
+  // assert 821
+  var str = 'I   want to \t do \r\nwhat I WANT'; 
+  assert.notEqual(StringUtil.squeezeSpaceTab(str), 'I want to do \r\nwhat I WANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil squeezeWhiteSpace Test", function( assert ) {
+  // assert 830
+  var str = 'I want  to do    what I WANT';
+  assert.equal(StringUtil.squeezeWhiteSpace(str), 'I want to do what I WANT', "check :" + str);
+  // assert 831
+  var str = 'I   want to \t do \r\nwhat I WANT'; 
+  assert.equal(StringUtil.squeezeWhiteSpace(str), 'I want to do what I WANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil deleteCrLf Test", function( assert ) {
+  // assert 840
+  var str = 'I want  to do    what I WANT';
+  assert.equal(StringUtil.deleteCrLf(str), 'I want  to do    what I WANT', "check :" + str);
+  // assert 841
+  var str = 'I   want to \t do \r\nwhat I WANT'; 
+  assert.equal(StringUtil.deleteCrLf(str), 'I   want to \t do what I WANT', "check :" + str);
+  // assert 842
+  var str = 'I \n  want to \t do \r\nwhat I WANT'; 
+  assert.equal(StringUtil.deleteCrLf(str), 'I   want to \t do what I WANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil deleteCrLf Test", function( assert ) {
+  // assert 840
+  var str = 'I want  to do    what I WANT';
+  assert.equal(StringUtil.deleteCrLf(str), 'I want  to do    what I WANT', "check :" + str);
+  // assert 841
+  var str = 'I   want to \t do \r\nwhat I WANT'; 
+  assert.equal(StringUtil.deleteCrLf(str), 'I   want to \t do what I WANT', "check :" + str);
+  // assert 842
+  var str = 'I \n  want to \t do \r\nwhat I WANT'; 
+  assert.equal(StringUtil.deleteCrLf(str), 'I   want to \t do what I WANT', "check :" + str);
+
+});
+
+QUnit.test( "StringUtil spaceToTab Test", function( assert ) {
+  // assert 840
+  var str = 'I want  to do    what I WANT';
+  assert.equal(StringUtil.spaceToTab(str), 'I want\tto do\t\twhat I WANT', "check :" + str);
+
+});
+
 

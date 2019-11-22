@@ -14,16 +14,23 @@ var this_file_name = 'StringUtil.jse';  // Notice! ifyou rename this module file
 //     StringUtil.abbreviate = function(str, num, addstr)  
 //     StringUtil.camelize = function(str, sep, concat_sep)  
 //     StringUtil.capitalize = function(str, sep)  
+//     StringUtil.double = function(str, num)  
 //     StringUtil.chopHead = function(str, num)  
 //     StringUtil.chopTail = function(str, num)  
 //     StringUtil.contains = function(str, search_str, start_num)  
 //     StringUtil.convertto_float = function(str,radix)  
 //     StringUtil.convertto_int = function(str)  
+//     StringUtil.decamelize = function(str, sep)  
 //     StringUtil.defaultString = function(str, replacement)  
 //     StringUtil.defaultValue = function(obj, replacement)  
-//     StringUtil.encodeXmlChar = function(str)  
+//     StringUtil.deleteCrLf = function(str)  
+//     StringUtil.deleteWhiteSpace = function(str, regx)  
 //     StringUtil.endsWith = function(str, suffix_, start_num)  
+//     StringUtil.equalIgnoreCase = function(str, str2)  
+//     StringUtil.formatNumberSimple = function(obj)  
 //     StringUtil.isAlpha = function(str)  
+//     StringUtil.isAlphanumeric = function(str)  
+//     StringUtil.isAscii = function(str)  
 //     StringUtil.isEMail = function(str)  
 //     StringUtil.isEmpty =  function(str)  
 //     StringUtil.isNull =  function(str)  
@@ -33,13 +40,18 @@ var this_file_name = 'StringUtil.jse';  // Notice! ifyou rename this module file
 //     StringUtil.left = function(str, len)  
 //     StringUtil.lpad = function(str, len, padstr)  
 //     StringUtil.ltrim = function(str)  
+//     StringUtil.mid = function(str, start_pos, len)  
+//     StringUtil.padCentered = function(str, len, padstr)  
 //     StringUtil.put_bracket = function(str, bra, bra_closed)  
 //     StringUtil.repeat = function(str, len)  
 //     StringUtil.right = function(str, len)  
 //     StringUtil.rpad = function(str, len, padstr)  
 //     StringUtil.rtrim = function(str)  
-//     StringUtil.snakelize = function(str, sep, concat_sep)  
-//     StringUtil.snakelize_forCapital = function(str, sep, concat_sep)  
+//     StringUtil.snakeLowerCase = function(str, sep, concat_sep)  
+//     StringUtil.snakeUpperCase = function(str, sep, concat_sep)  
+//     StringUtil.spaceToTab = function(str,num)  
+//     StringUtil.squeezeSpaceTab = function(str, replacement)  
+//     StringUtil.squeezeWhiteSpace = function(str, replacement)  
 //     StringUtil.startsWith = function(str, prefix_)  
 //     StringUtil.trim = function(str)  
 //     StringUtil.uncapitalize = function(str, sep)  
@@ -94,6 +106,7 @@ CLS_.isString =  function(str){
 }
 
 CLS_.isEmpty =  function(str){
+  // if(!CLS_.isNull(str)) return true; //FIXME
   if(!CLS_.isString(str)) return false;
   return (str.length == 0 || str.match(/(\S{1,})/) == null)
 }
@@ -105,8 +118,9 @@ CLS_.isNumeric = function(str) { // FIXME
 };
 
 CLS_.isNumber = function(str){
+  //if(CLS_.isNull(str)) return false;  // FIXME
   if(!CLS_.isNumeric(str)) return false;
-  return !str.match(/[^0-9]/gi);
+  return !str.match(/[^0-9]/g);
 };
 
 CLS_.isAlpha = function(str){
@@ -114,6 +128,20 @@ CLS_.isAlpha = function(str){
   if(CLS_.isEmpty(str)) return false;
   return !str.match(/[^a-z]/gi);
 };
+
+CLS_.isAlphanumeric = function(str){
+  if(!CLS_.isString(str)) return false;
+  if(CLS_.isEmpty(str)) return false;
+  return !str.match(/[^a-zA-Z0-9 _\,\.\-]/gi);
+};
+
+
+CLS_.isAscii = function(str){
+  if(!CLS_.isString(str)) return false;
+  if(CLS_.isEmpty(str)) return false;
+  return !(!str.match(/^[\x20-\x7e]*$/g));
+};
+
 
 CLS_.defaultString = function(str, replacement){
   if(CLS_.isNull(str)) return replacement;
@@ -138,9 +166,19 @@ CLS_.right = function(str, len){
   return (str.slice(len * -1));
 };
 
+CLS_.mid = function(str, start_pos, len){
+  // equal str.prototype.substr(start_pos,len) 
+  if(CLS_.isNull(str)) return str;
+  if(!CLS_.isString(str)) return str;
+  if(typeof(len) === 'undefined') len = str.length;
+  return (str.substr(start_pos, len));
+};
+
+
 CLS_.repeat = function(str, len){
   if(!CLS_.isString(str)) return str;
   var ret = '';
+  if(len == 0) return ret;
   for (var i=0; i < len; ++i){
     ret += str;
   }
@@ -173,6 +211,20 @@ CLS_.lpad = function(str, len, padstr){
   if(typeof(padstr) === 'undefined') padstr = ' ';
   return CLS_.left((str + CLS_.repeat(padstr, len)), len);
 };
+
+CLS_.padCentered = function(str, len, padstr){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(padstr) === 'undefined') padstr = ' ';
+  var len_str = str.length;
+  var len_dif = len - len_str;
+  if(len_dif < 0) {
+    return CLS_.lpad(str, len);
+  } else {
+    var padding = CLS_.repeat(padstr, Math.floor(len_dif/2));
+    console.log('padding = ' + '"' + padding + '"')
+    return CLS_.lpad(padding + str + padding, len);
+  }
+}
 
 CLS_.startsWith = function(str, prefix_){
   if(!CLS_.isString(str)) return str;
@@ -213,6 +265,14 @@ CLS_.chopTail = function(str, num){
   return str.substr(0,len - num);
 };
 
+CLS_.chopDouble = function(str, num){
+  if(!CLS_.isString(str)) return str;
+  var ret = str;
+  ret = CLS_.chopHead(ret, num);
+  ret = CLS_.chopTail(ret, num);
+  return ret;
+};
+
 CLS_.abbreviate = function(str, num, addstr){
   if(!CLS_.isString(str)) return str;
   if(typeof(addstr) === 'undefined') addstr = ' ...' ;
@@ -238,6 +298,7 @@ CLS_.contains = function(str, search_str, start_num){
       pos = 0;
     }
   }
+  if(start_num + search_str.lenght > str.lenght) return false;
   return (str.indexOf(search_str, pos) != -1);
 };
 
@@ -265,22 +326,28 @@ CLS_.uncapitalize = function(str, sep){
   return ary.join(sep);
 };
 
-CLS_.camelize = function(str, sep, concat_sep){
+CLS_.camelize = function(str){
+  // reference  
+  // https://ourcodeworld.com/articles/read/608/how-to-camelize-and-decamelize-strings-in-javascript
   if(!CLS_.isString(str)) return str;
-  if(typeof(sep) === 'undefined') sep = ' ';
-  if(typeof(concat_sep) === 'undefined') concat_sep = '';
-  var ary = str.split(sep);
-  var len = ary.length;
-  ary[0] = CLS_.uncapitalize(ary[0]);
-  
-  if(len == 1) return ary.join(concat_sep);
-  for(var i = 1; i < len; i++){
-    ary[i] = CLS_.capitalize(ary[i]);
-  }
-  return ary.join(concat_sep);
+  return str.replace(/^([A-Z])|[\s-_]+(\w)/g, function(match, p1, p2, offset) {
+      if (p2) return p2.toUpperCase();
+      return p1.toLowerCase();        
+  });
 }
 
-CLS_.snakelize = function(str, sep, concat_sep){
+CLS_.decamelize = function(str, sep){
+  // reference  
+  // https://ourcodeworld.com/articles/read/608/how-to-camelize-and-decamelize-strings-in-javascript
+  if(!CLS_.isString(str)) return str;
+  sep = (typeof(sep) === 'undefined') ? '_' : sep;
+  return str
+        .replace(/([a-z\d])([A-Z])/g, '$1' + sep + '$2')
+        .replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + sep + '$2')
+        .toLowerCase();
+}
+
+CLS_.snakeLowerCase = function(str, sep, concat_sep){
   if(!CLS_.isString(str)) return str;
   if(typeof(sep) === 'undefined') sep = ' ';
   if(typeof(concat_sep) === 'undefined') concat_sep = '_';
@@ -292,7 +359,7 @@ CLS_.snakelize = function(str, sep, concat_sep){
   return ary.join(concat_sep);
 }
 
-CLS_.snakelize_forCapital = function(str, sep, concat_sep){
+CLS_.snakeUpperCase = function(str, sep, concat_sep){
   if(!CLS_.isString(str)) return str;
   if(typeof(sep) === 'undefined') sep = ' ';
   if(typeof(concat_sep) === 'undefined') concat_sep = '_';
@@ -321,11 +388,70 @@ CLS_.convertto_float = function(str,radix){
   return (num ? num : str);
 };
 
+CLS_.equalIgnoreCase = function(str, str2){
+  if(!CLS_.isString(str)) return str;
+  return (str.toLowerCase() === str2.toLowerCase())
+}
+
+CLS_.deleteWhiteSpace = function(str, regx){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(regx) === 'undefined') regx = /\s/g;
+  return (str.replace(regx, ''))
+}
+
+CLS_.squeezeSpaceTab = function(str, replacement){
+  if(!CLS_.isString(str)) return str;
+  var regx = /( |\t)\1{1,}/g
+  if(typeof(replacement) === 'undefined') replacement = ' ';
+  return (str.replace(regx, replacement))
+}
+
+CLS_.squeezeWhiteSpace = function(str, replacement){
+  if(!CLS_.isString(str)) return str;
+  var regx = /(\s)\1{1,}/g
+  if(typeof(replacement) === 'undefined') replacement = ' ';
+  var buf = str.replace(/(\t|\r\n|\n)/g,replacement)
+  return (buf.replace(regx, replacement))
+}
+
+CLS_.deleteCrLf = function(str){
+  if(!CLS_.isString(str)) return str;
+  var replacement = '\v'; // dummy string
+  var buf = str.replace(/(\r\n|\n)/g,replacement)
+  var ret = buf.replace(/( \v)|(\v)/g, ' ');
+  return ret
+}
+
+// to operate indents
+CLS_.spaceToTab = function(str,num){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(num) === 'undefined') num = 2;
+  var ret = str;
+  // until 10 indents
+  for(var i = 10; i > 0 ; i--){
+    var spaces = CLS_.repeat(' ',num * i);
+    var replacement = CLS_.repeat('\t',i);
+    var regx = new RegExp(spaces, 'g')
+    var ret = ret.replace(regx, replacement);
+    //console.log('str = ' + str);
+    //console.log('ret = ' + ret);
+  }
+  return ret
+}
+
+CLS_.formatNumberSimple = function(obj){
+  if(!CLS_.isNumber("" + obj)) return obj;
+  var ret = '' + obj;
+  return ret.replace( /(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+}
+
+
 // ------------------------------- below module , not yet tested.
 //////////////////////////////////////////////////////////////////
 // // ---- 以下は、単体未実施  
 // StringUtil.convert_charSet = function(str, charset)  
 // StringUtil.convertto_date = function(obj, sep)  
+// StringUtil.encodeXmlChar = function(str)  
 // StringUtil.decodeXmlChar = function(str)  
 // StringUtil.formatCurrency = function(str, numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits)  
 // StringUtil.formatDateTime = function(str, namedFormat)  
@@ -364,7 +490,7 @@ ABCDEFGHIJKLMNOPQRSTUVWXYZ
 abcdefghijklmnopqrstuvwxyz
 ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ
 ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ
- !\"\"#$%&''()*+,-./:;<=>?@[\\]^_{|}~｡｢｣,･ｰ-`
+ !""#$%&''()*+,-./:;<=>?@[\\]^_{|}~｡｢｣,･ｰ-`
 */
 }
 
@@ -387,7 +513,6 @@ CONS.halfSize2 =  function(){
 ｳﾞ
 */
 }
-
 
 var herestrings_convert_charSet_function = function(){
 /*
@@ -696,20 +821,20 @@ exports.StringUtil = CLS_;
 }())
 
 // ----------------------- for debug 
-function doDebugForWSH(){
+var doDebugForWSH = function(){
   var StringUtil = exports.StringUtil;
   WScript.Echo('------------------------// start debug');
   WScript.Echo(StringUtil.isNull('123'));
 }
 
-function doDebugForEditor(){
+var doDebugForEditor = function(){
   var StringUtil = exports.StringUtil;
   Editor.TraceOut('------------------------// start debug');
   Editor.TraceOut(StringUtil.isNull('123'));
 }
 
 // ----------------------- entry point
-function is_module(this_module_name){
+var is_module = function(this_module_name){
   // reference : https://senooken.jp/blog/2016/08/20/
   //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
   var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);

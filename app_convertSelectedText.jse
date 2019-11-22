@@ -26,6 +26,7 @@ var CONS_LOCAL_LIBS = [
 ]
 
 // commonalized for js   /////////////////////////////////////////////
+// load external libraries
 var check_env = function(){
   // set env_name for targetting wsh, sakura, node
   var env_name = '';
@@ -38,7 +39,6 @@ var check_env = function(){
 var flag = check_env();
 var CONFIG = {};
 
-// load external libraries
 if(flag == "wsh"||flag == "sakura"){
   var objFS = new ActiveXObject("Scripting.FileSystemObject");
   var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
@@ -155,12 +155,13 @@ var show_menu = function(){
 1. toLowerCase(&l),
 2. toUpperCase(&u),-,
 3. camelize(&a),
-4. capitalize(&c),
-5. uncapitalize(&p),
-6. snakelize(&s),
-7. snakelize_forCapital(&f),-,
-8. put_bracket "" (&b),
-9. put_bracket{{}}(&m)
+4. decamelize(&d),
+5. capitalize(&c),
+6. uncapitalize(&p),
+7. snakeLowerCase(&7),
+8. snakeUpperCase(&8),-,
+9. put_bracket "" (&b),
+10. put_bracket{{}}(&m)
 */
   }
   var menu_ = get_template(menu_statement)
@@ -187,7 +188,7 @@ function doProcess(){
   console.log('------------------------- start');
   console.log('APP : ' + CONFIG.APP_NAME);
   var StringUtil = exports.StringUtil;
-  var target_ = get_target('$C');
+  var target_ = get_target();
   var ope = show_menu();
   var formatted = target_;
   if(ope == 1){
@@ -203,27 +204,31 @@ function doProcess(){
     formatted = StringUtil.camelize(formatted);
   }
   if(ope == 4){
-    // 4. capitalize(&c),
-    formatted = StringUtil.capitalize(formatted);
+    // 4. decamelize(&d),
+    formatted = StringUtil.decamelize(formatted, ' ');
   }
   if(ope == 5){
-    // 5. uncapitalize(&p),
-    formatted = StringUtil.uncapitalize(formatted);
+    // 5. capitalize(&c),
+    formatted = StringUtil.capitalize(formatted);
   }
   if(ope == 6){
-    // 6. snakelize(&s),
-    formatted = StringUtil.snakelize(formatted);
+    // 6. uncapitalize(&p),
+    formatted = StringUtil.uncapitalize(formatted);
   }
   if(ope == 7){
-    // 7. snakelize_forCapital(&f),-,
-    formatted = StringUtil.snakelize_forCapital(formatted);
+    // 7. snakeLowerCase(&7),
+    formatted = StringUtil.snakeLowerCase(formatted);
   }
   if(ope == 8){
-    // 8. put_bracket "" (&b),
-    formatted = StringUtil.put_bracket(formatted);
+    // 8. snakeUpperCase(&8),-,
+    formatted = StringUtil.snakeUpperCase(formatted);
   }
   if(ope == 9){
-    // 9. put_bracket{{}}(&m)
+    // 9. put_bracket "" (&b),
+    formatted = StringUtil.put_bracket(formatted);
+  }
+  if(ope == 10){
+    // 10. put_bracket{{}}(&m)
     formatted = StringUtil.put_bracket(formatted,"{{","}}");
   }
   
