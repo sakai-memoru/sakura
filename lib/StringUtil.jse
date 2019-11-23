@@ -399,6 +399,13 @@ CLS_.deleteWhiteSpace = function(str, regx){
   return (str.replace(regx, ''))
 }
 
+CLS_.deleteChars = function(str, chars){
+  if(!CLS_.isString(str)) return str;
+  if(typeof(chars) === 'undefined') chars = '\s';
+  var regx = new RegExp('[' + chars + ']', 'g');
+  return (str.replace(regx, ''))
+}
+
 CLS_.squeezeSpaceTab = function(str, replacement){
   if(!CLS_.isString(str)) return str;
   var regx = /( |\t)\1{1,}/g
