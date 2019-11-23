@@ -27,6 +27,11 @@ var get_template_GetText = function(sep){
   return template;
 }
 
+var chopTail = function(str, num){
+  var len = str.length;
+  return str.substr(0,len - num);
+};
+
 var doBatchAndGetStdOut = function(target_){
   var cmd_statement = CONS_EXE_PWSH + target_;
   // WScript.Echo(cmd_statement);
@@ -42,6 +47,7 @@ var doBatchAndGetStdOut = function(target_){
 CLS_.get_clipboard = function(){
   var target_get_ = get_template_GetText();
   var ret = doBatchAndGetStdOut(target_get_);
+  ret = chopTail(ret,2);
   return ret;
 }
 
