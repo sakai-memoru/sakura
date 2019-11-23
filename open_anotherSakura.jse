@@ -21,7 +21,8 @@ function get_sakuraMacroPath(){
 
 function doBatch(target_){
   var objShell = new ActiveXObject("WScript.Shell");
-  var cmd_statement = "sakura.exe -M=" + target_
+  // var cmd_statement = "sakura.exe -M=" + target_
+  var cmd_statement = "sakura.exe -DEBUGMODE -M=" + target_
   //WScript.Echo(cmd_statement);
   //"sakura.exe -M=G:\Users\sakai\AppData\Roaming\sakura\paste_clipboard.jse"
   objShell.Run(cmd_statement, 1);
