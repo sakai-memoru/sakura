@@ -27,8 +27,8 @@ var CONS_COMMON_LIBS = [
 var CONS_LOCAL_LIBPATH = '';
 var CONS_LOCAL_LIBS = [
     //"./config/setting.js",
-    //"../lib/js-beautify.js",
-    //"../lib/sql-formatter.js",
+    //"../lib/beautify-css.js",
+    //"../lib/beautify-html.js",
 ]
 
 // commonalized for js   /////////////////////////////////////////////
@@ -173,7 +173,8 @@ var show_menu = function(){
 /**
 1. js-beautify(&j),
 2. SQLFix(&q),
-3. js-beautify(json)(&s),
+3. js-beautify(json)(&s),-,
+4. XMLFix(XML)(&x),
 */
   }
   var menu_ = get_template(menu_statement)
@@ -225,6 +226,8 @@ var doProcess = function(){
   console.log('------------------------- start');
   console.log('APP : ' + CONFIG.APP_NAME);
   var js_beautify = exports.js_beautify;
+  //var html_beautify = exports.html_beautify;
+  //var css_beautify = exports.css_beautify;
   var CLIPGET = exports.CLIPGETTER;
   // console.info(js_beautify);
   var target_ = get_target();
@@ -243,11 +246,8 @@ var doProcess = function(){
   }
   if(ope == 2){
     // 2. SQLFix(&q),
-    //if(Editor.IsTextSelected){
-    //  Editor.SetClipboard(0, target_);
-    //}
     if(Editor.IsTextSelected){
-      Editor.InfoMsg("Often this tool don't work selected-string, please copy it into clipboard.");
+      Editor.InfoMsg("Often this tool don't work selected-string correctly, please copy it into clipboard.");
       var cmd_statement_EXE_SQLFIX = CONFIG.EXE_SQLFIX;
       doBatch(cmd_statement_EXE_SQLFIX,cmd_statement_EXE_SQLFIX);
       formatted = CLIPGET.get_clipboard();
@@ -263,6 +263,35 @@ var doProcess = function(){
     formatted = js_beautify(formatted,beautify_opt);
     formatted = formatted.replace(/\r?\n/g, "\n").replace(/\n/g, "\r\n")
   }
+  if(ope == 4){
+    // 4. XMLFix(XML)(&x),
+    if(Editor.IsTextSelected){
+      Editor.InfoMsg("Often this tool don't work selected-string correctly, please copy it into clipboard.");
+      var cmd_statement_EXE_XMLFIX = CONFIG.EXE_XMLFIX;
+      doBatch(cmd_statement_EXE_XMLFIX,cmd_statement_EXE_XMLFIX);
+      formatted = CLIPGET.get_clipboard();
+    } else {
+      var cmd_statement_EXE_XMLFIX = CONFIG.EXE_XMLFIX;
+      doBatch(cmd_statement_EXE_XMLFIX,cmd_statement_EXE_XMLFIX);
+      formatted = CLIPGET.get_clipboard();
+    }
+  }
+  
+  // 以下、試験未。requireを使っていないので動くかも。
+  //if(ope == 5){
+  //  // 5. beautify-css(&c),
+  //  var beautify_opt = CONFIG.BEAUTIFY_OPT;
+  //  formatted = css_beautify(formatted,beautify_opt);
+  //  formatted = formatted.replace(/\r?\n/g, "\n").replace(/\n/g, "\r\n")
+  //}
+  //
+  // 以下、動かない。jsの中に、requireが入っている
+  //if(ope == 6){
+  //  // 6. beautify-html(&h),
+  //  var beautify_opt = CONFIG.BEAUTIFY_OPT;
+  //  formatted = html_beautify(formatted,beautify_opt);
+  //  formatted = formatted.replace(/\r?\n/g, "\n").replace(/\n/g, "\r\n")
+  //}
   
   // for debug
   if(debug_mode){
