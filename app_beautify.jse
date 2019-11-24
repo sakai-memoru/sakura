@@ -18,7 +18,7 @@ var CONS_COMMON_LIBS = [
   //"./lib/StringUtil.jse",
   "./lib//js-beautify.js",
   //"./lib/Clipboard3.jse",
-  //"./lib/ClipboardGetter.jse",
+  "./lib/ClipboardGetter.jse",
   //"./lib/Template.jse",
   //"./lib/Dialog.jse",
   "./app_beautify/config/setting.js",
@@ -157,10 +157,23 @@ var get_template = function(herestrings, sep){
   return template;
 };
 
+var get_sakuraMacroPath = function(target_macro_name, target_folder_name){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var appdata_folder = objShell.SpecialFolders("AppData");
+  var target_folder_path = objFS.BuildPath(appdata_folder, target_folder_name);
+  var target_macro_path = objFS.BuildPath(target_folder_path, target_macro_name);
+  objShell = null;
+  objFS = null;
+  return target_macro_path
+}
+
 var show_menu = function(){
   var menu_statement = function(){
 /**
 1. js-beautify(&j),
+2. SQLFix(&q),
+3. js-beautify(json)(&s),
 */
   }
   var menu_ = get_template(menu_statement)
@@ -171,51 +184,98 @@ var show_menu = function(){
 };
 
 var operate_screen = function(str){
-  if(Editor.isTextSelected){
-    if(debug_mode){
-      Editor.TraceOut(str);
-    } else {
-      Editor.InsText(str);
-    }
-  } else {
+  if(debug_mode){
     Editor.TraceOut(str);
+  } else {
+    Editor.InsText(str);
   }
 };
 
-var doBatch = function(target_){
+var doBatch = function(cmd_statement, cmd_path){
+  //console.log(cmd_statement);
+  //console.log(cmd_path);
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
   var objShell = new ActiveXObject("WScript.Shell");
-  var cmd_statement = CONFIG.EXE_SQLFIX;
+  var bak = objShell.CurrentDirectory;
+  if(typeof(cmd_path) !== "undefined") {
+    objShell.CurrentDirectory = objFS.GetParentFolderName(cmd_path); 
+  }
   objShell.Run(cmd_statement, 1);
-  //objShell.Exec(cmd_statement);
-  console.log('cmd_statement = ' + cmd_statement);
   //Editor.ExecCommand(cmd_statement, 1);
-  var objShell = null;
+  //console.log('cmd_statement = ' + cmd_statement);
+  objShell.CurrentDirectory = bak;
+  objShell = null;
+  objFS = null;
 };
+
+var open_anotherSakuraWithClipboard = function(str){
+  if(debug_mode){
+    Editor.TraceOut(str);
+  } else {
+    Editor.ClipboardEmpty();
+    Editor.SetClipboard(0,str);
+    var cmd_sakura_macro_path = get_sakuraMacroPath(CONFIG.MACRO_FILE, 'sakura');
+    var cmd_statement_EXE_SAKURA = CONFIG.EXE_SAKURA_MACRO + cmd_sakura_macro_path;
+    doBatch(cmd_statement_EXE_SAKURA);
+  }
+}
 
 // ------------------------------------------------ do process 
 var doProcess = function(){
   console.log('------------------------- start');
   console.log('APP : ' + CONFIG.APP_NAME);
   var js_beautify = exports.js_beautify;
+  var CLIPGET = exports.CLIPGETTER;
   // console.info(js_beautify);
   var target_ = get_target();
+  var formatted = target_;
+  
+  // process for menu case
+  // show menu
   var ope = show_menu();
+  
+  // call cased function
   if(ope == 1){
     // 1. js-beautify(&j),
     var beautify_opt = CONFIG.BEAUTIFY_OPT;
-    formatted = js_beautify(target_,beautify_opt);
+    formatted = js_beautify(formatted,beautify_opt);
     formatted = formatted.replace(/\r?\n/g, "\n").replace(/\n/g, "\r\n")
-    //console.log('L205 : ' + formatted);
+  }
+  if(ope == 2){
+    // 2. SQLFix(&q),
+    //if(Editor.IsTextSelected){
+    //  Editor.SetClipboard(0, target_);
+    //}
+    if(Editor.IsTextSelected){
+      Editor.InfoMsg("Often this tool don't work selected-string, please copy it into clipboard.");
+      var cmd_statement_EXE_SQLFIX = CONFIG.EXE_SQLFIX;
+      doBatch(cmd_statement_EXE_SQLFIX,cmd_statement_EXE_SQLFIX);
+      formatted = CLIPGET.get_clipboard();
+    } else {
+      var cmd_statement_EXE_SQLFIX = CONFIG.EXE_SQLFIX;
+      doBatch(cmd_statement_EXE_SQLFIX,cmd_statement_EXE_SQLFIX);
+      formatted = CLIPGET.get_clipboard();
+    }
+  }
+  if(ope == 3){
+    // 3. js-beautify(json)(&s),
+    var beautify_opt = CONFIG.BEAUTIFY_OPT;
+    formatted = js_beautify(formatted,beautify_opt);
+    formatted = formatted.replace(/\r?\n/g, "\n").replace(/\n/g, "\r\n")
   }
   
-  
+  // for debug
+  if(debug_mode){
+    console.log('ope = ' + ope);
+    console.log('target_ = ' + target_);
+    console.log('formatted = ' + formatted);
+  }
+  // output
   if(ope !== 0){
-    if(debug_mode){
-      console.log('ope = ' + ope);
-      console.log('target_ = ' + target_);
-      console.log('formatted = ' + formatted);
-    }else{
+    if(Editor.IsTextSelected){
       operate_screen(formatted);
+    }else{
+      open_anotherSakuraWithClipboard(formatted);
     }
   }
 };

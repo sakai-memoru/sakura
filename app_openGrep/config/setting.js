@@ -1,5 +1,5 @@
 var CONFIG = {
-  "DEBUG_MODE" : false,
+  "DEBUG_MODE" : true,
   "APP_NAME" : "app_openGrep.jse",
   "DIRS" : {
     "MY_FOLDER" : "G:\\Users\\sakai\\OneDrive\\Documents",
