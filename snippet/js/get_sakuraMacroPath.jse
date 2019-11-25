@@ -1,0 +1,11 @@
+var get_sakuraMacroPath = function(target_macro_name, target_folder_name){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var appdata_folder = objShell.SpecialFolders("AppData");
+  var target_folder_path = objFS.BuildPath(appdata_folder, target_folder_name);
+  var target_macro_path = objFS.BuildPath(target_folder_path, target_macro_name);
+  objShell = null;
+  objFS = null;
+  return target_macro_path
+}
+

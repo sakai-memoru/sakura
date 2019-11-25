@@ -1,0 +1,12 @@
+function create_textfile_by_force(path){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var parent_folder = objFS.GetParentFolderName(path);
+  if(!objFS.FolderExists(parent_folder)){
+    objFS.CreateFolder(parent_folder);
+  }
+  var objTS = objFS.OpenTextFile(path,2,true); // FIXME UTF-16 -> UTF-8
+  objTS.Close();
+  objTS = null;
+  objFS = null;
+}
+

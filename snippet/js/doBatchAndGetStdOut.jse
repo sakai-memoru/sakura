@@ -1,0 +1,14 @@
+var doBatchAndGetStdOut = function(target_){
+  var cmd_statement = CONS_EXE_PWSH + target_;
+  // WScript.Echo(cmd_statement);
+  var objShell = new ActiveXObject("WScript.Shell");
+  var objExec = objShell.Exec(cmd_statement);
+  while (objShell.Status == 0) {
+    WScript.Sleep(100);
+  }
+  objExec.StdIn.Close();
+  var text = objExec.StdOut.ReadAll()
+  objExec = null;
+  objShell = null;
+  return text;
+}

@@ -1,0 +1,18 @@
+var doBatch = function(cmd_statement, cmd_path){
+  //console.log(cmd_statement);
+  //console.log(cmd_path);
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var bak = objShell.CurrentDirectory;
+  if(typeof(cmd_path) !== "undefined") {
+    objShell.CurrentDirectory = objFS.GetParentFolderName(cmd_path); 
+  }
+  objShell.Run(cmd_statement, 1);
+  while (objShell.Status == 0) {
+    WScript.Sleep(100);
+  }
+  objShell.CurrentDirectory = bak;
+  objShell = null;
+  objFS = null;
+};
+

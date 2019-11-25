@@ -1,0 +1,12 @@
+function test_path_and_new(path){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var isExist = objFS.FileExists(path)
+  if(isExist){
+    null;
+  } else {
+    create_textfile_by_force(path);
+  }
+  objFS = null;
+  return isExist;
+}
+
