@@ -202,8 +202,9 @@ var doBatch = function(cmd_statement, cmd_path){
     objShell.CurrentDirectory = objFS.GetParentFolderName(cmd_path); 
   }
   objShell.Run(cmd_statement, 1);
-  //Editor.ExecCommand(cmd_statement, 1);
-  //console.log('cmd_statement = ' + cmd_statement);
+  while (objShell.Status == 0) {
+    WScript.Sleep(100);
+  }
   objShell.CurrentDirectory = bak;
   objShell = null;
   objFS = null;
@@ -247,10 +248,13 @@ var doProcess = function(){
   if(ope == 2){
     // 2. SQLFix(&q),
     if(Editor.IsTextSelected){
-      Editor.InfoMsg("Often this tool don't work selected-string correctly, please copy it into clipboard.");
+      //Editor.ClipboardEmpty();
+      Editor.InfoMsg("Often this tool don't work selected-string correctly, please paste it from clipboard.");
+      Editor.SetClipboard(0,target_);
       var cmd_statement_EXE_SQLFIX = CONFIG.EXE_SQLFIX;
       doBatch(cmd_statement_EXE_SQLFIX,cmd_statement_EXE_SQLFIX);
-      formatted = CLIPGET.get_clipboard();
+      //formatted = CLIPGET.get_clipboard();
+      formatted = Editor.GetClipboard(0);
     } else {
       var cmd_statement_EXE_SQLFIX = CONFIG.EXE_SQLFIX;
       doBatch(cmd_statement_EXE_SQLFIX,cmd_statement_EXE_SQLFIX);
