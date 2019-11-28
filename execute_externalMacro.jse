@@ -1,0 +1,99 @@
+(function(){
+
+// const
+var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
+var CONS_COMMON_LIBS = [
+  "./config/setting.js",
+]
+
+var CONS_LOCAL_LIBPATH = '';
+var CONS_LOCAL_LIBS = [
+]
+
+// commonalized for js   /////////////////////////////////////////////
+// load external libraries
+var check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+var CONFIG = {};
+
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
+  var llib_path = CONS_LOCAL_LIBPATH ? CONS_LOCAL_LIBPATH: '';
+  // require common module
+  with({
+    libs : CONS_COMMON_LIBS, 
+    llibs : CONS_LOCAL_LIBS,
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    var len = libs.length;
+    for (var i = 0; i < len; i++){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+    var llen = llibs.length;
+    for (var i = 0; i < llen; i++){
+      try {
+        var module_path = objFS.BuildPath(llib_path,llibs[i]);
+        //Editor.TraceOut(module_path);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+// 
+// sakura macroを実行する
+function doProcess(expandParam){ 
+  var macro_path = '';
+  if(typeof expandParam === 'undefined') {expandParam = '$f';}
+  if(expandParam.length >3) {
+    target_ = expandParam; // set path 
+  } else {
+    target_ = Editor.ExpandParameter(expandParam);
+  }
+  var macro_path = target_;
+  var macro_ext = "js";
+  Editor.ExecExternalMacro(macro_path);
+}
+
+// --------------------------------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  Editor.FileSave();
+  var target_ = CONFIG.TEST_TARGET_MACRO;
+  doProcess(target_);
+
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('This script is for sakura macro. A env is maybe wsh.')
+  } else {
+    console.log('This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())
