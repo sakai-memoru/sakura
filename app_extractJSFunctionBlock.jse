@@ -1,0 +1,322 @@
+// app_extractJSFunction.jse
+// + sakura macro folder
+//    + app_extractJSFunction.jse  
+//    + lib  
+//    + app_extractJSFunction  
+//      + config  
+//        + setting.js  
+// 
+(function(){
+
+// const
+var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
+var CONS_COMMON_LIBS = [
+  //"./lib/es5-shim.js",
+  //"./lib/json2.js",
+  //"./lib/DateUtil.jse",
+  //"./lib/StringUtil.jse",
+  //"./lib/Clipboard3.jse",
+  //"./lib/ClipboardGetter.jse",
+  //"./lib/Template.jse",
+  //"./lib/Dialog.jse",
+  //"./app_extractJSFunctionBlock/config/setting.js",
+]
+
+var CONS_LOCAL_LIBPATH = '';
+var CONS_LOCAL_LIBS = [
+  //"./config/setting.js",
+]
+
+// commonalized for js   /////////////////////////////////////////////
+// load external libraries
+var check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+var CONFIG = {};
+
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
+  var llib_path = CONS_LOCAL_LIBPATH ? CONS_LOCAL_LIBPATH: '';
+  // require common module
+  with({
+    libs : CONS_COMMON_LIBS, 
+    llibs : CONS_LOCAL_LIBS,
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    var len = libs.length;
+    for (var i = 0; i < len; i++){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+    var llen = llibs.length;
+    for (var i = 0; i < llen; i++){
+      try {
+        var module_path = objFS.BuildPath(llib_path,llibs[i]);
+        //Editor.TraceOut(module_path);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+var debug_mode = CONFIG.DEBUG_MODE || false;
+
+// pretend console.log 
+var console = console || {};
+if(console){
+  if(debug_mode){
+    var typeOf = function(obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    }
+    var stringify_object = function(obj){
+      if(typeOf(obj) !== 'object') return obj;
+      var ary = [];
+      for(var k in obj){
+        if(obj.hasOwnProperty(k)){
+          if(typeOf(obj) === 'boolean'){
+            ary.push('"' + k + '"' + " : " +  stringify_object(obj[k]) + ' ');
+          }else if(typeOf(obj) === 'number'){
+            ary.push('"' + k + '"' + " : " +  stringify_object(obj[k]) + ' ');
+          }else if(typeOf(obj) === 'array'){
+            ary.push('"' + k + '"' + " : " +  stringify_object(obj[k]) + ' ');
+          }else if(typeOf(obj) !== 'object'){
+            ary.push('"' + k + '"' + " : " + '"' + stringify_object(obj[k]) + '" ');
+          }else{
+            ary.push('"' + k + '"' + " : " + stringify_object(obj[k]) + ' ');
+          }
+        }
+      }
+      var temp = ary.toString();
+      temp = temp.substr(0, temp.length -1);
+      return "{ " + temp + " }"
+    }
+    if(flag == "sakura"){
+      console.log=function(str){
+        var log_str = "[DEBUG] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.info=function(str){
+        var log_str = "[INFO] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.dir = function(obj){
+        var str = "[DUMP] $d$t ($f) > " + stringify_object(obj);
+        Editor.TraceOut(str,1);
+      }
+    };
+    if(flag == "wsh"){
+      console.info = function(str){WScript.Echo('[INFO] ' + str)};
+      console.log = function(str){WScript.Echo('[DEBUG] ' + str)};
+      console.dir = function(obj){
+        var str = stringify_object(obj);
+        WScript.Echo('[DUMP] ' + str);
+      }
+    }
+  }else{
+    if(flag == "wsh")  console.info = function(str){WScript.Echo(str)};
+    if(flag == "sakura")  console.info =function(str){Editor.InfoMsg(str)};
+    if(flag == "wsh")  console.log = function(str){null;};
+    if(flag == "sakura")  console.log = function(str){null;};
+    if(flag == "wsh")  console.dir = function(str){null;};
+    if(flag == "sakura")  console.dir = function(str){null;};
+  }
+}
+
+// pretend process.exit
+if(typeof(process) === "undefined"){
+  if(flag == "wsh")  process={exit : function(e){WScript.Quit(e)}};
+  if(debug_mode){
+    if(flag == "sakura")  process={exit : function(e){Editor.TraceOut('done')}};
+  }else{
+    if(flag == "sakura")  process={exit : function(e){'done'}};
+  }
+}
+
+// local functions
+// 
+var find_closingBracket = function(str, brackets) {
+  if(typeof brackets === 'undefined') brackets = '{}';
+  var ary = str.split('');
+  var ary_brackets = brackets.split('');
+  if (str.indexOf(ary_brackets[1]) === -1) {
+    return -1;
+  }
+  var level = 0;
+  for (var i = 0; i < ary.length; i++) {
+    if (ary[i] === ary_brackets[0]) {
+      level++;
+    } else if (ary[i] === ary_brackets[1]) {
+      level--;
+      if (level <= 0) {
+        return i;
+      }
+    }
+    // Editor.TraceOut("ary[i] = " + ary[i]);
+    // Editor.TraceOut("level = " + level);
+  }
+  return -1;
+}
+
+var search_prevWithRegx = function(regx) {
+  var ret = 1; // top
+  //Editor.TraceOut(regx.toString());
+  var searchOpt = '4'; // search with regexp
+  Editor.Down();
+  Editor.SearchPrev(regx, searchOpt);
+  ret = Editor.GetSelectLineFrom();
+  if(ret == 1){
+    var reCheck = Editor.SearchNext(regx, searchOpt);
+    if(ret === reCheck){
+      ret = 1;
+    } else {
+      ret = 0;
+    }
+  }
+  return ret;
+}
+
+var get_lines = function(start_line_num, end_line_num){
+  if(typeof end_line_num === 'undefined'){
+    end_line_num = Editor.GetLineCount(0);
+  }
+  if(typeof start_line_num === 'undefined'){
+    start_line_num = 1;
+  }
+  Editor.MoveHistSet();
+  Editor.Jump(start_line_num);
+  Editor.BeginSelect();
+  Editor.Jump(end_line_num + 1);
+  var lines = Editor.GetSelectedString(0);
+  Editor.CancelMode();
+  Editor.MoveHistPrev();
+  return lines;
+}
+
+var extract_functionBlock = function(){
+  // RegExp of js func for ES3
+  var extracted = '';
+  var regx = [
+    "^\\s*[\\w_]+\\.[\\w_]+\\s*\\=\\s*function\\s*\\(",
+    "^\\s*[\\w_]+\\s*\\=\\s*function\\s*\\(",
+    "^\\s*var\\s+[\\w_]+\\s*\\=\\s*function\\s*\\(",
+    "^\\s*function\\s*[\\w\\d_]+\\([\\w\\d_\\, ]*\\)\\s*"
+    ].join('|'); 
+  var start_line_num = search_prevWithRegx(regx);
+  if(start_line_num == 1) {
+    return extracted;
+  }
+  var textBelow = get_lines(start_line_num);
+  var str_pos = find_closingBracket(textBelow, '{}');
+  extracted = textBelow.substr(0,str_pos + 1);
+  Editor.Jump(start_line_num);
+  Editor.SearchClearMark();
+  //Editor.TraceOut(extracted);
+  return extracted;
+}
+
+var get_template = function(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+var show_menu = function(isDisplay){
+  if(typeof(isDisplay) === 'undefined') isDisplay = true;
+  var ope = 0;
+  var menu_statement = function(){
+/**
+1. extract functionBlock(&e),
+*/
+  }
+  if(isDisplay){
+    var menu_ = get_template(menu_statement)
+    ope = Editor.CreateMenu( 1, menu_);
+    // console.log(menu_statement);
+    // console.log(ope);
+    return ope;
+  } else {
+    return ope;
+  }
+}
+
+var output_display = function(str){
+  if(Editor.isTextSelected){
+    //Editor.InsText(str);
+    //Editor.TraceOut(str);
+    null; // clearするため通らない
+  } else {
+    if(str){
+      Editor.SetClipboard(0,str)
+      Editor.TraceOut(str);
+    }else{
+      null;
+    }
+  }
+}
+
+// do process   --------------------------------------------------
+//
+var doProcess = function(menu_selected){
+  console.log('------------------------- start');
+  console.log('APP : ' + CONFIG.APP_NAME || 'no setting.js');
+  // Export Library
+  //var StringUtil = exports.StringUtil;
+  
+  // pre-process
+  var ope = 0;
+  if (typeof menu_selected !== 'undefined'){
+    ope = menu_selected;
+  } else {
+    ope = show_menu();
+  }
+  // main process for selected menu's one
+  if(ope == 1){
+    //1. extract function(&e),
+    var formatted = extract_functionBlock();
+  }
+  
+  // post-process 
+  if(ope !== 0){
+    output_display(formatted);
+  }
+  // for debug
+  if(debug_mode){
+    console.log('ope = ' + ope);
+    console.log('formatted = ' + formatted);
+  }
+}
+
+// ------------------------------------------------ entry point
+// 
+if(typeof(Editor) !== 'undefined'){
+  var menu_selected = 1;
+  process.exit(doProcess(menu_selected));
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('[Warn] Opps! Sorry. This app is for Sakura Ediotr.');
+  } else {
+    console.log('[Warn] Opps! Sorry. This app is for Sakura Ediotr.');
+  }
+}
+
+}())
