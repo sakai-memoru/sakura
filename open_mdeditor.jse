@@ -4,7 +4,7 @@
 // Typora で編集ファイルを開く
 function doProcess(expandParam){
   var target_ = Editor.ExpandParameter(expandParam);
-  var cmd_statement = "typora.exe " + target_
+  var cmd_statement = "G:\\Users\\sakai\\Downloads\\wzme115\\wzme.exe " + target_
   Editor.ExecCommand(cmd_statement, 0)
 }
 
