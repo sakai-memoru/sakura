@@ -59,7 +59,39 @@ if(!Object.keys){
     };
 }
 
+var read_fileUtf8 = function(path){
+  if (!path) {
+    throw new Error('StreamReader: filename is not defined.');
+  }
+  var objSR = new ActiveXObject('ADODB.Stream');
+  objSR.Type = 2; // 1 : binary , 2 : text
+  objSR.Charset = 'UTF-8';
+  try {
+    objSR.Open();
+  } catch (e) {
+    throw new Error('StreamReader: failed to open file.');
+  }
+  objSR.LoadFromFile(path);
+  var text = objSR.ReadText(-1)  // read all : -1, read line : -2
+  objSR.Close();
+  objSR = null;
+  return text;
+}
+
 // public function
+CLS_.read_file = function(path,encode){
+  if(typeof encode === 'undefined') encode = 'utf-8';
+  var ret = '';
+  if(encode.toLowerCase() === 'utf-8'){
+    ret = read_fileUtf8(path);
+  } else {
+    var objFS = new ActiveXObject("Scripting.FileSystemObject");
+    var ret = objFS.OpenTextFile(path,1).ReadAll();
+    objFS = null;
+  }
+  return ret;
+}
+
 CLS_.get_template = function(template_statement,sep){
   sep = sep || '\r\n';
   var template = template_statement.toString().split(sep).slice(2,-2).join(sep);
