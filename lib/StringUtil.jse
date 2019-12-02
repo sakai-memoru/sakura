@@ -53,10 +53,10 @@ var this_file_name = 'StringUtil.jse';  // Notice! ifyou rename this module file
 //     StringUtil.squeezeSpaceTab = function(str, replacement)  
 //     StringUtil.squeezeWhiteSpace = function(str, replacement)  
 //     StringUtil.startsWith = function(str, prefix_)  
+//     StringUtil.tabToSpace = function(str, num)  
 //     StringUtil.trim = function(str)  
 //     StringUtil.uncapitalize = function(str, sep)  
-// 
-
+//     StringUtil.unifyLineCode = function(str,line_code)  
 
 (function(){
 
@@ -443,6 +443,21 @@ CLS_.spaceToTab = function(str,num){
     //console.log('str = ' + str);
     //console.log('ret = ' + ret);
   }
+  return ret
+}
+
+CLS_.tabToSpace = function(str, num){
+  if(!CLS_.isString(str)) return str;
+  if(typeof num === 'undefined') num = 2;
+  return str.replace(/\t/gm,StringUtil.repeat(' ',num))
+};
+
+CLS_.unifyLineCode = function(str,line_code){
+  if(!CLS_.isString(str)) return str;
+  if(typeof line_code === 'undefined') line_code = "\r\n";
+  var replacement = "\\v"; // dummy string
+  var buf = str.replace(/\r\n|\n/gm,replacement)
+  var ret = buf.replace(/\\v/g, line_code);
   return ret
 }
 
