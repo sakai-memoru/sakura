@@ -1,11 +1,11 @@
 (function(){
 
 // 
-// gitでdiffで
+// gitでdiffで編集中のファイルを比較
 function doProcess(){
   var target_ = Editor.ExpandParameter('$F');
-  var cmd_statement = "git diff " + target_;
-  Editor.ExecCommand(cmd_statement, 1);
+  var cmd_statement = "git windiff " + target_;
+  Editor.ExecCommand(cmd_statement, 0);
 }
 
 // -------------- entry point
