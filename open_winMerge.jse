@@ -1,0 +1,27 @@
+(function(){
+
+// 
+// winmerge で編集ファイルと選択ファイルをdiffする
+function doProcess(){
+  var target_ = Editor.ExpandParameter('$F');
+  var target_root = Editor.ExpandParameter('$e');
+  var target_ext = Editor.ExpandParameter('$b');
+  var target_compare = Editor.FileOpenDialog(target_root,'*.' + target_ext);
+  var cmd_statement = "winmergeu.exe " + '"' + target_ + '" "' + target_compare + '"';
+  Editor.ExecCommand(cmd_statement, 0);
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  Editor.FileSave();
+  doProcess();
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())
