@@ -1,0 +1,23 @@
+(function(){
+
+// 
+// git diffで、difftoolを指定して起動する
+function doProcess(){
+  var cmd_statement = "git windiff ";
+  Editor.ExecCommand(cmd_statement, 0);
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  Editor.FileSave();
+  doProcess();
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())
