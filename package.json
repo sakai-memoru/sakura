@@ -13,5 +13,8 @@
     "sakura"
   ],
   "author": "sakai.memoru",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^2.0.0"
+  }
 }
