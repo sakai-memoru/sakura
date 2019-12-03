@@ -217,7 +217,8 @@ var read_fileUtf8 = function(path){
 
 var read_file = function(path){
   var ret = '';
-  if(CONFIG.ENCODE.toLowerCase() === 'utf-8'){
+  var encode = typeof CONFIG.ENCODE !== 'undefined'? CONFIG.ENCODE: 'utf-8';
+  if(encode.toLowerCase() === 'utf-8'){
     ret = read_fileUtf8(path);
   } else {
     var objFS = new ActiveXObject("Scripting.FileSystemObject");
@@ -240,20 +241,26 @@ var get_target = function(expandParam){
 
 // 
 // Search some snippet with file name and get the snippet
+// do process
 function doProcess(){
   // get target
   var current_ext = get_target('$b');
   var target_ = get_target('$C');
   // open folder diaglog
   var message_ = 'Select Folder';
-  var initialDirectory = CONFIG.SNIPPETS_FOLDER;
+  var initialDirectory = typeof CONFIG.SNIPPETS_FOLDER !== 'undefined'? CONFIG.SNIPPETS_FOLDER: './';
   var folder_name = Editor.FolderDialog(message_,initialDirectory);
   // open inputbox
   var windowTitle = 'file search';
   var message2_ = 'Input a keyword for search.'
   var target_cond = Editor.InputBox(message2_, target_, 32);
-  var condition = '*' + target_cond + '*.' + chopTail(current_ext,1) + '*';
   // execute file search
+  if(current_ext.length <= 2){
+    null;
+  } else {
+    current_ext = chopTail(current_ext,1);
+  }
+  var condition = '*' + target_cond + '*.' + current_ext + '*';
   var ary_path = get_filePathes(folder_name, condition);
   var ary = get_filenames(ary_path);
   // create menu
