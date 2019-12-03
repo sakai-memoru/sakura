@@ -1,0 +1,67 @@
+(function(){
+var CONS_MACRO_FOLDER = "sakura";
+
+function get_sakuraMacroFolder(){
+  var target_folder_name = CONS_MACRO_FOLDER;
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var appdata_folder = objShell.SpecialFolders("AppData");
+  var target_folder_path = objFS.BuildPath(appdata_folder, target_folder_name);
+  objShell = null;
+  objFS = null;
+  return target_folder_path;
+}
+
+var doBatchAndSendKey = function(cmd_statement, cmd_path, keyword){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var bak = objShell.CurrentDirectory;
+  if(typeof(cmd_path) !== "undefined") {
+    if(cmd_path){
+      objShell.CurrentDirectory = objFS.GetParentFolderName(cmd_path); 
+    }
+  }
+  objShell.Run(cmd_statement, 1);
+  Editor.Sleep(3000 );
+  objShell.SendKeys("^f");Editor.Sleep( 100 );
+  Editor.ClipboardEmpty();
+  Editor.SetClipboard(0,keyword);
+  objShell.SendKeys("^v"); Editor.Sleep( 100 );
+  objShell.CurrentDirectory = bak;
+  objShell = null;
+  objFS = null;
+};
+
+var get_target = function(expandParam){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  var ret = Editor.ExpandParameter(expandParam);
+  return ret;
+};
+
+// 
+// Explorer でsakura macroフォルダを開く
+function doProcess(expandParam){
+  var target_folder = get_sakuraMacroFolder();
+  var target_ = get_target('$C');
+  var cmd_statement = "explorer.exe " + target_folder;
+  doBatchAndSendKey(cmd_statement, '', target_);
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  doProcess();
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('[Warn] This script is for sakura macro. A env is maybe WSH.');
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.');
+  }
+}
+
+}())
