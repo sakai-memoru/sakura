@@ -1,0 +1,145 @@
+﻿// JScript
+// CASE=False
+// JScript Extension
+ActiveXObject
+// Host Object
+WScript
+// WScript Property
+Arguments
+FullName
+Interactive
+Name
+Path
+ScriptFullName
+ScriptName
+StdErr
+StdIn
+StdOut
+Version
+Application
+BuildVersion
+// WScript Method
+CreateObject
+ConnectObject
+DisconnectObject
+GetObject
+Echo
+Quit
+Sleep
+Timeout
+// WshArguments
+Item
+Length
+Named
+Unnamed
+ShowUsage
+Exists
+// No list up on WshController, WshRemote, WshNetwork
+// WScript.Shell
+// objShell
+WScript.Shell
+CurrentDirectory
+Environment
+SpecialFolders
+AppActivate
+CreateShortcut
+ExpandEnvironmentStrings
+LogEvent
+Popup
+RegRead
+RegWrite
+RegDelete
+Run
+Exec
+SendKeys
+// WshShortcut Property
+Arguments
+Description
+FullName
+Hotkey
+IconLocation
+TargetPath
+WindowStyle
+WorkingDirectory
+// WshShortcut method
+Save
+// WshEnvironment method
+Remove
+// Shell.Application
+BrowseForFolder
+CascadeWindows
+ControlPanelItem
+Explore
+FileRun
+FindComputer
+FindFiles
+NameSpace
+Help
+MinimizeAll
+Open
+RefreshMenu
+SetTime
+ShutdownWindows
+Suspend
+TileHorizontally
+TileVertically
+TrayProperties
+UndoMinimizeAll
+Windows
+IsServiceRunning
+CanStartStopService
+GetSystemInformation
+FindPrinter
+ServiceStart
+ServiceStop
+ShellExecute
+// Shell Folder Object
+Title
+ParentFolder
+CopyHere
+GetDetailsOf
+NewFolder
+MoveHere
+Items
+ParseName
+// Sehll Folder Item
+GetLink
+GetFolder
+IsBrowsable
+IsFileSystem
+IsFolder
+IsLink
+ModifyDate
+Name
+Path
+Size
+Type
+InvokeVerb
+// Scripting.FileSystemObject
+Scripting.FileSystemObject
+BuildPath
+DriveExists
+FolderExists
+FileExists
+GetAbsolutePathName
+GetFileName
+GetBaseName
+GetDriveName
+GetExtensionName
+GetFileVersion
+GetParentFolderName
+GetTempName
+CreateFolder
+CopyFile
+CopyFolder
+MoveFile
+MoveFolder
+DeleteFile
+DeleteFolder
+Drives
+GetDrive
+GetFolder
+GetSpecialFolder
+GetFile
+CreateTextFile
+OpenTextFile
