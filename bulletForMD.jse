@@ -1,0 +1,41 @@
+(function(){
+
+// 
+// bulletForMD.js
+
+// local method
+var add_line = function(line_str, line_code){
+  if(typeof line_code === 'undefined') line_code = '\r\n'
+  Editor.Down();
+  Editor.GoLineTop();
+  Editor.InsText(line_code);
+  Editor.Up();
+  Editor.InsText(line_str);
+}
+
+// do process
+var doProcess = function(){
+  var regex = /^([\t ]*)([\-\+\*])/;
+  var line_str = Editor.GetLineStr(0);  // get line string on cursor
+  if(regex.test(line_str)){
+    regex.exec(line_str);
+    var indent = RegExp.$1;
+    var bullet_str = RegExp.$2;
+    var add_line_str = indent + bullet_str + ' ';
+    add_line(add_line_str);
+  }
+}
+
+// --------------------------------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  doProcess();
+
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('This script is for sakura macro. A env is maybe wsh.')
+  } else {
+    console.log('This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())
