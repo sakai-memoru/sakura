@@ -1,0 +1,260 @@
+// app_executeExtrenalMacro.jse  
+// + sakura macro folder  
+//    + app_executeExtrenalMacro.jse  
+//    + app_executeExtrenalMacro  
+//      + config  
+//        + setting.js  
+// 
+
+(function(){
+
+// const 
+var CONS_PWSH_EXE = 'powershell -noprofile -Sta -command ';
+
+var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
+var CONS_COMMON_LIBS = [
+  "./app_executeExtrenalMacro/config/setting.js",
+]
+
+// load external libraries
+var check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+var CONFIG = {};
+
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
+  // require common module
+  with({
+    libs : CONS_COMMON_LIBS, 
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    var len = libs.length;
+    for (var i = 0; i < len; i++){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+// powershell statement
+var herestrings_powershell = function(){
+/*
+function search-files(){
+  [CmdletBinding()]
+  param(
+    [Parameter(Position=0,Mandatory=$true)]
+    [string] $folder,
+    [Parameter(Position=1)]
+    [string] $likestr = '*.*'
+  )
+  Get-ChildItem $folder $likestr -File | foreach{$_.FullName} | set -Name ret
+  # return
+  $ret
+}
+search-files -folder "{{folder_name}}" -likestr "{{condition}}"
+*/
+}
+
+// local function
+function replace_all(string, target, replacement) {
+  var result = "";
+  var offset = 0;
+  var target_length = target.length;
+  if (target_length === 0) {
+    for (var i = 0, c = string.length; i < c; i++) {
+      result += string[i];
+      result += replacement;
+    }
+    if (result.length)
+      return result.substr(0, result.length - replacement.length);
+    return result;
+  }
+  do {
+    var i = string.indexOf(target, offset);
+    if (i === -1) {
+      result += string.substring(offset);
+      return result;
+    }
+    result += string.substring(offset, i);
+    result += replacement;
+    offset = i + target_length;
+  } while (true);
+}
+
+if(!Object.keys){
+    Object.keys = function(obj){
+        var keys = [];
+        for(var i in obj){
+            if(obj.hasOwnProperty(i)){
+                keys.push(i);
+            }
+        }
+        return keys;
+    };
+}
+
+function merge_map(template, map_){
+  var keys_ = Object.keys(map_);
+  for(key_ in keys_){
+    var value_ = map_[keys_[key_]];
+    template = replace_all(template, '{{' + keys_[key_] + '}}', value_);
+  };
+  return template;
+}
+
+function get_template(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+var chopTail = function(str, num){
+  var len = str.length;
+  return str.substr(0,len - num);
+};
+
+var doBatchAndGetStdOut = function(target_){
+  // WScript.Echo(target_);
+  var objShell = new ActiveXObject("WScript.Shell");
+  var objExec = objShell.Exec(target_);
+  objExec.StdIn.Close();
+  var text = objExec.StdOut.ReadAll()
+  objExec = null;
+  objShell = null;
+  if(text){
+    text = chopTail(text,2);
+  }
+  return text;
+}
+
+var exec_fileSearch = function(folder_name, condition){
+  var target_ = get_template(herestrings_powershell);
+  var map_ = {
+    'folder_name' : folder_name,
+    'condition' : condition
+  };
+  var target_ = merge_map(target_, map_);
+  var cmd_statement = CONS_PWSH_EXE + target_;
+  //Editor.TraceOut(cmd_statement);
+  var ret = doBatchAndGetStdOut(cmd_statement);
+  return ret;
+}
+
+var get_filePathes = function(folder_name, condition){
+  var result_ = exec_fileSearch(folder_name, condition);
+  var ary_path = result_.split("\r\n");
+  return ary_path
+}
+
+var get_filenames = function(ary_path){
+  var objFS = new ActiveXObject('Scripting.FileSystemObject');
+  var ret_ary = [];
+  var len = ary_path.length;
+  for (var i = 0; i < len ; i++){
+    ret_ary.push(objFS.GetFileName(ary_path[i]));
+  }
+  objFS = null;
+  return ret_ary;
+}
+
+var generate_menuAndGetOpe = function(ary){
+  var menu_ = '';
+  var len = ary.length;
+  for (var i = 0; i < len; i++){
+    menu_ = menu_ + ary[i] + ',';
+  }
+  menu_ = chopTail(menu_,1);
+  var ope = Editor.CreateMenu(1, menu_);
+  return ope;
+}
+
+var get_sakuraMacroFolder = function(target_folder_name){
+  if(typeof target_folder_name === 'undefined') target_folder_name = 'sakura';
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var appdata_folder = objShell.SpecialFolders("AppData");
+  var target_folder_path = objFS.BuildPath(appdata_folder, target_folder_name);
+  objShell = null;
+  objFS = null;
+  return target_folder_path
+}
+
+var get_target = function(expandParam){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  var ret = Editor.ExpandParameter(expandParam);
+  return ret;
+};
+
+var execute_macro = function(macro_path){
+  Editor.ExecExternalMacro(macro_path);
+}
+
+// 
+// Search some snippet with file name and get the snippet
+// do process
+function doProcess(){
+  // get target
+  var CONS_MACRO_EXT = 'js';
+  var target_ = get_target('$C');
+  if(CONFIG.MACRO_FOLDER.length !== 0){
+    target_folder = CONFIG.MACRO_FOLDER;
+  } else {
+    target_folder = get_sakuraMacroFolder();
+  }
+  // open inputbox
+  var windowTitle = 'file search';
+  var message2_ = 'Input a keyword for search.'
+  
+  var target_cond = Editor.InputBox(message2_, target_, 32);
+  // execute file search
+  var condition = '*' + target_cond + '*.' + CONS_MACRO_EXT + '*';
+  var ary_path = get_filePathes(target_folder, condition);
+  var ary = get_filenames(ary_path);
+  //Editor.TraceOut(ary);
+  // select macro and execute
+  if(ary.length !== 0){
+    // create menu
+    var ope = generate_menuAndGetOpe(ary);
+    if(ope != 0){
+      // execute macro 
+      execute_macro(ary_path[ope-1]);
+    }
+  }
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  Editor.FileSave();
+  doProcess();
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())
