@@ -23,8 +23,8 @@ var get_target = function(expandParam){
 
 function doProcess(){ 
   var target_ = get_target('$C');
-  var searchpopt_str = "11-0000" ;
-  var searchopt = deleteChars(searchpopt_str,'\-');
+  var searchopt_str = "11-0000" ;
+  var searchopt = deleteChars(searchopt_str,'\-');
   var sopt = parseInt(searchopt,2);
   //var line_num = 0;
   //Editor.Jump(line_num);
