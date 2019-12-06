@@ -130,6 +130,28 @@ if(typeof(process) === "undefined"){
 // powershell statement ::need to escape for sakura
 var herestrings_powershell = function(){
 /*
+function filesWithSomeCond(){
+  [CmdletBinding()]
+  param(
+    [Parameter(Position=0,Mandatory=$true)]
+    [string] $folder,
+    [Parameter(Position=1)]
+    [string] $json_str = '["*.*"]'
+  )
+  Echo $str_json
+  $json_str | ConvertFrom-Json | set -Name obj 
+  $ary = @()
+  foreach ($ext in $obj.condition)
+  {
+    Get-ChildItem $folder $ext -File | foreach{$_.FullName} | set -Name buff
+    $ary += $buff
+    $buff = $null
+  }
+  # return
+  $ary_sorted = $ary | Sort-Object
+  return $ary_sorted
+}
+
 search-filesWithSomeCond -folder '{{folder_name}}' -json_str '{{json_str}}' 
 */
 }
