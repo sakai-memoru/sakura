@@ -1,0 +1,388 @@
+// app_openReference.jse  
+// + sakura macro folder  
+//    + app_openReference.jse  
+//    + app_openReference  
+//      + config  
+//        + setting.js  
+// 
+
+(function(){
+
+// const 
+var CONS_PWSH_EXE = 'powershell -noprofile -Sta -command ';
+
+var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
+var CONS_COMMON_LIBS = [
+  "./app_openReference/config/setting.js",
+]
+
+// load external libraries
+var check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+var CONFIG = {};
+
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
+  // require common module
+  with({
+    libs : CONS_COMMON_LIBS, 
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    var len = libs.length;
+    for (var i = 0; i < len; i++){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //console.log( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+var debug_mode = typeof CONFIG.DEBUG_MODE !== 'undefined' ? CONFIG.DEBUG_MODE: true ;
+
+// pretend console.log 
+var console = typeof console !== 'undefined' ? console : {};
+if(console){
+  if(debug_mode){
+    var typeOf = function(obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    }
+    var stringify_object = function(obj){
+      if(typeOf(obj) !== 'object') return obj;
+      var ary = [];
+      for(var k in obj){
+        if(obj.hasOwnProperty(k)){
+          if(typeOf(obj) === 'boolean'){
+            ary.push('"' + k + '"' + " : " +  stringify_object(obj[k]) + ' ');
+          }else if(typeOf(obj) === 'number'){
+            ary.push('"' + k + '"' + " : " +  stringify_object(obj[k]) + ' ');
+          }else if(typeOf(obj) === 'array'){
+            ary.push('"' + k + '"' + " : [" +  stringify_object(obj[k]) + '] ');
+          }else if(typeOf(obj) !== 'object'){
+            ary.push('"' + k + '"' + " : " + '"' + stringify_object(obj[k]) + '" ');
+          }else{
+            ary.push('"' + k + '"' + " : " + stringify_object(obj[k]) + ' ');
+          }
+        }
+      }
+      var temp = ary.toString();
+      temp = temp.substr(0, temp.length -1);
+      return "{ " + temp + " }"
+    }
+    if(flag == "sakura"){
+      console.log=function(str){
+        var log_str = "[DEBUG] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.info=function(str){
+        var log_str = "[INFO] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.dir = function(obj){
+        var str = "[DUMP] $d$t ($f) > " + stringify_object(obj);
+        Editor.TraceOut(str,1);
+      }
+    };
+    if(flag == "wsh"){
+      console.info = function(str){WScript.Echo('[INFO] ' + str)};
+      console.log = function(str){WScript.Echo('[DEBUG] ' + str)};
+      console.dir = function(obj){ // FIXME stringifyが簡易版
+        var str = stringify_object(obj);
+        WScript.Echo('[DUMP] ' + str);
+      }
+    }
+  }else{
+    if(flag == "wsh")  console.info = function(str){WScript.Echo(str)};
+    if(flag == "sakura")  console.info =function(str){Editor.InfoMsg(str)};
+    if(flag == "wsh")  console.log = function(str){null;};
+    if(flag == "sakura")  console.log = function(str){null;};
+    if(flag == "wsh")  console.dir = function(str){null;};
+    if(flag == "sakura")  console.dir = function(str){null;};
+  }
+}
+
+// pretend process.exit
+if(typeof(process) === "undefined"){
+  if(flag == "wsh")  process={exit : function(e){WScript.Quit(e)}};
+  if(debug_mode){
+    if(flag == "sakura")  process={exit : function(e){Editor.TraceOut('done')}};
+  }else{
+    if(flag == "sakura")  process={exit : function(e){null}};
+  }
+}
+
+// powershell statement ::need to escape for sakura
+var herestrings_powershell_invoke = function(){
+/*
+invoke-item "{{file_path}}"
+*/
+}
+
+// local function
+var merge_map = function(template, map_){
+  for (var key_ in map_){
+    if(map_.hasOwnProperty(key_)){
+      // console.log("L148 : key_ = " + key_);
+      // console.log("L149 : map_[key_] = " + map_[key_]);
+      var regx = new RegExp('{{' + key_ + '}}',"gim");
+      template = template.replace(regx, map_[key_]);
+    }
+  }
+  return template;
+}
+
+var get_template = function(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+};
+
+var chopTail = function(str, num){
+  var len = str.length;
+  return str.substr(0,len - num);
+};
+
+var doBatch = function(cmd_statement, cmd_path){
+  //console.log(cmd_statement);
+  //console.log(cmd_path);
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var objShell = new ActiveXObject("WScript.Shell");
+  var bak = objShell.CurrentDirectory;
+  if(typeof(cmd_path) !== "undefined") {
+    objShell.CurrentDirectory = objFS.GetParentFolderName(cmd_path); 
+  }
+  objShell.Exec(cmd_statement);
+  while (objShell.Status == 0) {
+    if(check_env === 'sakura'){
+      Editor.Sleep(100);
+    }
+    if(check_env === 'wsh'){
+      WScript.Sleep(100);
+    }
+  }
+  objShell.CurrentDirectory = bak;
+  objShell = null;
+  objFS = null;
+};
+
+
+var doBatchAndGetStdOut = function(target_){
+  //console.log('L169 : target_ = ' + target_);
+  var objShell = new ActiveXObject("WScript.Shell");
+  var objExec = objShell.Exec(target_);
+  while (objShell.Status == 0) {
+    if(check_env === 'sakura'){
+      Editor.Sleep(100);
+    }
+    if(check_env === 'wsh'){
+      WScript.Sleep(100);
+    }
+  }
+  objExec.StdIn.Close();
+  var text = objExec.StdOut.ReadAll()
+  // console.log('L177 : text = ' + text);
+  objExec = null;
+  objShell = null;
+  if(text){
+    text = chopTail(text,2);
+  }
+  return text;
+}
+
+var exec_invokeItem = function(file_path){
+  var target_ = get_template(herestrings_powershell_invoke);
+  var map_ = {
+    'file_path' : file_path
+  };
+  var target_ = merge_map(target_, map_);
+  var cmd_statement = CONS_PWSH_EXE + target_;
+  var ret = doBatchAndGetStdOut(cmd_statement);
+  return ret;
+}
+
+var show_menu = function(menu_statement){
+  var ope = Editor.CreateMenu(1, menu_statement);
+  return ope;
+}
+
+var get_target = function(expandParam){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  var ret = Editor.ExpandParameter(expandParam);
+  return ret;
+};
+
+var includesObject = function(target_obj, target_key){
+  var bool = false;
+  for(key_ in target_obj){
+    if(target_obj.hasOwnProperty(key_)){
+      if(target_key === key_){bool = true;break}
+    }
+  }
+  return bool;
+}
+
+var generate_menuStatementForSet = function(target_set){
+  var len = target_set.length;
+  var ary = [];
+  for(var i = 0; i < len ; i++){
+    for(key_ in target_set[i]){
+      if(target_set[i].hasOwnProperty(key_)){
+        ary.push(key_);
+      }
+    }
+    ary.push('-');
+  }
+  statement = ary.join(',');
+  statement = chopTail(statement,2);
+  return statement;
+}
+
+var flatten_keyArrayForSet = function(target_set){
+  var len = target_set.length;
+  var ary = [];
+  for(var i = 0; i < len ; i++){
+    for(key_ in target_set[i]){
+      if(target_set[i].hasOwnProperty(key_)){
+        ary.push(key_);
+      }
+    }
+  }
+  return ary;
+}
+
+var generate_menuStatementForObject = function(target_obj){
+  var ary = [];
+  for(key_ in target_obj){
+    if(target_obj.hasOwnProperty(key_)){
+      ary.push(key_);
+    }
+  }
+  statement = ary.join(',');
+  return statement;
+}
+
+var flatten_keyArray = function(target_obj){
+  var ary = [];
+  for(key_ in target_obj){
+    if(target_obj.hasOwnProperty(key_)){
+      ary.push(key_);
+    }
+  }
+  return ary;
+}
+
+var merge_object = function(obj1, obj2){
+  for(key in obj2){
+    obj1[key] = obj2[key];
+  }
+  return obj1;
+}
+
+var merge_objectForSet = function(target_set){
+  var obj = {};
+  var len = target_set.length;
+  for(var i = 0; i < len ; i++){
+    obj = merge_object(obj, target_set[i]);
+  }
+  return obj;
+}
+
+
+// 
+// do process
+function doProcess(){
+  //console.log('app name :' + (typeof CONFIG.APP_NAME !== 'undefined'? CONFIG.APP_NAME: 'no config!'));
+  // get target
+  var target_ = get_target('$C');
+  if(Editor.IsTextSelected){
+    Editor.ClipboardEmpty();
+    Editor.SetClipboard(0,target_);
+  }
+  var target_pathset = CONFIG.TARGET_PATH_SET;
+  var target_url = CONFIG.TARGET_URL;
+  var target_favorites = CONFIG.FAVORITES;
+  var target_folder = CONFIG.TARGET_FOLDER;
+  // create menu of pathes
+  var menu_pathset = generate_menuStatementForSet(target_pathset);
+  var menu_pathset_ary = flatten_keyArrayForSet(target_pathset);
+  var menu_pathset_obj = merge_objectForSet(target_pathset);
+  // add into menu for url
+  var menu_url = generate_menuStatementForObject(target_url);
+  var menu_url_ary = flatten_keyArray(target_url);
+  // add into menu for fav
+  var menu_fav = generate_menuStatementForObject(target_favorites);
+  var menu_fav_ary = flatten_keyArray(target_favorites);
+  // merge
+  var menu_statement = menu_url + ',-,' +  menu_fav + ',-,' + menu_pathset;
+  var menu_ary = menu_url_ary.concat(menu_fav_ary).concat(menu_pathset_ary);
+  var menu_obj = {};
+  menu_obj = merge_object(menu_obj, menu_pathset_obj);
+  menu_obj = merge_object(menu_obj, target_url);
+  menu_obj = merge_object(menu_obj, target_favorites);
+  // show menu
+  var ope = show_menu(menu_statement);
+  // operate each procedure
+  if(ope != 0){
+    var key_ = menu_ary[ope-1];
+    var path_ = "";
+    var cmd_statement = "";
+    if(includesObject(menu_pathset_obj, key_)){
+      path_ = target_folder + menu_obj[key_];
+      exec_invokeItem(path_);
+    }
+    if(includesObject(target_url, key_)){
+      cmd_statement = "powershell start microsoft-edge:" + menu_obj[key_];
+      doBatch(cmd_statement);
+      Editor.Sleep(3000);
+      var objShell = new ActiveXObject("WScript.Shell");
+      objShell.SendKeys("^v"); Editor.Sleep( 100 );
+      objShell = null;
+    }
+    if(includesObject(target_favorites, key_)){
+      cmd_statement = "powershell start microsoft-edge:";
+      doBatch(cmd_statement);
+      Editor.ClipboardEmpty();
+      Editor.SetClipboard(0,menu_obj[key_]);
+      Editor.Sleep(3000);
+      var objShell = new ActiveXObject("WScript.Shell");
+      objShell.SendKeys("^l");Editor.Sleep( 100 );
+      objShell.SendKeys("^v"); Editor.Sleep( 100 );
+      objShell.SendKeys("{ENTER}"); Editor.Sleep( 100 );
+      objShell = null;
+    }
+  }
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  process.exit(doProcess());
+  
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())
