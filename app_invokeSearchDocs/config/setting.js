@@ -7,7 +7,7 @@ var get_documentFolder = function(){
 }
 
 var CONFIG = {
-  "DEBUG_MODE": true,
+  "DEBUG_MODE": false,
   "APP_NAME": "app_invokeSearchDocs.jse",
   "TARGET_FOLDER": get_documentFolder(),
   "TARGET_EXT": ['pptx', 'xlsx', 'md', 'pdf', 'asta'],

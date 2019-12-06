@@ -14,7 +14,6 @@ var CONS_PWSH_EXE = 'powershell -noprofile -Sta -command ';
 var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
 var CONS_COMMON_LIBS = [
   "./lib/json2.js",
-  "./lib/StringUtil.jse",
   "./app_invokeSearchDocs/config/setting.js",
 ]
 
@@ -124,11 +123,11 @@ if(typeof(process) === "undefined"){
   if(debug_mode){
     if(flag == "sakura")  process={exit : function(e){Editor.TraceOut('done')}};
   }else{
-    if(flag == "sakura")  process={exit : function(e){'done'}};
+    if(flag == "sakura")  process={exit : function(e){null}};
   }
 }
 
-// powershell statement
+// powershell statement ::need to escape for sakura
 var herestrings_powershell = function(){
 /*
 search-filesWithSomeCond -folder '{{folder_name}}' -json_str '{{json_str}}' 
@@ -142,7 +141,7 @@ invoke-item "{{file_path}}"
 }
 
 // local function
-function merge_map(template, map_){
+var merge_map = function(template, map_){
   for (var key_ in map_){
     if(map_.hasOwnProperty(key_)){
       // console.log("L148 : key_ = " + key_);
@@ -154,11 +153,11 @@ function merge_map(template, map_){
   return template;
 }
 
-function get_template(herestrings, sep){
+var get_template = function(herestrings, sep){
   sep = sep || '\r\n';
   var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
   return template;
-}
+};
 
 var chopTail = function(str, num){
   var len = str.length;
@@ -202,6 +201,7 @@ var exec_invokeItem = function(file_path){
 
 var exec_fileSearch = function(folder_name, json_str){
   var target_ = get_template(herestrings_powershell);
+  json_str = json_str.replace(/"/g,'"""'); // powershell用Escape'
   var map_ = {
     'folder_name' : folder_name,
     'json_str' : json_str
@@ -214,8 +214,6 @@ var exec_fileSearch = function(folder_name, json_str){
 
 var get_filePathesWithArray = function(folder_name, cond_obj){
   var json_str = objToJson(cond_obj);
-  json_str = json_str.replace(/"/g,'"""'); // powershell用Escape'
-  //console.log("L257 : json_str = " + json_str);
   var result_ = exec_fileSearch(folder_name, json_str);
   var ary_path = result_.split("\r\n");
   return ary_path
@@ -266,11 +264,10 @@ var get_target = function(expandParam){
 };
 
 // 
-// Search some snippet with file name and get the snippet
 // do process
 function doProcess(){
+  //console.log('app name :' + (typeof CONFIG.APP_NAME !== 'undefined'? CONFIG.APP_NAME: 'no config!'));
   // get target
-  console.log('app name :' + (typeof CONFIG.APP_NAME !== 'undefined'? CONFIG.APP_NAME: 'no config!'));
   var target_ = get_target('$C');
   var target_ext = CONFIG.TARGET_EXT;
   var target_folder = CONFIG.TARGET_FOLDER;
@@ -286,8 +283,8 @@ function doProcess(){
   // execute file search
   var cond_obj = generate_targetObj(target_cond, target_ext);
   var ary_path = get_filePathesWithArray(target_folder, cond_obj);
-  //console.log("L303 : ary_path = " + ary_path);
   var ary = get_filenames(ary_path);
+  //console.log("L303 : ary_path = " + ary_path);
   // select macro and execute
   if(ary.length !== 0){
     // create menu
@@ -301,7 +298,7 @@ function doProcess(){
 
 // -------------- entry point
 if(typeof(Editor) !== 'undefined'){
-  doProcess();
+  process.exit(doProcess());
   
 } else {
   if(typeof(WScript) !== 'undefined'){
