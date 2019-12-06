@@ -1,0 +1,60 @@
+var CONS_PWSH_EXE = 'powershell -noprofile -Sta -command ';
+
+var herestrings_powershell_invoke = function(){
+/*
+invoke-item "{{file_path}}"
+*/
+}
+
+// local function
+var merge_map = function(template, map_){
+  for (var key_ in map_){
+    if(map_.hasOwnProperty(key_)){
+      // console.log("L148 : key_ = " + key_);
+      // console.log("L149 : map_[key_] = " + map_[key_]);
+      var regx = new RegExp('{{' + key_ + '}}',"gim");
+      template = template.replace(regx, map_[key_]);
+    }
+  }
+  return template;
+}
+
+var get_template = function(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+};
+
+var chopTail = function(str, num){
+  var len = str.length;
+  return str.substr(0,len - num);
+};
+
+var doBatchAndGetStdOut = function(target_){
+  //console.log('L169 : target_ = ' + target_);
+  var objShell = new ActiveXObject("WScript.Shell");
+  var objExec = objShell.Exec(target_);
+  while (objShell.Status == 0) {
+    Editor.Sleep(100);
+  }
+  objExec.StdIn.Close();
+  var text = objExec.StdOut.ReadAll()
+  // console.log('L177 : text = ' + text);
+  objExec = null;
+  objShell = null;
+  if(text){
+    text = chopTail(text,2);
+  }
+  return text;
+}
+
+var exec_invokeItem = function(file0_path){
+  var target_ = get_template(herestrings_powershell_invoke);
+  var map_ = {
+    'file_path' : file_path
+  };
+  var target_ = merge_map(target_, map_);
+  var cmd_statement = CONS_PWSH_EXE + target_;
+  var ret = doBatchAndGetStdOut(cmd_statement);
+  return ret;
+}

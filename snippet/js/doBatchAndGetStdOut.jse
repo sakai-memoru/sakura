@@ -1,5 +1,9 @@
-var doBatchAndGetStdOut = function(target_){
-  var cmd_statement = CONS_EXE_PWSH + target_;
+var chopTail = function(str, num){
+  var len = str.length;
+  return str.substr(0,len - num);
+};
+
+var doBatchAndGetStdOut = function(cmd_statement){
   // WScript.Echo(cmd_statement);
   var objShell = new ActiveXObject("WScript.Shell");
   var objExec = objShell.Exec(cmd_statement);
@@ -8,6 +12,9 @@ var doBatchAndGetStdOut = function(target_){
   }
   objExec.StdIn.Close();
   var text = objExec.StdOut.ReadAll()
+  if(text){ // for powershell 
+    text = chopTail(text,2);
+  }
   objExec = null;
   objShell = null;
   return text;
