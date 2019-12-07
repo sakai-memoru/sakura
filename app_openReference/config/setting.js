@@ -22,13 +22,14 @@ CONFIG.TARGET_PATH_WEBTECH = {
   "css" : "css/index.htm",
   "jquery" : "js/jquery/index.htm",
   "bootstrap" : "bootstrap/index.html",
-  "ex" : "ex/index.html"
+  "ex" : "ex/jstech.html"
 }
 CONFIG.TARGET_PATH_SCRIPT = {
   "python" : "python/index.html",
-  "ruby" : "ruby/index.html",
-  "php" : "php/index.html",
-  "perl" : "wwwperl.htm"
+  "django" : "ex/django.html",
+  "mongodb" : "ex/mongodb.html",
+  "node.js" : "ex/nodejs.html",
+  "vue.js" : "ex/vuejs.html"
 }
 CONFIG.TARGET_URL = {
   "google" : "http://www.google.com/", 
