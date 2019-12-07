@@ -429,6 +429,24 @@ CLS_.deleteCrLf = function(str){
   return ret
 }
 
+CLS_.getLength =function(str){
+  var ret_len = 0;
+  var chr = '';
+  var len = str.length;
+  for(var i = 0 ; i < len ; i++ ){
+    chr = str.charCodeAt(i);
+    if((chr >= 0x00 && chr < 0x81) ||
+       (chr === 0xf8f0) ||
+       (chr >= 0xff61 && chr < 0xffa0) ||
+       (chr >= 0xf8f1 && chr < 0xf8f4)){
+      ret_len = ret_len + 1;
+    }else{
+      ret_len = ret_len + 2;
+    }
+  }
+  return ret_len;
+};
+
 // to operate indents
 CLS_.spaceToTab = function(str,num){
   if(!CLS_.isString(str)) return str;
