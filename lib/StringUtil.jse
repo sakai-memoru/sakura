@@ -485,6 +485,14 @@ CLS_.formatNumberSimple = function(obj){
   return ret.replace( /(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 }
 
+CLS_.isEMail = function(str){
+  if(CLS_.isEmpty(str)){return false;}
+  if(str.match(/[^0-9a-z_\x2D.@]/i)){return false;}
+  if(!str.match(/[0-9a-z_\x2D.]+@[0-9a-z_\x2D.]+\.[0-9a-z_\x2D]+/i)){return false;}
+  if(str.match(/@/g).length >= 2){return false;}
+  return true;
+};
+
 
 // ------------------------------- below module , not yet tested.
 //////////////////////////////////////////////////////////////////
@@ -497,10 +505,13 @@ CLS_.formatNumberSimple = function(obj){
 // StringUtil.formatDateTime = function(str, namedFormat)  
 // StringUtil.formatNumber = function(str, numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits)  
 // StringUtil.formatPercent = function(numDigitsAfterDecimal, includeLeadingDigit, useParensForNegativeNumbers, groupDigits)  
-// StringUtil.isDate = function(obj,sep)  
-// StringUtil.isTime = function(obj,sep)  
 // StringUtil.toHankaku = function(str)  
 // StringUtil.toZenkaku = function(obj)  
+// 
+// 以下、別のモジュールで代用
+// StringUtil.isDate = function(obj,sep)  -> underscore.jsを利用する
+// StringUtil.isTime = function(obj,sep)  -> underscore.jsを利用する
+// 
 var CONS = {};
 CONS.vbTristateTrue       = -1;
 CONS.vbTristateFalse      =  0;
@@ -635,105 +646,6 @@ CLS_.toZenkaku = function(obj){
     }
   }
   return ret;
-};
-
-CLS_.isEMail = function(str){
-  if(CLS_.isEmpty(str)){return false;}
-  if(str.match(/[^0-9a-z_\x2D.@]/i)){return false;}
-  if(!str.match(/[0-9a-z_\x2D.]+@[0-9a-z_\x2D.]+\.[0-9a-z_\x2D]+/i)){return false;}
-  if(str.match(/@/g).length >= 2){return false;}
-  return true;
-};
-
-CLS_.isDate = function(obj,sep){
-  //if(!CLS_.isEmpty(obj)){return false;}
-  var aryDtm = [];
-  var objDtm = null;
-  var dtm_str = '';
-  var y = 0, m = 0, d = 0;
-  if(typeof(obj) === 'string'){
-    dtm_str = obj;
-  } else {
-    dtm_str = obj.toString();
-  }
-  console.log(dtm_str);
-  if(sep && sep != "/"){
-    dtm_str = dtm_str.replace(new RegExp("\\" + sep, "g"), "/"); //FIXME
-  }
-  var regex = new RegExp("(年|月)", "g")
-  dtm_str = dtm_str.replace(regex,"/");
-  var regex = new RegExp("(日)", "g")
-  dtm_str = dtm_str.replace(regex,"");
-  if(dtm_str.indexOf("/") < 0){
-    if(dtm_str.length < 6 || 8 < dtm_str.length){
-      return false;
-    }
-    
-    dtm_str = ("00000000" + dtm_str).slice(-8);
-    aryDtm = [dtm_str.substr(0, 4), dtm_str.substr(4, 2), dtm_str.substr(6, 2)];
-  } else {
-    if((dtm_str = dtm_str.split(/\//)).length < 3){
-      return false;
-    }
-  }
-  
-  y = Number(aryDtm[0]); 
-  if(y < 99) y += 2000;
-  m = Number(aryDtm[1]);
-  d = Number(aryDtm[2]);
-  
-  objDtm = new Date(y + "/" + m + "/" + d);
-  
-  return (y == objDtm.getFullYear() && m == (objDtm.getMonth()+1) && d == objDtm.getDate());
-};
-
-CLS_.isTime = function(obj,sep){
-  if(obj.isEmpty()){return false;}
-  var aryTime = [];
-  var objTime = null;
-  var d = 0, h = 0, m = 0, s = 0;
-  var timeStr = obj.toString();
-  if(sep && sep != ":"){
-    timeStr = timeStr.replace(new RegExp("\\" + sep, "g"), ":");
-  }
-  var regex = new RegExp("(時|分)", "g")
-  timeStr = timeStr.replace(regex , ":");
-  var regex2 = new RegExp("(秒)", "g")
-  timeStr = timeStr.replace(regex2 ,"");
-  
-  if(timeStr.indexOf(":") < 0){
-    if(timeStr.length != 6){
-      return false;
-    }
-    aryTime = [timeStr.substr(0, 2), timeStr.substr(2, 2), timeStr.substr(4, 2)];
-  } else {
-    if(aryTime = timeStr.split(/:/).length < 3){
-      return false;
-    }
-  }
-  
-  h = Number(aryTime[0]);
-  m = Number(aryTime[1]);
-  s = Number(aryTime[2]);
-  
-  if(s >= 60){
-    m += Math.floor(s / 60);
-    s  = s % 60;
-  }
-  if(m >= 60){
-    h += Math.floor(m / 60);
-    m  = m % 60;
-  }
-  if(h >= 24){
-    d += Math.floor(h / 24);
-    h  = h % 24;
-  }
-  
-  objTime = new Date("1900/01/01 " + h + ":" + m + ":" + s);
-  
-  return (h == objTime.getHours() && m == objTime.getMinutes() && s == objTime.getSeconds());
-  if(aryTime) delete aryTime; aryTime = null;
-  if(objTime) delete objTime; objTime = null;
 };
 
 CLS_.convertto_date = function(obj, sep){
