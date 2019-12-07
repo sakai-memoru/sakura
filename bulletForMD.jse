@@ -15,7 +15,7 @@ var add_line = function(line_str, line_code){
 
 // do process
 var doProcess = function(){
-  var regex = /^([\t ]*)([\-\+\*])/;
+  var regex = /^([\t ]*)([\-\+\*\>#]|\/\/)/;
   var line_str = Editor.GetLineStr(0);  // get line string on cursor
   if(regex.test(line_str)){
     regex.exec(line_str);
