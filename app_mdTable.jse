@@ -1,0 +1,483 @@
+// app_mdTable.jse  
+// + sakura macro folder  
+//    + app_mdTable.jse  
+//    + lib  
+//      + json2.js  
+//      + undersore.js  
+//      + StringUtil.jse  
+//      + DateUtil.jse  
+//    + app_mdTable  
+//      + config  
+//        + setting.js  
+// 
+(function(){
+
+var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
+var CONS_COMMON_LIBS = [
+  "./lib/json2.js",
+  //"./lib/ecl.js",
+  "./lib/underscore.js",
+  "./lib/StringUtil.jse",
+  "./lib/DateUtil.jse",
+  "./app_mdTable/config/setting.js",
+]
+
+// load external libraries
+var check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+var CONFIG = {};
+var exports = typeof exports !== 'undefined' ? exports : {};
+
+if(flag == "wsh"||flag == "sakura"){
+  var objFS = new ActiveXObject("Scripting.FileSystemObject");
+  var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
+  // require common module
+  with({
+    libs : CONS_COMMON_LIBS, 
+    get_moduleCode : function(path){
+      return objFS.OpenTextFile(path,1).ReadAll();
+    }
+  }) {
+    var len = libs.length;
+    for (var i = 0; i < len; i++){
+      try {
+        var module_path = objFS.BuildPath(lib_path,libs[i]);
+        eval(get_moduleCode(module_path));
+      } catch (e) {
+        //Wscript.Echo( e.description || e.message || "error" );
+        null;
+      }
+    }
+  };
+  objFS = null;
+}
+
+var debug_mode = typeof CONFIG.DEBUG_MODE !== 'undefined' ? CONFIG.DEBUG_MODE: true ;
+var DateUtil = exports.DateUtil;
+
+// pretend console.log 
+var console = typeof console !== 'undefined' ? console : {};
+if(console){
+  if(debug_mode){
+    if(flag == "sakura"){
+      console.log=function(str){
+        var log_str = "[DEBUG] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.info=function(str){
+        var log_str = "[INFO] $d$t ($f) > " + str;
+        Editor.TraceOut(log_str,1)
+      }
+      console.dir = function(obj){
+        var str = "[DUMP] $d$t ($f) > " + JSON.stringify(obj);
+        Editor.TraceOut(str,1);
+      }
+    };
+    if(flag == "wsh"){
+      console.info = function(str){WScript.Echo('[INFO] ' + DateUtil.get_todayString()  + ' (' + DateUtil.get_todayDayString() + ') ' + DateUtil.get_nowTimeString() + ' > ' + str)};
+      console.log = function(str){WScript.Echo('[DEBUG] ' + DateUtil.get_todayString()  + ' (' + DateUtil.get_todayDayString() + ') ' + DateUtil.get_nowTimeString() + ' > ' + str)};
+      console.dir = function(obj){ 
+        var str = JSON.stringify(obj);
+        WScript.Echo('[DUMP] ' + str);
+      }
+    }
+  }else{
+    if(flag == "wsh")  console.info = function(str){WScript.Echo(str)};
+    if(flag == "sakura")  console.info =function(str){Editor.InfoMsg(str)};
+    if(flag == "wsh")  console.log = function(str){null;};
+    if(flag == "sakura")  console.log = function(str){null;};
+    if(flag == "wsh")  console.dir = function(str){null;};
+    if(flag == "sakura")  console.dir = function(str){null;};
+  }
+}
+// pretend process.exit
+if(typeof(process) === "undefined"){
+  if(flag == "wsh")  process={exit : function(e){WScript.Quit(e)}};
+  if(debug_mode){
+    if(flag == "sakura")  process={exit : function(e){Editor.TraceOut('done')}};
+  }else{
+    if(flag == "sakura")  process={exit : function(e){null}};
+  }
+}
+
+// local method
+var get_target = function (expandParam){
+  // $F : opened file's full path
+  // $f : opened file's name
+  // $e : opened file's folder path
+  // $b : opened file's extention
+  // $C : 選択中の場合、選択テキストの１行目のテキスト（改行コード除く）
+  //      選択中でない場合、カーソル位置の単語
+  // 引数無し : 選択されている場合、選択された文字列。
+  //       選択されていない場合、Clipboardにある文字列
+  // $Z : 独自expandPrameter : 全テキスト
+  // $L : 独自expandPrameter : 行選択として取得
+  var ret ='';
+  if(typeof(expandParam) === 'undefined'){
+    if(Editor.IsTextSelected){
+      ret = Editor.GetSelectedString(0);
+    }else{
+      ret = Editor.GetClipboard(0);
+    }
+  } else {
+    if(expandParam === '$Z'){
+      Editor.SelectAll();
+      ret = Editor.GetSelectedString(0);
+      Editor.IsTextSelectingLock(0);
+      Editor.ExpandParameter(expandParam)
+    } else if (expandParam === '$L'){
+      if(Editor.IsTextSelected){
+        // line select
+        var lineNum = get_seletedLineNumber();
+        ret = get_lines(lineNum.start_line_num, lineNum.end_line_num);
+        select_lines(lineNum.start_line_num, lineNum.end_line_num);
+      }
+    } else {
+      ret = Editor.ExpandParameter(expandParam)
+    }
+  }
+  return ret;
+};
+
+var get_indentLength = function(lines, line_code){
+  /** get min length of indent, such as a space or tab from all lines  */
+  if(typeof line_code === 'undefined') line_code = "\r\n";
+  lines = StringUtil.unifyLineCode(lines, line_code);
+  lines = StringUtil.tabToSpace(lines, 2);
+  var ary = lines.split(line_code);
+  var indent_len = 0;
+  var ary_buf = [];
+  //
+  var len = ary.length;
+  for (var i = 0; i < len; i++){
+    var regx = new RegExp("^\\s*","m");
+    regx.exec(ary[i]);
+    var lastMatch_ = RegExp.lastMatch;
+    if(i == 0) indent_len = lastMatch_.length;
+    indent_len = indent_len < lastMatch_.length ? indent_len: lastMatch_.length;
+  }
+  return indent_len
+}
+
+var get_indent = function(lines){
+  var len = get_indentLength(lines);
+  return StringUtil.repeat(' ',len)
+}
+
+var fill_array = function(ary, init_val){
+  return _.map(ary, function(elm, idx){
+    return this
+  },init_val);
+}
+
+var fill_arrayWithCount = function(ary, init_val){
+  /** fill initial value with index count into array  */
+  return _.map(ary, function(elm, idx){
+    return this + (idx + 1)
+  },init_val);
+}
+
+var get_headerColumnArray = function(ary_tblColSize, headerCols){
+  /** get array of header columns with padding by column size */
+  if(typeof header === 'undefined') headerCols = 'col'; // ary想定にstringを代入
+  var header_ary = [];
+  if(_.isArray(headerCols)){
+    header_ary = headerCols;
+  } else {
+    header_ary = fill_arrayWithCount(ary_tblColSize, headerCols); // headerCols string or number
+  }
+  return _.map(ary_tblColSize, function(elm, idx){
+    var buff = this[idx] + StringUtil.repeat(' ',elm)
+    return StringUtil.left(buff, elm)
+  },header_ary);
+}
+
+var get_tableColumnSize = function(tbl, min_size){
+  if(typeof min_size === 'undefined') min_size = typeof CONFIG.COLUMN_MIN_SIZE !== 'undefined' ? CONFIG.COLUMN_MIN_SIZE: 4;
+  var col_str_len = [];
+  var row_num = tbl.length;
+  for(var r = 0; r < row_num; r++){
+    var col_num = tbl[r].length;
+    for(var c = 0; c < col_num; c++){
+      target_str = StringUtil.defaultString(tbl[r][c],' ');
+      //console.log('L198: target_str = ' + target_str); // FIXME Editorから渡せばうまくいく？？
+      col_str_len[c] = col_str_len[c] > StringUtil.getLength(target_str) ? col_str_len[c] : StringUtil.getLength(target_str);
+      col_str_len[c] = col_str_len[c] >= min_size ? col_str_len[c]: min_size;
+    }
+  }
+  return col_str_len
+}
+
+var chop_indent = function(lines, indent){
+  if(typeof indent === 'undefined') indent = '';
+  var regx = new RegExp('^' + indent, 'gm');
+  var ret_lines = lines.replace(regx, '');
+  return ret_lines
+}
+
+var linesToTable = function(lines, sep, line_code){
+  if(typeof line_code === 'undefined') line_code = '\r\n';
+  if(typeof sep === 'undefined') sep = '\t';
+  var lines_ary = lines.split(line_code);
+  //console.log("L194 : lines_ary = " + lines_ary);
+  var tbl = _.invoke(lines_ary, "split", sep);
+  return tbl;
+}
+
+var left2BiteString = function(str, num){
+  var ret_str = '';
+  var len_cnt = 0;
+  var chr = '';
+  var len = str.length;
+  var str_ary = str.split('');
+  for(var i = 0 ; i < len ; i++ ){
+    chr = str.charCodeAt(i);
+    if((chr >= 0x00 && chr < 0x81) ||
+       (chr === 0xf8f0) ||
+       (chr >= 0xff61 && chr < 0xffa0) ||
+       (chr >= 0xf8f1 && chr < 0xf8f4)){
+      len_cnt = len_cnt + 1;
+    }else{
+      len_cnt = len_cnt + 2;
+    }
+    ret_str = ret_str + str_ary[i];
+    if(len_cnt >= num) break;
+  }
+  
+  return ret_str;
+}
+
+var rowToLinePadded = function(row, sep, ary_colSize){
+  if(typeof sep === 'undefined') sep = '\t';
+  if(typeof ary_colSize === 'undefined') ary_colSize = _.map(row[0], function(elm){
+    return StringUtil.get_length(elm);}
+    );
+  var ret_ary = _.map(row, function(elm, idx){
+    return left2BiteString(StringUtil.lpad(elm, this[idx]),this[idx]); // this = ary_num
+  }, ary_colSize);
+  var ret = ret_ary.join(sep);
+  return ret
+}
+
+var rowToLinePaddedIter = function(row, idx){
+  var ret = rowToLinePadded(row, this.sep, this.ary_tblColSize);
+  return ret
+}
+
+var tableToLines = function(tbl, sep ,line_code){
+  if(typeof line_code === 'undefined') line_code = '\r\n';
+  if(typeof sep === 'undefined') sep = '\t';
+  var ary_tblColSize = get_tableColumnSize(tbl);
+  //console.log("L231 : tbl.length = " + tbl.length);
+  //console.log("L232 : ary_tblColSize = " + ary_tblColSize);
+  var paramObj = {
+    'sep' : " " + sep + " ", 
+    'ary_tblColSize' : ary_tblColSize
+  }
+  var lines = _.map(tbl, rowToLinePaddedIter, paramObj);
+  return lines
+}
+
+var get_rowFilled = function(tbl_colSize, sep, chr){
+  if(typeof chr === 'undefined') chr = '-';
+  if(typeof sep === 'undefined') sep = '|';
+  var memo = '';
+  var paramObj = {
+    'sep' : sep
+  }
+  memo = _.reduce(tbl_colSize,function(memo, elm){
+    return memo + StringUtil.repeat(chr, elm + 2) + this.sep
+  },memo, paramObj)
+  return StringUtil.chopDouble(StringUtil.chopTail(memo,1),1)
+}
+
+var get_tableHeader = function(tbl_colSize, sep, columns){
+  if(typeof sep === 'undefined') sep = '|';
+  if(typeof columns === 'undefined') columns = get_headerColumnArray(tbl_colSize, sep);
+  var memo = '';
+  var paramObj = {
+    'sep' : sep
+  }
+  memo = _.reduce(columns,function(memo, elm, idx){
+    return memo + elm + " " + this.sep + " "
+  }, memo, paramObj);
+  return StringUtil.chopTail(memo,3)
+}
+
+var formatTable = function(lines, indent, sep1, sep2, line_code){
+  if(typeof indent === 'undefined') indent = '';
+  if(typeof line_code === 'undefined') line_code = '\r\n';
+  if(typeof sep1 === 'undefined') sep1 = '\t';
+  if(typeof sep2 === 'undefined') sep2 = '|';
+  // table m*nにする
+  // sizeが異なる場合に、空欄を入れる。
+  var tbl = linesToTable(lines,sep1);
+  var tbl_colSize = get_tableColumnSize(tbl);
+  var border = get_rowFilled(tbl_colSize, sep2);
+  var header = get_tableHeader(tbl_colSize, sep2)
+  var row_empty = get_rowFilled(tbl_colSize, sep2, ' ');
+  //console.log('border : ' + border);
+  //console.log('row_empty : ' + row_empty);
+  //console.log('L286 : indent = "' + indent + '"');
+  var ary_linesFormatted = tableToLines(tbl, sep2);
+  var lines = _.union([header, border], ary_linesFormatted);
+  lines.push(row_empty);
+  var memo = '';
+  var paramObj = {
+    'line_code' : line_code,
+    'sep' : sep2, 
+    'indent' : indent
+  }
+  var formatted = _.reduce(lines, function(memo, elm){
+      return memo + this.indent + this.sep + ' ' + elm + ' ' + this.sep + this.line_code
+    }, memo, paramObj);
+  return formatted
+}
+
+var get_seletedLineNumber = function(){
+  var start_line_num = Editor.GetSelectLineFrom();
+  var end_line_num = Editor.GetSelectLineTo() - 1;
+  return {
+    "start_line_num" : start_line_num,
+    "end_line_num" : end_line_num
+  }
+}
+
+var get_lines = function(start_line_num, end_line_num){
+  if(typeof end_line_num === 'undefined'){
+    end_line_num = Editor.GetLineCount(0);
+  }
+  if(typeof start_line_num === 'undefined'){
+    start_line_num = 1;
+  }
+  Editor.Jump(start_line_num);
+  Editor.GoLineTop(1);
+  Editor.BeginSelect();
+  Editor.Jump(end_line_num);
+  Editor.GoLineEnd(0);
+  var lines = Editor.GetSelectedString(0);
+  console.log('L218 :' + start_line_num);
+  console.log('L219 :' + end_line_num);
+  Editor.CancelMode();
+  return lines;
+}
+
+var select_lines = function(start_line_num, end_line_num){
+  Editor.CancelMode();
+  Editor.TextWrapMethod(0);
+  Editor.Jump(start_line_num);
+  Editor.GoLineTop(1);
+  Editor.BeginSelect(0);
+  Editor.Jump(end_line_num);
+  Editor.GoLineEnd();
+  // Editor.TextWrapMethod(2);
+}
+
+var get_template = function(herestrings, sep){
+  sep = sep || '\r\n';
+  var template = herestrings.toString().split(sep).slice(2,-2).join(sep);
+  return template;
+}
+
+var show_menu = function(isDisplay){
+  if(typeof(isDisplay) === 'undefined') isDisplay = true;
+  var ope = 0;
+  var menu_statement = function(){
+/**
+1. tab -> md (&m),
+*/
+  }
+  if(isDisplay){
+    var menu_ = get_template(menu_statement)
+    ope = Editor.CreateMenu( 1, menu_);
+    // console.log(menu_statement);
+    // console.log(ope);
+    return ope;
+  } else {
+    return ope;
+  }
+}
+
+var output_display = function(str){
+  if(Editor.isTextSelected){
+    Editor.InsText(str);
+  } else {
+    Editor.SetClipboard(0,str)
+    Editor.TraceOut(str);
+  }
+}
+
+// do process ---------------------------------------------------
+var doProcess = function(menuSelected){
+  console.log('------------------------- start //');
+  console.log('APP : ' + CONFIG.APP_NAME);
+  Editor.TextWrapMethod(0);
+  var target_ = get_target('$L');
+  var formatted = '';
+  // pre-process
+  var ope = 0;
+  if(!menuSelected){
+    ope = show_menu();
+  } else {
+    ope = menuSelected;
+  }
+  // main process for selected menu's one
+  if(ope == 1){
+    //1. tab -> md (&m),
+    var indent = get_indent(target_);
+    var lines_chopped = chop_indent(target_, indent);
+    var formatted = formatTable(lines_chopped, indent);
+  }
+  // post-process 
+  if(ope !== 0){
+    output_display(formatted);
+  }
+  Editor.TextWrapMethod(2);
+  // for debug
+  if(debug_mode){
+    console.log('ope = ' + ope);
+    console.log('target_  = ' + target_);
+    console.log('formatted = ' + formatted);
+  }
+}
+
+var doDebugForWsh = function(){
+  var sep1 = '\t';
+  var sep2 = '|';
+  var lines = '    あいう \tb \tえお\r\n      aa\tbb\tccccccc\r\n\t\t';
+  //var lines = unescape(encodeURIComponent("あいうえお"));
+  //console.log('L350: lines = ' + lines);
+  //console.log('L352: GetEscapeCodeType(lines) = ' + GetEscapeCodeType(lines));
+  var indent = get_indent(lines);
+  //console.log('L308 : indent = "' + indent + '"');
+  var lines_chopped = chop_indent(lines, indent);
+  var formatted = formatTable(lines_chopped, indent);
+  console.log("L339 : formatted = \r\n" + formatted);
+}
+
+// -------------- entry point
+if(typeof(Editor) !== 'undefined'){
+  var _ = exports._;
+  var StringUtil = exports.StringUtil;
+  //console.log(StringUtil.lpad);
+  doProcess();
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    var _ = exports._;
+    var StringUtil = exports.StringUtil;
+    doDebugForWsh();
+    //WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
+  } else {
+    console.log('[Warn] This script is for sakura macro. A env is maybe node.')
+  }
+}
+
+}())
