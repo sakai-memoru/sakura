@@ -7,16 +7,3 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8J2	//
-CONS_MACRO_FOLDER	open_journal.js	14;"	v
-CONS_MACRO_FOR_INSERT	open_journal.js	12;"	v
-CONS_MACRO_FOR_NEW	open_journal.js	13;"	v
-LIBS	open_journal.js	5;"	v
-check_env	open_journal.js	16;"	f
-create_textfile_by_force	open_journal.js	64;"	f
-doProcess	open_journal.js	124;"	f
-get_ClipBoardData	open_journal.js	100;"	f
-get_journalForToday	open_journal.js	51;"	f
-get_sakuraMacroPathForExist	open_journal.js	87;"	f
-process	execute_macro.js	3;"	f
-process	format_sql.js	3;"	f
-test_path_and_new	open_journal.js	76;"	f
