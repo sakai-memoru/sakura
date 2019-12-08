@@ -451,6 +451,7 @@ CLS_.getLength =function(str){
 CLS_.spaceToTab = function(str,num){
   if(!CLS_.isString(str)) return str;
   if(typeof(num) === 'undefined') num = 2;
+  str = str.replace(/　/gm,'  ')
   var ret = str;
   // until 10 indents
   for(var i = 10; i > 0 ; i--){
@@ -467,6 +468,7 @@ CLS_.spaceToTab = function(str,num){
 CLS_.tabToSpace = function(str, num){
   if(!CLS_.isString(str)) return str;
   if(typeof num === 'undefined') num = 2;
+  str = str.replace(/　/gm,'  ')
   return str.replace(/\t/gm,StringUtil.repeat(' ',num))
 };
 
