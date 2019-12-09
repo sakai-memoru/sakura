@@ -147,11 +147,12 @@ var get_target = function (expandParam){
   return ret;
 };
 
-var get_indentLength = function(lines, line_code){
+var get_indentLength = function(lines, tab_size, line_code){
   /** get min length of indent, such as a space or tab from all lines  */
+  if(typeof tab_size === 'undefined') tab_size = 2;
   if(typeof line_code === 'undefined') line_code = "\r\n";
   lines = StringUtil.unifyLineCode(lines, line_code);
-  lines = StringUtil.tabToSpace(lines, 2);
+  lines = StringUtil.tabToSpace(lines, tab_size);
   var ary = lines.split(line_code);
   var indent_len = 0;
   var ary_buf = [];
@@ -167,10 +168,32 @@ var get_indentLength = function(lines, line_code){
   return indent_len
 }
 
-var get_indent = function(lines){
-  var len = get_indentLength(lines);
+var get_indentNormalized = function(lines, tab_size){
+  var len = get_indentLength(lines, tab_size);
   return StringUtil.repeat(' ',len)
 }
+
+var get_indent = function(lines, line_code){
+  /** get indent, such as a space or tab from all lines, 
+   *  this code don't be considered confused pattern tab and space  
+   */
+  if(typeof line_code === 'undefined') line_code = "\r\n";
+  lines = StringUtil.unifyLineCode(lines, line_code);
+  var ary = lines.split(line_code);
+  var indent_len = 0;
+  var ary_buf = [];
+  //
+  var len = ary.length;
+  for (var i = 0; i < len; i++){
+    var regx = new RegExp("^\\s*","m");
+    regx.exec(ary[i]);
+    var lastMatch_ = RegExp.lastMatch;
+    if(i == 0) indent = lastMatch_;
+    indent = indent.length < lastMatch_.length ? indent: lastMatch_;
+  }
+  return indent
+}
+
 
 var fill_array = function(ary, init_val){
   return _.map(ary, function(elm, idx){
@@ -185,6 +208,18 @@ var fill_arrayWithCount = function(ary, init_val){
   },init_val);
 }
 
+var fill_arrayWithCharRepeating = function(ary, init_char, ary_tblColSize){
+  var paramObj = {
+    'ary_tblColSize' : ary_tblColSize, 
+    'init_char' : init_char
+  }
+  return _.map(ary, function(elm, idx){
+    elm = StringUtil.defaultValue(elm, this.init_char);
+    var buff = elm + StringUtil.repeat(this.init_char,this.ary_tblColSize[idx])
+    return StringUtil.left(buff, this.ary_tblColSize[idx])
+  },paramObj);
+}
+
 var get_headerColumnArray = function(ary_tblColSize, headerCols){
   /** get array of header columns with padding by column size */
   if(typeof header === 'undefined') headerCols = 'col'; // ary想定にstringを代入
@@ -194,13 +229,11 @@ var get_headerColumnArray = function(ary_tblColSize, headerCols){
   } else {
     header_ary = fill_arrayWithCount(ary_tblColSize, headerCols); // headerCols string or number
   }
-  return _.map(ary_tblColSize, function(elm, idx){
-    var buff = this[idx] + StringUtil.repeat(' ',elm)
-    return StringUtil.left(buff, elm)
-  },header_ary);
+  return fill_arrayWithCharRepeating(header_ary, ' ', ary_tblColSize)
 }
 
 var get_tableColumnSize = function(tbl, min_size){
+  /** get table column size form array in array (2 dimension array) */
   if(typeof min_size === 'undefined') min_size = typeof CONFIG.COLUMN_MIN_SIZE !== 'undefined' ? CONFIG.COLUMN_MIN_SIZE: 4;
   var col_str_len = [];
   var row_num = tbl.length;
@@ -216,14 +249,23 @@ var get_tableColumnSize = function(tbl, min_size){
   return col_str_len
 }
 
-var chop_indent = function(lines, indent){
+var chop_indent = function(lines, indent, tab_size, isNormalized){
+  /** chop indent string from lines to extract table parts */
   if(typeof indent === 'undefined') indent = '';
-  var regx = new RegExp('^' + indent, 'gm');
+  if(typeof tab_size === 'undefined') tab_size = 2;
+  if(typeof isNomalized === 'undefined') isNormalized = false;
+  if(isNormalized){
+    var regx = new RegExp('^' + indent, 'gm');
+  } else {
+    var indentTabs = StringUtil.spaceToTab(indent, tab_size);
+    var regx = new RegExp('^[' + indent +'|' + indentTabs + ']' , 'gm');
+  }
   var ret_lines = lines.replace(regx, '');
   return ret_lines
 }
 
 var linesToTable = function(lines, sep, line_code){
+  /** convert lines to table */
   if(typeof line_code === 'undefined') line_code = '\r\n';
   if(typeof sep === 'undefined') sep = '\t';
   var lines_ary = lines.split(line_code);
@@ -233,6 +275,7 @@ var linesToTable = function(lines, sep, line_code){
 }
 
 var left2BiteString = function(str, num){
+  /** retrieve left strings with size_num from strings including 2 bit charactor */
   var ret_str = '';
   var len_cnt = 0;
   var chr = '';
@@ -251,28 +294,42 @@ var left2BiteString = function(str, num){
     ret_str = ret_str + str_ary[i];
     if(len_cnt >= num) break;
   }
-  
   return ret_str;
 }
 
 var rowToLinePadded = function(row, sep, ary_colSize){
+  /** convert row to line padded with column size
+      @param row {[string]} row consisted of columns 
+      @return {string} padded line 
+  */
   if(typeof sep === 'undefined') sep = '\t';
   if(typeof ary_colSize === 'undefined') ary_colSize = _.map(row[0], function(elm){
     return StringUtil.get_length(elm);}
     );
+  var column_num = ary_colSize.length;
+  var dummy_ary = fill_arrayWithCharRepeating((new Array(column_num)), ' ', ary_colSize);
+  console.info('L306 : "' + dummy_ary + '"');
+  if(row.length < column_num){
+    row = _.union(row, dummy_ary);
+    row = _.first(row, column_num);
+  }
+  //
   var ret_ary = _.map(row, function(elm, idx){
-    return left2BiteString(StringUtil.lpad(elm, this[idx]),this[idx]); // this = ary_num
+    //console.info('L309 : "' + StringUtil.lpad(elm, this[idx]) + '"');
+    return left2BiteString(StringUtil.lpad(elm, this[idx]),this[idx]); // this = ary_colSize
   }, ary_colSize);
   var ret = ret_ary.join(sep);
   return ret
 }
 
 var rowToLinePaddedIter = function(row, idx){
+  /** iterator for map */
   var ret = rowToLinePadded(row, this.sep, this.ary_tblColSize);
   return ret
 }
 
 var tableToLines = function(tbl, sep ,line_code){
+  /** table rows to lines padded */
   if(typeof line_code === 'undefined') line_code = '\r\n';
   if(typeof sep === 'undefined') sep = '\t';
   var ary_tblColSize = get_tableColumnSize(tbl);
@@ -287,6 +344,7 @@ var tableToLines = function(tbl, sep ,line_code){
 }
 
 var get_rowFilled = function(tbl_colSize, sep, chr){
+  /** row to line padded with a designated char */
   if(typeof chr === 'undefined') chr = '-';
   if(typeof sep === 'undefined') sep = '|';
   var memo = '';
@@ -300,6 +358,7 @@ var get_rowFilled = function(tbl_colSize, sep, chr){
 }
 
 var get_tableHeader = function(tbl_colSize, sep, columns){
+  /** get header of table with designated columns or auto-generated */
   if(typeof sep === 'undefined') sep = '|';
   if(typeof columns === 'undefined') columns = get_headerColumnArray(tbl_colSize, sep);
   var memo = '';
@@ -313,6 +372,7 @@ var get_tableHeader = function(tbl_colSize, sep, columns){
 }
 
 var formatTable = function(lines, indent, sep1, sep2, line_code){
+  /** format table from lines  */
   if(typeof indent === 'undefined') indent = '';
   if(typeof line_code === 'undefined') line_code = '\r\n';
   if(typeof sep1 === 'undefined') sep1 = '\t';
@@ -343,6 +403,7 @@ var formatTable = function(lines, indent, sep1, sep2, line_code){
 }
 
 var get_seletedLineNumber = function(){
+  /** get selected line numbers */
   var start_line_num = Editor.GetSelectLineFrom();
   var end_line_num = Editor.GetSelectLineTo() - 1;
   return {
@@ -352,6 +413,7 @@ var get_seletedLineNumber = function(){
 }
 
 var get_lines = function(start_line_num, end_line_num){
+  /** get lines with line numbers from start num to end num */
   if(typeof end_line_num === 'undefined'){
     end_line_num = Editor.GetLineCount(0);
   }
@@ -371,6 +433,7 @@ var get_lines = function(start_line_num, end_line_num){
 }
 
 var select_lines = function(start_line_num, end_line_num){
+  /** select lines with line numbers from start num to end num */
   Editor.CancelMode();
   Editor.TextWrapMethod(0);
   Editor.Jump(start_line_num);
@@ -432,7 +495,8 @@ var doProcess = function(menuSelected){
   // main process for selected menu's one
   if(ope == 1){
     //1. tab -> md (&m),
-    var indent = get_indent(target_);
+    var tab_size = Editor.ChangeTabWidth(0);
+    var indent = get_indentNormalized(target_, tab_size);
     var lines_chopped = chop_indent(target_, indent);
     var formatted = formatTable(lines_chopped, indent);
   }
@@ -452,22 +516,21 @@ var doProcess = function(menuSelected){
 var doDebugForWsh = function(){
   var sep1 = '\t';
   var sep2 = '|';
-  var lines = '    あいう \tb \tえお\r\n      aa\tbb\tccccccc\r\n\t\t';
-  //var lines = unescape(encodeURIComponent("あいうえお"));
-  //console.log('L350: lines = ' + lines);
-  //console.log('L352: GetEscapeCodeType(lines) = ' + GetEscapeCodeType(lines));
-  var indent = get_indent(lines);
-  //console.log('L308 : indent = "' + indent + '"');
+  var lines = '      aa\tbb\tccccccc\r\n\t\t';
+  // 
+  // WSHでは、字化けする。
+  // 対策は、このコードをShiftJISで保存して実行する。それ以外の方法は存在しない。
+  console.info('L308 : indent = "' + indent + '"');
   var lines_chopped = chop_indent(lines, indent);
   var formatted = formatTable(lines_chopped, indent);
-  console.log("L339 : formatted = \r\n" + formatted);
+  console.info("L339 : formatted = \r\n" + formatted);
 }
 
 // -------------- entry point
 if(typeof(Editor) !== 'undefined'){
   var _ = exports._;
   var StringUtil = exports.StringUtil;
-  //console.log(StringUtil.lpad);
+  console.log(StringUtil.lpad);
   doProcess();
 } else {
   if(typeof(WScript) !== 'undefined'){
