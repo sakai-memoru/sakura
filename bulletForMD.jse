@@ -2,28 +2,46 @@
 
 // 
 // bulletForMD.js
+//  - 191209 bug fix
+//  - 191206 initial commit
 
 // local method
 var add_line = function(line_str, line_code){
   if(typeof line_code === 'undefined') line_code = '\r\n'
+  Editor.GoLineTop(1);
   Editor.Down();
-  Editor.GoLineTop();
   Editor.InsText(line_code);
   Editor.Up();
   Editor.InsText(line_str);
+  Editor.GoLineEnd();
+  
 }
 
 // do process
 var doProcess = function(){
-  var regex = /^([\t ]*)([\-\+\*\>#]|\/\/)/;
+  Editor.TextWrapMethod(0);
   var line_str = Editor.GetLineStr(0);  // get line string on cursor
+  Editor.BeginSelect();
+  Editor.GoLineEnd_Sel();
+  var line_strToEnd = Editor.GetSelectedString(0);
+  if(line_strToEnd !== ''){
+    Editor.Delete();
+  } 
+  Editor.CancelMode();
+  var regex_indent = /^([\t ]*)/;
+  var indent = line_str.match(regex_indent)[0]
+  var add_line_str = '';
+  var regex = /^([\t ]*)([\-\+\*\>#]|\/\/)/;
   if(regex.test(line_str)){
     regex.exec(line_str);
-    var indent = RegExp.$1;
     var bullet_str = RegExp.$2;
-    var add_line_str = indent + bullet_str + ' ';
-    add_line(add_line_str);
+    add_line_str = indent + bullet_str + ' ' + line_strToEnd;
+  } else {
+    add_line_str = indent + line_strToEnd;
   }
+  //Editor.TraceOut(add_line_str);
+  add_line(add_line_str);
+  Editor.TextWrapMethod(2);
 }
 
 // --------------------------------------- entry point
