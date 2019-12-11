@@ -61,6 +61,7 @@ var this_file_name = 'StringUtil.jse';  // Notice! ifyou rename this module file
 (function(){
 
 var CLS_ = {};
+CLS_.module_name = this_file_name;
 
 // private function
 // 
@@ -174,7 +175,6 @@ CLS_.mid = function(str, start_pos, len){
   return (str.substr(start_pos, len));
 };
 
-
 CLS_.repeat = function(str, len){
   if(!CLS_.isString(str)) return str;
   var ret = '';
@@ -187,17 +187,17 @@ CLS_.repeat = function(str, len){
 
 CLS_.trim = function(str){
   if(!CLS_.isString(str)) return str;
-  return str.replace(/^\s+|\s+$/g, "");
+  return str.replace(/^\s+|\s+$/gm, "");
 };
 
 CLS_.ltrim = function(str){
   if(!CLS_.isString(str)) return str;
-  return str.replace(/^\s+/, "");
+  return str.replace(/^\s+/gm, "");
 };
 
 CLS_.rtrim = function(str){
   if(!CLS_.isString(str)) return str;
-  return str.replace(/\s+$/, "");
+  return str.replace(/\s+$/gm, "");
 };
 
 CLS_.rpad = function(str, len, padstr){

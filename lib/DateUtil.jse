@@ -14,11 +14,14 @@
 //       + mm    : minutes 2 digit (ex)19
 //       + ss    : seconds 2 digit (ex)39
 //
+
+var this_file_name = 'DateUtil.jse';         // Set your module name collectly.
 var exports = exports || {};
 
 (function(){
 
 var CLS_ = {};
+CLS_.module_name = this_file_name;
 
 // private function
 var replace_all = function(string, target, replacement) {
@@ -174,7 +177,6 @@ function doDebugForEditor(){
 }
 
 // ----------------------- entry point
-var file_name = 'DateUtil.jse';         // Set your module name collectly.
 
 function is_module(this_module_name){
   // reference : https://senooken.jp/blog/2016/08/20/
@@ -185,12 +187,12 @@ function is_module(this_module_name){
 }
 
 if(typeof(Editor) !== 'undefined'){
-  if (is_module(file_name)){
+  if (is_module(this_file_name)){
     doDebugForEditor();
   }
 } else {
   if(typeof(WScript) !== 'undefined'){
-    if (is_module(file_name)){
+    if (is_module(this_file_name)){
       doDebugForWSH();
     }
   } else {
