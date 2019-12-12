@@ -252,7 +252,7 @@ var doProcess = function(menuSelected){
   // main process for selected menu's one
   if(ope == 3){
     //3. cson -> json (&j),
-    cson_parsed = CSON.convettoJSON(target_);
+    cson_parsed = CSON.converttoJSON(target_);
     console.log('cson_parsed = ' + cson_parsed);
     var obj = JSON.parse(cson_parsed);
     formatted = JSON.stringify(obj);

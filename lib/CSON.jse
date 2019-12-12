@@ -8,7 +8,7 @@ var exports = typeof exports !== 'undefined' ? exports : {};
 //   19/12/12 memoru  
 //   
 //   static method  
-//     - CSON.convettoJSON(str)
+//     - CSON.converttoJSON(str)
 //  
 
 (function(){
@@ -182,20 +182,15 @@ var get_elmentAndIndentLevel = function(ary_line, tab_size){
   if(typeof tab_size === 'undefined') tab_size = 2;
   var ary_level = [];
   var ary_elm = [];
-  //WScript.Echo('L128: ary_line = ' + ary_line);
   var len = ary_line.length;
   var regx = new RegExp("\\s*","");
   for (var i = 0; i < len; i++){
     regx.exec(ary_line[i]);
     var lastMatch_ = RegExp.lastMatch;
     var rightContext_ = RegExp.rightContext;
-    //WScript.Echo('L134: lastMatch_ = ' + lastMatch_);
-    //WScript.Echo('L135: rightContext_ = ' + rightContext_);
     ary_level.push(lastMatch_.length / tab_size + 1);
     ary_elm.push(rtrim(rightContext_));
   }
-  // console.log('ary_elm :' + ary_elm);
-  // console.log('ary_level :' + ary_level);
   var ary_elmFormed = [];
   for (var i = 0; i < len; i++){
     var buff_ary = ary_elm[i].split(':'); // stringの中に:は許さない
@@ -265,7 +260,8 @@ var form_data = function(elm, level, level_pre){
 
 // static method
 // 
-CLS_.convettoJSON = function(str){
+CLS_.converttoJSON = function(str){
+  var ret = '';
   var ary_parsed = parse_str(str);
   var elms = ary_parsed[0];
   var levels = ary_parsed[1];
@@ -282,9 +278,7 @@ CLS_.convettoJSON = function(str){
     if(endsWith(elms[i],'}')){
       buff = StringUtil.chopTail(buff,2);
     }
-    Editor.TraceOut('L289 : CSON.converttoJSON formed = ' + formed)
     buff = buff + formed;
-    Editor.TraceOut('L291 : CSON.converttoJSON buff = ' + buff)
     if(endsWith(elms[i],'[')){
       if(contains(elms[i+1], ':')){
         flag_object = true; // FIXME
@@ -297,7 +291,14 @@ CLS_.convettoJSON = function(str){
     }
     lvl_pre = levels[i];
   }
-  return put_bracket(chopTail(buff,2),'{','}');
+  if(StringUtil.startsWith(buff,'[')){
+    ret = chopTail(buff,2);
+  } else if(StringUtil.startsWith(buff,'{')){
+    ret = chopTail(buff,2);
+  } else {
+    ret = put_bracket(chopTail(buff,2),'{','}');
+  }
+  return ret
 }
 
 CLS_.doDebug = function(){
@@ -340,7 +341,7 @@ if(typeof(Editor) !== 'undefined'){
     Editor.TraceOut('------------ debug from Editor start');
     var CSON = exports.CSON;
     var str = '  sample : 12.3 \r\n  date : "19/12/11"';
-    var json_str = CSON.convettoJSON(str);
+    var json_str = CSON.converttoJSON(str);
     Editor.TraceOut('json_str = ' + json_str);
   }
 } else {
