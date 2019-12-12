@@ -119,7 +119,8 @@ var get_target = function (expandParam){
   // 引数無し : 選択されている場合、選択された文字列。
   //       選択されていない場合、Clipboardにある文字列
   // $Z : 独自expandPrameter : 全テキスト
-  // $L : 独自expandPrameter : 行選択として取得
+  // $L : 独自expandPrameter : 選択範囲を行選択として取得
+  //                           選択されていない場合、Clipboardにある文字列
   var ret ='';
   if(typeof(expandParam) === 'undefined'){
     if(Editor.IsTextSelected){
@@ -139,6 +140,8 @@ var get_target = function (expandParam){
         var lineNum = get_seletedLineNumber();
         ret = get_lines(lineNum.start_line_num, lineNum.end_line_num);
         select_lines(lineNum.start_line_num, lineNum.end_line_num);
+      } else {
+        ret = Editor.GetClipboard(0);
       }
     } else {
       ret = Editor.ExpandParameter(expandParam)
@@ -308,7 +311,7 @@ var rowToLinePadded = function(row, sep, ary_colSize){
     );
   var column_num = ary_colSize.length;
   var dummy_ary = fill_arrayWithCharRepeating((new Array(column_num)), ' ', ary_colSize);
-  console.info('L306 : "' + dummy_ary + '"');
+  //console.info('L306 : "' + dummy_ary + '"');
   if(row.length < column_num){
     row = _.union(row, dummy_ary);
     row = _.first(row, column_num);
@@ -377,16 +380,14 @@ var formatTable = function(lines, indent, sep1, sep2, line_code){
   if(typeof line_code === 'undefined') line_code = '\r\n';
   if(typeof sep1 === 'undefined') sep1 = '\t';
   if(typeof sep2 === 'undefined') sep2 = '|';
-  // table m*nにする
-  // sizeが異なる場合に、空欄を入れる。
   var tbl = linesToTable(lines,sep1);
   var tbl_colSize = get_tableColumnSize(tbl);
   var border = get_rowFilled(tbl_colSize, sep2);
   var header = get_tableHeader(tbl_colSize, sep2)
   var row_empty = get_rowFilled(tbl_colSize, sep2, ' ');
-  //console.log('border : ' + border);
-  //console.log('row_empty : ' + row_empty);
-  //console.log('L286 : indent = "' + indent + '"');
+  console.log('border : ' + border);
+  console.log('row_empty : ' + row_empty);
+  console.log('L286 : indent = "' + indent + '"');
   var ary_linesFormatted = tableToLines(tbl, sep2);
   var lines = _.union([header, border], ary_linesFormatted);
   lines.push(row_empty);
@@ -496,7 +497,7 @@ var doProcess = function(menuSelected){
   if(ope == 1){
     //1. tab -> md (&m),
     var tab_size = Editor.ChangeTabWidth(0);
-    var indent = get_indentNormalized(target_, tab_size);
+    var indent = get_indent(target_, tab_size);
     var lines_chopped = chop_indent(target_, indent);
     var formatted = formatTable(lines_chopped, indent);
   }
@@ -516,14 +517,18 @@ var doProcess = function(menuSelected){
 var doDebugForWsh = function(){
   var sep1 = '\t';
   var sep2 = '|';
-  var lines = '      aa\tbb\tccccccc\r\n\t\t';
-  // 
-  // WSHでは、字化けする。
-  // 対策は、このコードをShiftJISで保存して実行する。それ以外の方法は存在しない。
-  console.info('L308 : indent = "' + indent + '"');
-  var lines_chopped = chop_indent(lines, indent);
+  var lines_tree_statement = function(){
+/**
+      aa\tbb\tccccccc
+      \t\t
+*/
+  }
+  var lines_tbl = get_template(lines_tree_statement)
+  var indent = get_indent(lines_tbl);
+  var lines_chopped = chop_indent(lines_tbl, indent);
   var formatted = formatTable(lines_chopped, indent);
-  console.info("L339 : formatted = \r\n" + formatted);
+  console.info('L532 : indent = "' + indent + '"');
+  console.info("L533 : formatted = \r\n" + formatted);
 }
 
 // -------------- entry point
