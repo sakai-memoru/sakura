@@ -213,7 +213,7 @@ var get_elmentAndIndentLevel = function(ary_line, tab_size){
 
 var normalize_ary = function(ary){
   var ret_ary = [];
-  var regx = new RegExp('^\s*#.*$', 'm')
+  var regx = new RegExp('\s*#+.*', 'm')
   var regx_whitespace = new RegExp('^\s*$', 'm')
   //
   var len = ary.length;
