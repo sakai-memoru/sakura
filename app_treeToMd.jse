@@ -1,12 +1,12 @@
-// app_sand.jse  
+// app_treeToMd.jse  
 // + sakura macro folder  
-//    + app_sand.jse  
+//    + app_treeToMd.jse  
 //    + lib  
 //      + json2.js  
 //      + undersore.js  
 //      + StringUtil.jse  
 //      + DateUtil.jse  
-//    + app_sand  
+//    + app_treeToMd  
 //      + config  
 //        + setting.js  
 // 
@@ -18,8 +18,7 @@ var CONS_COMMON_LIBS = [
   "./lib/underscore.js",
   "./lib/StringUtil.jse",
   "./lib/DateUtil.jse",
-  "./lib/CSON.jse",
-  "./app_sand/config/setting.js"
+  "./app_treeToMd/config/setting.js"
 ]
 
 // load external libraries
@@ -110,39 +109,6 @@ if(typeof(process) === "undefined"){
 }
 
 // local method
-var get_linesIndentLevel = function(ary_line, tab_size){
-  if(typeof tab_size === 'undefined') tab_size = 2;
-  var ary_level = [];
-  var ary_header = [];
-  //
-  var len = ary_line.length;
-  var regx = new RegExp("^\\s*","m");
-  for (var i = 0; i < len; i++){
-    regx.exec(ary_line[i]);
-    var lastMatch_ = RegExp.lastMatch;
-    var rightContext_ = RegExp.rightContext;
-    ary_level.push(lastMatch_.length / tab_size + 1);
-    ary_header.push(rightContext_);
-  }
-  // console.log('ary_header :' + ary_header);
-  // console.log('ary_level :' + ary_level);
-  return [ ary_header, ary_level ]
-}
-
-var treeToLines = function(tree, line_code){
-  if(typeof line_code === 'undefined') line_code = '\r\n';
-  var lines = tree.split(line_code);
-  var ary =  _.map(lines, function(elm, idex){
-      return StringUtil.rtrim(elm);
-    })
-  
-  //console.log('L140 : ' + ary);
-  var ary_formatted = get_linesIndentLevel(ary);
-  return _.map(ary_formatted[0], function(elm, idx){
-      return StringUtil.repeat('#', this[idx]) + ' ' + elm;
-    }, ary_formatted[1])
-}
-
 var get_target = function (expandParam){
   // $F : opened file's full path
   // $f : opened file's name
@@ -183,7 +149,7 @@ var get_target = function (expandParam){
 
 var get_seletedLineNumber = function(){
   var start_line_num = Editor.GetSelectLineFrom();
-  var end_line_num = Editor.GetSelectLineTo() - 1;
+  var end_line_num = Editor.GetSelectLineTo();  // FIXME
   return {
     "start_line_num" : start_line_num,
     "end_line_num" : end_line_num
@@ -255,11 +221,79 @@ var output_display = function(str){
   }
 }
 
+var normalize_ary = function(ary,tab_size){
+  var ret_ary = [];
+  var regx = new RegExp('^\s*\#+.*$','m')
+  var regx_whitespace = new RegExp('^\s*$', 'm');
+  //
+  var len = ary.length;
+  for (var i = 0; i < len; i++){
+    if(regx_whitespace.test(ary[i])){
+      null
+    } else {
+      //console.log('L234 : ' + ary[i]);
+      //console.log('L234 : ' + regx.test(ary[i]));
+      if(regx.test(ary[i])){
+        null;
+      } else {
+        if(CONFIG.WORKFLOWY_OPT){
+          ary[i] = ary[i].replace(/(\s*)(\- )/m, "$1" + StringUtil.repeat(' ', tab_size));
+        }
+        ret_ary.push(ary[i]);
+      }
+    }
+  }
+  return ret_ary
+}
+
+var get_linesIndentLevel = function(ary_line, tab_size){
+  if(typeof tab_size === 'undefined') tab_size = 2;
+  var ary_level = [];
+  var ary_header = [];
+  //
+  var len = ary_line.length;
+  var regx = new RegExp("^\\s*","m");
+  for (var i = 0; i < len; i++){
+    regx.exec(ary_line[i]);
+    var lastMatch_ = RegExp.lastMatch;
+    var rightContext_ = RegExp.rightContext;
+    ary_level.push(lastMatch_.length / tab_size + 1);
+    ary_header.push(rightContext_);
+  }
+  console.log('L238 :ary_header :' + ary_header);
+  console.log('L239 :ary_level :' + ary_level);
+  return [ ary_header, ary_level ]
+}
+
+var treeToLines = function(tree, tab_size, line_code){
+  if(typeof tab_size === 'undefined') tab_size = 2;
+  if(typeof line_code === 'undefined') line_code = '\r\n';
+  var lines = StringUtil.tabToSpace(tree, tab_size).split(line_code);
+  var normalized_ary = normalize_ary(lines, tab_size);
+  console.log('L270 : ' + normalized_ary);
+  var ary =  _.map(normalized_ary, function(elm, idex){
+      return StringUtil.rtrim(elm);
+    })
+  var ary_formatted = get_linesIndentLevel(ary, tab_size);
+  var ary_header = ary_formatted[0];
+  var ary_level = ary_formatted[1];
+  // 
+  return _.map(ary_header, function(elm, idx){
+      if(this[idx] <= CONFIG.OUTLINE_DEPTH){
+        var ret = StringUtil.repeat('#', this[idx]) + ' ' + elm;
+      } else {
+        var ret = elm;
+      }
+      return ret;
+    }, ary_level)
+}
+
 // do process ---------------------------------------------------
 var doProcess = function(menuSelected){
   //console.log('------------------------- start //');
   //console.log('APP : ' + CONFIG.APP_NAME);
   Editor.TextWrapMethod(0);
+  var tab_size = Editor.ChangeTabWidth(0); // get tab size setting
   var target_ = get_target('$L');
   var formatted = '';
   // pre-process
@@ -272,7 +306,7 @@ var doProcess = function(menuSelected){
   // main process for selected menu's one
   if(ope == 2){
     //2. tree -> md (&h),
-    formatted = treeToLines(target_).join('\r\n\r\n');
+    formatted = treeToLines(target_, tab_size).join('\r\n\r\n') + '\r\n';
   }
   // post-process 
   if(ope !== 0){
@@ -305,8 +339,8 @@ if(typeof(Editor) !== 'undefined'){
   if(typeof(WScript) !== 'undefined'){
     var _ = exports._;
     var StringUtil = exports.StringUtil;
-    var CSON = exports.CSON;
     console.dir(exports);
+    console.dir(typeof _);
     doDebugForWsh();
     //WScript.Echo('[Warn] This script is for sakura macro. A env is maybe wsh.')
   } else {
