@@ -1,0 +1,355 @@
+// Set your module name collectly.
+var this_file_name = 'CSON.jse';  // Notice! If you rename this module file name.
+var exports = typeof exports !== 'undefined' ? exports : {};
+
+/////////////////////////////////////////////////////////////////  
+// CSON.jse  
+// CSON Format Parse simply ※複雑なものはパースは未考慮
+//   19/12/12 memoru  
+//   
+//   static method  
+//     - CSON.convettoJSON(str)
+//  
+
+(function(){
+
+var CLS_ = {};
+CLS_.module_name = this_file_name;
+
+// local method 
+// 
+// From StringUtil
+var repeat = function(str, len){
+  var ret = '';
+  if(len == 0) return ret;
+  for (var i=0; i < len; ++i){
+    ret += str;
+  }
+  return ret;
+};
+
+var trim = function(str){
+  return str.replace(/^\s+|\s+$/g, "");
+};
+
+var rtrim = function(str){
+  return str.replace(/\s+$/, "");
+};
+
+var endsWith = function(str, suffix_, start_num){
+  var len_str = str.length;
+  var len_suf = suffix_.length;
+  var pos = len_str;
+  if (arguments.length > 2){
+    if(typeof(start_num) !== 'undefined'){
+      pos = start_num ? parseInt(start_num) : 0;
+      if(isNaN(pos)){
+        pos = 0;
+      }
+    }
+  }
+  var pos_end = Math.min(Math.max(pos,0), len_str);
+  var pos_start = pos_end - len_suf;
+  if(pos_start < 0){
+    return false;
+  }
+  return (str.lastIndexOf(suffix_, pos_start) == pos_start);
+};
+
+var put_bracket = function(str, bra, bra_closed){
+  if(typeof(bra) === 'undefined')  bra = '"';
+  if(typeof(bra_closed) === 'undefined') bra_closed = bra;
+  return bra + str + bra_closed;
+}
+
+var unifyLineCode = function(str,line_code){
+  if(typeof line_code === 'undefined') line_code = "\r\n";
+  var replacement = "\\v"; // dummy string
+  var buf = str.replace(/\r\n|\n/gm,replacement)
+  var ret = buf.replace(/\\v/g, line_code);
+  return ret
+}
+
+var right = function(str, len){
+  return (str.slice(len * -1));
+};
+
+var left = function(str, len){
+  return (str.slice(0, len));
+}
+
+var chopHead = function(str, num){
+  if(typeof(num) === 'undefined') num = 1;
+  var len = str.length;
+  return str.substr(num, len);
+};
+
+var chopTail = function(str, num){
+  if(typeof(num) === 'undefined') num = 1;
+  var len = str.length;
+  return str.substr(0,len - num);
+};
+
+var chopDouble = function(str, num){
+  if(typeof(num) === 'undefined') num = 1;
+  var ret = str;
+  ret = chopHead(ret, num);
+  ret = chopTail(ret, num);
+  return ret;
+};
+
+var contains = function(str, search_str, start_num){
+  var pos = 0;
+  if(typeof(start_num) !== 'undefined'){
+    pos = start_num ? parseInt(start_num) : 0;
+    if(isNaN(pos)){
+      pos = 0;
+    }
+  }
+  if(start_num + search_str.lenght > str.lenght) return false;
+  return (str.indexOf(search_str, pos) != -1);
+}
+
+// local method
+var get_minIndent = function(lines, line_code){
+  /** get indent, such as a space or tab from all lines, 
+   *  this code don't be considered confused pattern tab and space  
+   */
+  if(typeof line_code === 'undefined') line_code = "\r\n";
+  lines = unifyLineCode(lines, line_code);
+  var ary = lines.split(line_code);
+  var indent_len = 0;
+  var ary_buf = [];
+  //
+  var len = ary.length;
+  for (var i = 0; i < len; i++){
+    var regx = new RegExp("^\\s*","m");
+    regx.exec(ary[i]);
+    var lastMatch_ = RegExp.lastMatch;
+    if(i == 0) indent = lastMatch_;
+    indent = indent.length < lastMatch_.length ? indent: lastMatch_;
+  }
+  return indent
+}
+
+var chop_indent = function(lines, indent, tab_size){ 
+  /** chop indent string from lines to extract table parts */
+  // if confused tabs, not available
+  if(typeof indent === 'undefined') indent = '';
+  if(typeof tab_size === 'undefined') tab_size = 2;
+  var regx = new RegExp('^' + indent, 'gm');
+  var ret_lines = lines.replace(regx, '');
+  return ret_lines
+}
+
+var startsWithByRegx = function(str, prefix_regx){
+  var headStr = left(str, 1);
+  return (prefix_regx.test(headStr));
+}
+
+var endsWithByRegx = function(str, suffix_regx){
+  var tailStr = right(str, 1);
+  return (suffix_regx.test(tailStr));
+}
+
+var normalize_quate = function(str){
+  // quateが対でない場合はJSON.parseでエラーとなる
+  var ret = str;
+  if(startsWithByRegx(str, /["']/)){  // '"
+    if(endsWithByRegx(str, /["']/)){  // '"
+      ret = chopDouble(str);
+    }
+  }
+  //Editor.TraceOut('L154 : CSON.normalize ' + ret);
+  if (/[\[\]\{\}]/.test(ret)) {
+    null;
+  } else {
+    if ( !( /([^0-9\.]+)/.test(ret) )) {
+      null;
+    } else {
+      if (/(true)|(false)/.test(ret)) {
+        null;
+      } else {
+        //Editor.TraceOut('L164 : CSON.normalize ' + ret);
+        ret = put_bracket(ret, '"', '"');
+      }
+    }
+  }
+  return ret
+}
+
+var get_elmentAndIndentLevel = function(ary_line, tab_size){
+  if(typeof tab_size === 'undefined') tab_size = 2;
+  var ary_level = [];
+  var ary_elm = [];
+  //WScript.Echo('L128: ary_line = ' + ary_line);
+  var len = ary_line.length;
+  var regx = new RegExp("\\s*","");
+  for (var i = 0; i < len; i++){
+    regx.exec(ary_line[i]);
+    var lastMatch_ = RegExp.lastMatch;
+    var rightContext_ = RegExp.rightContext;
+    //WScript.Echo('L134: lastMatch_ = ' + lastMatch_);
+    //WScript.Echo('L135: rightContext_ = ' + rightContext_);
+    ary_level.push(lastMatch_.length / tab_size + 1);
+    ary_elm.push(rtrim(rightContext_));
+  }
+  // console.log('ary_elm :' + ary_elm);
+  // console.log('ary_level :' + ary_level);
+  var ary_elmFormed = [];
+  for (var i = 0; i < len; i++){
+    var buff_ary = ary_elm[i].split(':'); // stringの中に:は許さない
+    var len_buff = buff_ary.length;
+    var buf = '';
+    for (var j = 0; j < len_buff; j++){
+      buf = buff_ary[j];
+      buf = normalize_quate(trim(buf));
+      buff_ary[j] = buf;
+    }
+    ary_elm[i] = buff_ary.join(':')
+  }
+  return [ ary_elm, ary_level ]
+}
+
+var normalize_ary = function(ary){
+  var ret_ary = [];
+  var regx = new RegExp('^\s*#.*$', 'm')
+  var regx_whitespace = new RegExp('^\s*$', 'm')
+  //
+  var len = ary.length;
+  for (var i = 0; i < len; i++){
+    if(regx.test(ary[i])){
+      null;
+    } else {
+      if(regx_whitespace.test(ary[i])){
+        null;
+      } else {
+        ret_ary.push(ary[i]);
+      }
+    }
+  }
+  return ret_ary
+}
+
+var parse_str = function(str){
+  var indent = get_minIndent(str);
+  var str_chopped = chop_indent(str, indent);
+  var ary = str_chopped.split('\r\n');
+  var ary_normalized = normalize_ary(ary)
+  var ary_parsed = get_elmentAndIndentLevel(ary_normalized);
+  return ary_parsed
+}
+
+var form_data = function(elm, level, level_pre){
+  var ret = '';
+  if(level_pre === level) {
+    null;
+  } else if(level_pre != level) {
+    ret = ret + '} ';
+  }
+  if(endsWith(elm,':')){
+    ret = trim(elm) + '  ' ;
+  } else if(endsWith(elm,'[')){
+    ret = trim(elm) + ' ' ;
+  } else if(endsWith(elm,']')){
+    ret = trim(elm) + ', ' ;
+  } else if(endsWith(elm,'{')){
+    ret = trim(elm) + ' ' ;
+  } else if(endsWith(elm,'}')){
+    ret = trim(elm) + ', ' ;
+  } else {
+    ret = trim(elm)  + ', ';
+  }
+  return ret
+}
+
+// static method
+// 
+CLS_.convettoJSON = function(str){
+  var ary_parsed = parse_str(str);
+  var elms = ary_parsed[0];
+  var levels = ary_parsed[1];
+  
+  var buff = '';
+  var lvl_pre = levels[0];
+  var len = elms.length;
+  var formed = '';
+  for (var i = 0; i < len; i++){
+    formed = form_data(elms[i], levels[i], lvl_pre);
+    if(endsWith(elms[i],']')){
+      buff = StringUtil.chopTail(buff,2);
+    }
+    if(endsWith(elms[i],'}')){
+      buff = StringUtil.chopTail(buff,2);
+    }
+    Editor.TraceOut('L289 : CSON.converttoJSON formed = ' + formed)
+    buff = buff + formed;
+    Editor.TraceOut('L291 : CSON.converttoJSON buff = ' + buff)
+    if(endsWith(elms[i],'[')){
+      if(contains(elms[i+1], ':')){
+        flag_object = true; // FIXME
+      }
+    }
+    if(endsWith(elms[i],':')){
+      if(contains(elms[i+1], ':')){
+        flag_object = true; // FIXME
+      }
+    }
+    lvl_pre = levels[i];
+  }
+  return put_bracket(chopTail(buff,2),'{','}');
+}
+
+CLS_.doDebug = function(){
+  WScript.Echo('------------ debug start');
+  WScript.Echo('module name = ' + CSON.module_name);
+  var str = '  sample : 123 \r\n  date : "19/12/11"';
+  var ary_parsed = parse_str(str);
+  WScript.Echo('ary_elm = ' + ary_parsed[0]);
+  WScript.Echo('ary_level = ' + ary_parsed[1]);
+  var elms = ary_parsed[0];
+  var levels = ary_parsed[1];
+  var buff = '';
+  var lvl_pre = levels[0];
+  var len = elms.length;
+  var formed = '';
+  for (var i = 0; i < len; i++){
+    formed = form_data(elms[i], levels[i], lvl_pre);
+    buff = buff + formed;
+    lvl_pre = levels[i];
+  }
+  WScript.Echo('buff = ' + put_bracket(chopTail(buff,2),'{','}'));
+}
+
+exports.CSON = CLS_;
+
+}());
+
+// --------------------------------------------------- entry point
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  var isBrowser = (typeof(alert) !== "undefined");
+  return (isWSH || isEditor || isBrowser)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(this_file_name)){
+    Editor.TraceOut('------------ debug from Editor start');
+    var CSON = exports.CSON;
+    var str = '  sample : 12.3 \r\n  date : "19/12/11"';
+    var json_str = CSON.convettoJSON(str);
+    Editor.TraceOut('json_str = ' + json_str);
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    null;
+    var CSON = exports.CSON;
+    CSON.doDebug();
+  } else {
+    console.log('Test on IE11')
+  }
+}
+
