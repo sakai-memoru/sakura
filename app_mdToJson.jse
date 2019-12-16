@@ -1,6 +1,6 @@
-// app_mdTableToJson.jse  
+// app_mdToJson.jse  
 // + sakura macro folder  
-//    + app_mdTableToJson.jse  
+//    + app_mdToJson.jse  
 //    + lib  
 //      + json2.js  
 //      + undersore.js  
@@ -8,7 +8,7 @@
 //      + DateUtil.jse  
 //      //+ ClipboardGetter.jse
 //      + Clipboard3.jse
-//    + app_mdTableToJson  
+//    + app_mdToJson  
 //      + config
 //        + setting.js
 // 
@@ -22,7 +22,8 @@ var CONS_COMMON_LIBS = [
   //"./lib/ClipboardGetter.jse",
   "./lib/Clipboard3.jse",
   "./lib/DateUtil.jse",
-  "./app_mdTableToJson/config/setting.js"
+  "./lib/MD.jse",
+  "./app_mdToJson/config/setting.js"
 ]
 
 // load external libraries
@@ -279,14 +280,13 @@ var form_target = function(str, line_code){
 var check_firstLine = function(line){
   /** To check Format Sheet ID */
   var ret = false;
-  var check_line = line.split(':');
-  var check_ary = [];
-  if(check_line.length == 2){
-    check_line = _.map(check_line, function(elm){
-        return StringUtil.trim(elm);
-      })
-    if(check_line[0] === CONFIG.FORMAT_FNAME) {
-      if(check_line[1] === CONFIG.FORMAT_SHEETID) {
+  var check_ary = line.split(':');
+  if(check_ary.length == 2){
+    check_ary = _.map(check_ary, function(elm){
+      return StringUtil.trim(elm);
+    })
+    if(check_line[0] === CONS_FORMAT_FNAME) {
+      if(check_line[1] === CONS_FORMAT_SHEETID) {
         ret = true;
       }
     }
@@ -500,29 +500,30 @@ var reorganize_data = function(obj,dict){
   return ret
 }
 
-var get_object = function(lines, line_code){
+var get_object = function(lines, line_code, isCheckedForm){
+  if(typeof isCheckedForm !== 'undefined') isCheckedForm = false;
   var ret_obj = {};
   var dict_headerKeys = {};
   var line_first = lines[0];
-  var isTargetFormat = true;
-  if(CONFIG.IS_CHECKED_FORM){
-    var isTargetFormat = check_firstLine(line_first);
-  } 
   //
+  if(isCheckedForm){
+    if(!check_firstLine(line_first)){
+      return ret_obj
+    }
+  }
+  // 
   var converted = {};
   var ary_h1234 = [];
   var obj_converted = {};
   var line_category = '';
   var i_start = 0;
-  if(isTargetFormat){
-    //console.log('L337 : isTargetFormat = ' + isTargetFormat);
-    if(CONFIG.IS_CHECKED_FORM) {
-      i_start = 1;
-    }
-    converted = convertto_object(lines, i_start, line_code);
-    obj_converted = converted['converted_obj'];
-    ary_h1234 = converted['headers_ary'];
+  //console.log('L337 : isTargetFormat = ' + isTargetFormat);
+  if(isCheckedForm) {
+    i_start = 1;
   }
+  converted = convertto_object(lines, i_start, line_code);
+  obj_converted = converted['converted_obj'];
+  ary_h1234 = converted['headers_ary'];
   // 
   // organize return object
   var dict_headerKeys = generate_dictOfHeader(ary_h1234);
@@ -552,8 +553,10 @@ var doProcess = function(menuSelected){
   // main process for selected menu's one
   if(ope == 1){
     //1. tab -> md (&m),
-    target_formatted = form_target(target_, line_code);
-    var obj = get_object(target_formatted, line_code);
+    lines_formatted = form_target(target_, line_code);
+    var line_first = lines_formatted[0];
+    
+    var obj = get_object(lines_formatted, line_code);
     formatted = JSON.stringify(obj);
   }
   // post-process 
@@ -573,13 +576,16 @@ var doProcess = function(menuSelected){
 var doDebugMain = function(){
   console.log('------------------------- start //');
   console.log('APP : ' + CONFIG.APP_NAME);
+  var isCheckedForm = typeof CONFIG.IS_CHECKED_FORM !== 'undefined' ? CONFIG.IS_CHECKED_FORM: false;
   var target_ = CLIP.get_clipboard();
   //console.log('target_ = ' + target_);
-  var target_formatted = '';
+  var lines_formatted = [];
   var line_code = '\r\n';
-  target_formatted = form_target(target_, line_code);
-  var obj = get_object(target_formatted, line_code);
-  output_newFile(JSON.stringify(obj))
+  lines_formatted = form_target(target_, line_code);
+  var obj = get_object(lines_formatted, line_code, isCheckedForm);
+  if(obj){
+    output_newFile(JSON.stringify(obj));
+  }
 }
 
 
