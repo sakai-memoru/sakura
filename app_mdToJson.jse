@@ -4,6 +4,7 @@
 //    + lib  
 //      + json2.js  
 //      + undersore.js  
+//      + MD.jse  
 //      + StringUtil.jse  
 //      + DateUtil.jse  
 //      //+ ClipboardGetter.jse
@@ -18,6 +19,7 @@ var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
 var CONS_COMMON_LIBS = [
   "./lib/json2.js",
   "./lib/underscore.js",
+  "./lib/MD.js",
   "./lib/StringUtil.jse",
   //"./lib/ClipboardGetter.jse",
   "./lib/Clipboard3.jse",
@@ -277,262 +279,6 @@ var form_target = function(str, line_code){
   })
 }
 
-var check_firstLine = function(line){
-  /** To check Format Sheet ID */
-  var ret = false;
-  var check_ary = line.split(':');
-  if(check_ary.length == 2){
-    check_ary = _.map(check_ary, function(elm){
-      return StringUtil.trim(elm);
-    })
-    if(check_line[0] === CONS_FORMAT_FNAME) {
-      if(check_line[1] === CONS_FORMAT_SHEETID) {
-        ret = true;
-      }
-    }
-  }
-  return ret
-}
-
-var check_lineCategory = function(line){
-  /** categorize line context */
-  var ret = '';
-  var regx_header = new RegExp('\\s*#{1,4}');
-  var regx_table  = new RegExp('\\s*\\|');
-  var regx_spaces  = new RegExp('^\\s*$','m');
-  var regx_numeric  = new RegExp('\\d+');
-  //
-  if (regx_spaces.test(line)){
-    ret = 'spaces';
-  } else if(regx_header.test(line)){
-    ret = 'h1234';
-  } else if(regx_table.test(line)){
-    if(!StringUtil.contains(line, '-')){
-      var check_col = line.split('|');
-      if(check_col.length >= 2){
-        var first_colStr = StringUtil.trim(check_col[CONFIG.TABLE_HEAD_POS]);
-        if(first_colStr === CONFIG.TABLE_HEAD){
-          ret = 'th';
-        } else if(regx_numeric.test(first_colStr)){
-          ret = 'tr';
-        } else {
-          ret = 'tr-space'; // no column is space.
-        }
-      } else {
-        ret = 'tr-column-num-error'; // not target column number
-      }
-    } else {
-      ret = 'thr'; // table border inside a table
-    }
-  } else {
-    ret = 'pre';  // such as <pre> or <p> or <li>
-  }
-  //console.log('L301 : ' + ret)
-  return ret
-}
-
-var convertto_headerObj = function(line,idx){
-  /** analyze header's statement */
-  var ret = [];
-  var regx = new RegExp('#{1,4}\\s+');
-  if(!StringUtil.contains(line, ':')){
-    line = line + ' : '
-  }
-  var hlevel = line.match(/#{1,4}\s+/);
-  var ary = line.split(':');
-  ary = _.map(ary,function(elm){
-    elm = elm.replace(regx,'');
-    return StringUtil.trim(elm);
-  })
-  // array size is equal 2 and array is of key and value 
-  var level = StringUtil.trim(hlevel[0]).length
-  if(ary.length == 2){
-    ret = {
-      line_no : idx,
-      level : '' + level,
-      header_ary : ary
-    }
-  }
-  return ret
-}
-
-var convertto_colums = function(line){
-  /** convert a table row to an arrray of columns */
-  var ret = [];
-  //line = StringUtil.chopDouble(StringUtil.trim(line),1);
-  var ary = line.split('|');
-  ary = _.map(ary,function(elm){
-    return StringUtil.trim(elm);
-  })
-  if(ary.length >= CONFIG.TABLE_COLSIZE){
-    // check Table COLSIZE by config setting
-    ret = _.initial(_.rest(ary));
-  }
-  return ret
-}
-
-var convertfrom_headersObj = function(headers){
-  /** convert headers composed into an arrray of 
-   *  header line no and composed header 
-   */
-  var len = headers.length;
-  var pre_level = 0;
-  var ary = [];
-  var h1234_buff = [];
-  var obj = {};
-  for(var i = 0; i < len; i++){
-    if(pre_level < headers[i].level){
-      h1234_buff.push(headers[i].header_ary[0]);
-    } else if(pre_level >= headers[i].level) {
-      h1234_buff = _.first(h1234_buff, headers[i].level-1);
-      h1234_buff.push(headers[i].header_ary[0]);
-    }
-    obj = {
-      line_no : headers[i].line_no,
-      composedHeader : h1234_buff.join('.')
-    }
-    ary.push(obj);
-    pre_level = headers[i].level;
-  }
-  var ret_ary = _.map(ary, function(elm,idx){
-    var buf = {};
-    buf[elm['line_no']] = elm['composedHeader'];
-    return buf
-  })
-  return ret_ary
-}
-
-var extend_arrayOfObj = function(ary){
-  var ret = {};
-  var len = ary.length;
-  for(var i = 0; i < len; i++){
-    var key_ = _.keys(ary[i])[0]
-    var val_ = ary[i][key_]
-    ret[key_] = val_
-  }
-  return ret
-}
-
-var convertto_object = function(lines, i_start,line_code){
-  var ret_obj = {};
-  var len = lines.length;
-  var target_line_no = 0;
-  var target_line_no_headOfRows = 0;
-  var col_head = [];
-  var col_row = [];
-  var buff_h1234 = [];
-  var buff_obj = {};
-  var buff_paragraph = [];
-  var buff_rows = [];
-  var row_obj = {}; // for row
-  var line_category = '';
-  for(var i = i_start; i < len; i++){
-    line_category = check_lineCategory(lines[i])
-    //console.log('L359 : line_category = ' + line_category);
-    //console.log('L360 : line = ' + lines[i]);
-    // 
-    // process for each category
-    if(line_category === 'h1234'){
-      if(buff_paragraph.length !== 0){
-        buff_obj[target_line_no + '.contents'] = buff_paragraph.join(line_code);
-        buff_paragraph.length = 0;
-      }
-      var header_obj = convertto_headerObj(lines[i],i);
-      // console.log('L462 : ');
-      // console.dir(header_obj);
-      target_line_no = header_obj.line_no;
-      buff_h1234.push(header_obj);
-      buff_obj[header_obj.line_no] = header_obj.header_ary[1];
-    }
-    if(line_category === 'th'){
-      if(buff_paragraph.length !== 0){
-        buff_obj[target_line_no + '.contents'] = buff_paragraph.join(line_code);
-        buff_paragraph.length = 0;
-      }
-      col_head = convertto_colums(lines[i]);
-      target_line_no_headOfRows = target_line_no;
-    }
-    if(line_category === 'tr'){
-      col_row = convertto_colums(lines[i]);
-      if(col_head.length == col_row.length){
-        row_obj = _.object(col_head, col_row);
-        buff_rows.push(row_obj);
-      }
-    }
-    if(line_category == 'pre'){
-      buff_paragraph.push(lines[i]);
-    }
-  }
-  if(buff_paragraph.length !== 0){
-    buff_obj[target_line_no + '.contents'] = buff_paragraph.join(line_code);
-  }
-  if(buff_rows.length !== 0){
-    buff_obj[target_line_no_headOfRows + '.rows'] = buff_rows;
-  }
-  ret_obj = {
-    'headers_ary' : buff_h1234,
-    'converted_obj' : buff_obj
-  }
-  return ret_obj
-}
-
-var generate_dictOfHeader = function(ary){
-  var ary_headersOfLineNoAndComposedName = convertfrom_headersObj(ary);
-  //console.log('L497 : ary' + ary_headersOfLineNoAndComposedName);
-  var dict = extend_arrayOfObj(ary_headersOfLineNoAndComposedName);
-  _.defaults(dict, {'0': 'first_p'});
-  return dict
-}
-
-var reorganize_data = function(obj,dict){
-  var ret = {}
-  for(var key_ in obj){
-    if(obj.hasOwnProperty(key_)){
-      var buff = key_.split('.');
-      var line_no = buff[0];
-      var composedHead = dict[line_no];
-      if(buff.length == 2){
-        composedHead = composedHead + '.' + buff[1];
-      }
-    }
-    ret[composedHead] = obj[key_]
-  }
-  return ret
-}
-
-var get_object = function(lines, line_code, isCheckedForm){
-  if(typeof isCheckedForm !== 'undefined') isCheckedForm = false;
-  var ret_obj = {};
-  var dict_headerKeys = {};
-  var line_first = lines[0];
-  //
-  if(isCheckedForm){
-    if(!check_firstLine(line_first)){
-      return ret_obj
-    }
-  }
-  // 
-  var converted = {};
-  var ary_h1234 = [];
-  var obj_converted = {};
-  var line_category = '';
-  var i_start = 0;
-  //console.log('L337 : isTargetFormat = ' + isTargetFormat);
-  if(isCheckedForm) {
-    i_start = 1;
-  }
-  converted = convertto_object(lines, i_start, line_code);
-  obj_converted = converted['converted_obj'];
-  ary_h1234 = converted['headers_ary'];
-  // 
-  // organize return object
-  var dict_headerKeys = generate_dictOfHeader(ary_h1234);
-  ret_obj = reorganize_data(obj_converted,dict_headerKeys);
-  //console.log('L527');
-  //console.dir(ret_obj);
-  return ret_obj
-}
-
 // do process -------------------------------------------------
 var doProcess = function(menuSelected){
   //console.log('------------------------- start //');
@@ -582,7 +328,7 @@ var doDebugMain = function(){
   var lines_formatted = [];
   var line_code = '\r\n';
   lines_formatted = form_target(target_, line_code);
-  var obj = get_object(lines_formatted, line_code, isCheckedForm);
+  var obj = MD.converttoJSON(lines_formatted, line_code, isCheckedForm, CONFIG);
   if(obj){
     output_newFile(JSON.stringify(obj));
   }
@@ -603,8 +349,9 @@ if(typeof(Editor) !== 'undefined'){
     var _ = exports._;
     var StringUtil = exports.StringUtil;
     var CLIP = exports.CLIP;
+    var MD = exports.MD;
     // var CLIPGETTER = exports.CLIPGETTER;
-    // console.dir(exports);
+    console.dir(exports);
     // console.dir(typeof _);
     // console.dir(typeof StringUtil);
     doDebugMain();
