@@ -1,0 +1,442 @@
+// Set your module name collectly.
+var this_file_name = 'MD.jse';  // Notice! If you rename this module file name.
+var exports = typeof exports !== 'undefined' ? exports : {};
+
+/////////////////////////////////////////////////////////////////  
+// MD.jse  
+// Markdown Format simple Parser  (not consider complex format)  
+//   19/12/17 memoru  
+//   
+//   static method  
+//     - MD.converttoJSON(str)  
+//   Dependency  
+//     - underscore.js  
+//     - StringUtil.jse  
+
+(function(){
+
+var CLS_ = {};
+CLS_.module_name = this_file_name;
+
+// local const  
+var CONS_TABLE_HEAD_POS = 1;
+var CONS_TABLE_HEAD = 'no';
+var CONS_FORMAT_FNAME = '.*';
+var CONS_FORMAT_SHEETID = '.*';
+var CONS_TABLE_COLSIZE = 3;
+
+// local method 
+// 
+var check_firstLine = function(line){
+  /** To check Format Sheet ID */
+  var ret = false;
+  var check_ary = line.split(':');
+  if(check_ary.length == 2){
+    check_ary = _.map(check_ary, function(elm){
+      return StringUtil.trim(elm);
+    })
+    if(check_line[0] === CONS_FORMAT_FNAME) {
+      if(check_line[1] === CONS_FORMAT_SHEETID) {
+        ret = true;
+      }
+    }
+  }
+  return ret
+}
+
+var check_lineCategory = function(line){
+  /** categorize line context */
+  var ret = '';
+  var regx_header = new RegExp('\\s*#{1,4}');
+  var regx_table  = new RegExp('\\s*\\|');
+  var regx_spaces  = new RegExp('^\\s*$','m');
+  var regx_numeric  = new RegExp('\\d+');
+  //
+  if (regx_spaces.test(line)){
+    ret = 'spaces';
+  } else if(regx_header.test(line)){
+    ret = 'h1234';
+  } else if(regx_table.test(line)){
+    if(!StringUtil.contains(line, '-')){
+      var check_col = line.split('|');
+      if(check_col.length >= 2){
+        var first_colStr = StringUtil.trim(check_col[CONS_TABLE_HEAD_POS]);
+        if(first_colStr === CONS_TABLE_HEAD){
+          ret = 'th';
+        } else if(regx_numeric.test(first_colStr)){
+          ret = 'tr';
+        } else {
+          ret = 'tr-space'; // no column is space.
+        }
+      } else {
+        ret = 'tr-column-num-error'; // not target column number
+      }
+    } else {
+      ret = 'thr'; // table border inside a table
+    }
+  } else {
+    ret = 'pre';  // such as <pre> or <p> or <li>
+  }
+  //console.log('L080 : ' + ret)
+  return ret
+}
+
+var convertto_headerObj = function(line,idx){
+  /** analyze header's statement */
+  var ret = [];
+  var regx = new RegExp('#{1,4}\\s+');
+  if(!StringUtil.contains(line, ':')){
+    line = line + ' : '
+  }
+  var hlevel = line.match(/#{1,4}\s+/);
+  var ary = line.split(':');
+  ary = _.map(ary,function(elm){
+    elm = elm.replace(regx,'');
+    return StringUtil.trim(elm);
+  })
+  // array size is equal 2 and array is of key and value 
+  var level = StringUtil.trim(hlevel[0]).length
+  if(ary.length == 2){
+    ret = {
+      line_no : idx,
+      level : '' + level,
+      header_ary : ary
+    }
+  }
+  return ret
+}
+
+var convertto_colums = function(line){
+  /** convert a table row to an arrray of columns */
+  var ret = [];
+  //line = StringUtil.chopDouble(StringUtil.trim(line),1);
+  var ary = line.split('|');
+  ary = _.map(ary,function(elm){
+    return StringUtil.trim(elm);
+  })
+  if(ary.length >= CONS_TABLE_COLSIZE){
+    // check Table COLSIZE by config setting
+    ret = _.initial(_.rest(ary));
+  }
+  return ret
+}
+
+var convertfrom_headersObj = function(headers){
+  /** convert headers composed into an arrray of 
+   *  header line no and composed header 
+   */
+  var len = headers.length;
+  var pre_level = 0;
+  var ary = [];
+  var h1234_buff = [];
+  var obj = {};
+  for(var i = 0; i < len; i++){
+    if(pre_level < headers[i].level){
+      h1234_buff.push(headers[i].header_ary[0]);
+    } else if(pre_level >= headers[i].level) {
+      h1234_buff = _.first(h1234_buff, headers[i].level-1);
+      h1234_buff.push(headers[i].header_ary[0]);
+    }
+    obj = {
+      line_no : headers[i].line_no,
+      composedHeader : h1234_buff.join('.')
+    }
+    ary.push(obj);
+    pre_level = headers[i].level;
+  }
+  var ret_ary = _.map(ary, function(elm,idx){
+    var buf = {};
+    buf[elm['line_no']] = elm['composedHeader'];
+    return buf
+  })
+  return ret_ary
+}
+
+var extend_arrayOfObj = function(ary){
+  var ret = {};
+  var len = ary.length;
+  for(var i = 0; i < len; i++){
+    var key_ = _.keys(ary[i])[0]
+    var val_ = ary[i][key_]
+    ret[key_] = val_
+  }
+  return ret
+}
+
+var convertto_object = function(lines, i_start,line_code){
+  var ret_obj = {};
+  var len = lines.length;
+  var target_line_no = 0;
+  var target_line_no_headOfRows = 0;
+  var col_head = [];
+  var col_row = [];
+  var buff_h1234 = [];
+  var buff_obj = {};
+  var buff_paragraph = [];
+  var buff_rows = [];
+  var row_obj = {}; // for row
+  var line_category = '';
+  for(var i = i_start; i < len; i++){
+    line_category = check_lineCategory(lines[i])
+    //console.log('L181 : line_category = ' + line_category);
+    //console.log('L182 : line = ' + lines[i]);
+    // 
+    // process for each category
+    if(line_category === 'h1234'){
+      if(buff_paragraph.length !== 0){
+        buff_obj[target_line_no + '.contents'] = buff_paragraph.join(line_code);
+        buff_paragraph.length = 0;
+      }
+      if(buff_rows.length !== 0){
+        buff_obj[target_line_no + '.rows'] = [].concat(buff_rows);
+        buff_rows.length = 0;
+      }
+      var header_obj = convertto_headerObj(lines[i],i);
+      // console.log('L195 : ');
+      // console.dir(header_obj);
+      target_line_no = header_obj.line_no;
+      buff_h1234.push(header_obj);
+      buff_obj[header_obj.line_no] = header_obj.header_ary[1];
+    }
+    if(line_category === 'th'){
+      if(buff_paragraph.length !== 0){
+        buff_obj[target_line_no + '.contents'] = buff_paragraph.join(line_code);
+        buff_paragraph.length = 0;
+      }
+      col_head = convertto_colums(lines[i]);
+    }
+    if(line_category === 'tr'){
+      col_row = convertto_colums(lines[i]);
+      if(col_head.length == col_row.length){
+        row_obj = _.object(col_head, col_row);
+        buff_rows.push(row_obj);
+      }
+    }
+    if(line_category == 'pre'){
+      buff_paragraph.push(lines[i]);
+    }
+  }
+  if(buff_paragraph.length !== 0){
+    buff_obj[target_line_no + '.contents'] = buff_paragraph.join(line_code);
+  }
+  if(buff_rows.length !== 0){
+    buff_obj[target_line_no + '.rows'] = [].concat(buff_rows);
+  }
+  ret_obj = {
+    'headers_ary' : buff_h1234,
+    'converted_obj' : buff_obj
+  }
+  return ret_obj
+}
+
+var generate_dictOfHeader = function(ary){
+  var ary_headersOfLineNoAndComposedName = convertfrom_headersObj(ary);
+  //console.log('L234 : ary' + ary_headersOfLineNoAndComposedName);
+  var dict = extend_arrayOfObj(ary_headersOfLineNoAndComposedName);
+  _.defaults(dict, {'0': 'first_p'});
+  return dict
+}
+
+var reorganize_data = function(obj,dict){
+  var ret = {}
+  for(var key_ in obj){
+    if(obj.hasOwnProperty(key_)){
+      var buff = key_.split('.');
+      var line_no = buff[0];
+      var composedHead = dict[line_no];
+      if(buff.length == 2){
+        composedHead = composedHead + '.' + buff[1];
+      }
+    }
+    ret[composedHead] = obj[key_]
+  }
+  return ret
+}
+
+// static method
+// 
+CLS_.converttoJSON = function(lines, line_code, isFormatCheck, CONFIG){
+  var ret_obj = {};
+  // set config
+  CONS_TABLE_HEAD_POS = typeof CONFIG.TABLE_HEAD_POS !== 'undefined'? CONFIG.TABLE_HEAD_POS : 1;
+  CONS_TABLE_HEAD = typeof CONFIG.TABLE_HEAD !== 'undefined'? CONFIG.TABLE_HEAD : 'no';
+  CONS_FORMAT_FNAME = typeof CONFIG.FORMAT_FNAME !== 'undefined'? CONFIG.FORMAT_FNAME : '.*';
+  CONS_FORMAT_SHEETID = typeof CONFIG.FORMAT_SHEETID !== 'undefined'? CONFIG.FORMAT_SHEETID : '.*';
+  CONS_TABLE_COLSIZE = typeof CONFIG.TABLE_COLSIZE !== 'undefined'? CONFIG.TABLE_COLSIZE : 3;
+  // 
+  var dict_headerKeys = {};
+  var converted = {};
+  var ary_h1234 = [];
+  var obj_converted = {};
+  var line_category = '';
+  var i_start = 0;
+  if(isFormatCheck) {
+    i_start = 1;
+  }
+  converted = convertto_object(lines, i_start, line_code);
+  obj_converted = converted['converted_obj'];
+  ary_h1234 = converted['headers_ary'];
+  // 
+  // organize return object
+  var dict_headerKeys = generate_dictOfHeader(ary_h1234);
+  ret_obj = reorganize_data(obj_converted,dict_headerKeys);
+  //console.log('L283');
+  //console.dir(ret_obj);
+  return ret_obj
+}
+
+CLS_.doDebug = function(){
+  WScript.Echo('------------ debug start');
+  WScript.Echo('module name = ' + MD.module_name);
+}
+
+exports.MD = CLS_;
+
+}());
+
+
+
+// --------------------------------------------------- do debug
+var doDebugMain = function(){
+  var CONFIG = typeof CONFIG !== 'undefined' ? CONFIG : {};
+  CONFIG.IS_CHECKED_FORM = false;
+  CONFIG.FORMAT_FNAME = 'FORMAT';
+  CONFIG.FORMAT_SHEETID = 'TD';
+  CONFIG.TABLE_HEAD = 'no';
+  CONFIG.TABLE_HEAD_POS = 1;
+  CONFIG.TABLE_COLSIZE = 7;
+  
+  var form_target = function(str, line_code){
+    /* unifiy linecode and rtrim */
+    if(typeof line_code === 'undefined') line_code = '\r\n';
+    str = StringUtil.unifyLineCode(str, line_code)
+    var lines = str.split(line_code);
+    return _.map(lines, function(elm, idx){
+      return StringUtil.rtrim(elm);
+    })
+  }
+  
+  console.log('------------------------- start //');
+  console.log('APP : ' + CONFIG.APP_NAME);
+  var isCheckedForm = typeof CONFIG.IS_CHECKED_FORM !== 'undefined' ? CONFIG.IS_CHECKED_FORM: false;
+  var target_ = CLIP.get_clipboard();
+  //console.log('target_ = ' + target_);
+  var lines_formatted = [];
+  var line_code = '\r\n';
+  lines_formatted = form_target(target_, line_code);
+  var obj = MD.converttoJSON(lines_formatted, line_code, isCheckedForm, CONFIG);
+  console.dir(obj);
+}
+
+// --------------------------------------------------- entry point
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  var isBrowser = (typeof(alert) !== "undefined");
+  return (isWSH || isEditor || isBrowser)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(this_file_name)){
+    null;
+  }
+} else {
+  if (is_module(this_file_name)){
+    var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
+    var CONS_COMMON_LIBS = [
+      "./lib/json2.js",
+      "./lib/underscore.js",
+      "./lib/StringUtil.jse",
+      "./lib/Clipboard3.jse",
+      "./lib/DateUtil.jse"
+    ]
+    // 
+    // load external libraries
+    var check_env = function(){
+      // set env_name for targetting wsh, sakura, node
+      var env_name = '';
+      if (typeof(WScript) !== "undefined") env_name = 'wsh';
+      if (typeof(Editor) !== "undefined") env_name = 'sakura';
+      if (typeof(alert) !== "undefined") {env_name = 'browser';}
+      else if (typeof(console) !== "undefined") env_name = 'node';
+      return env_name;
+    }
+    var flag = check_env();
+    var exports = typeof exports !== 'undefined' ? exports : {};
+    //
+    if(flag == "wsh"||flag == "sakura"){
+      var objFS = new ActiveXObject("Scripting.FileSystemObject");
+      var lib_path = CONS_COMMON_LIBPATH ? CONS_COMMON_LIBPATH: './';
+      // require common module
+      with({
+        libs : CONS_COMMON_LIBS, 
+        get_moduleCode : function(path){
+          return objFS.OpenTextFile(path,1).ReadAll();
+        }
+      }) {
+        var len = libs.length;
+        for (var i = 0; i < len; i++){
+          try {
+            var module_path = objFS.BuildPath(lib_path,libs[i]);
+            //WScript.Echo( module_path );
+            eval(get_moduleCode(module_path));
+          } catch (e) {
+            //WScript.Echo( e.description || e.message || "error" );
+            null;
+          }
+        }
+      };
+      objFS = null;
+    }
+    var CONFIG = typeof CONFIG !== 'undefined' ? CONFIG : {};
+    var debug_mode = typeof CONFIG.DEBUG_MODE !== 'undefined' ? CONFIG.DEBUG_MODE: true ;
+    var DateUtil = exports.DateUtil;
+    // pretend console.log 
+    var console = typeof console !== 'undefined' ? console : {};
+    if(console){
+      if(debug_mode){
+        if(flag == "sakura"){
+          console.log=function(str){
+            var log_str = "[DEBUG] $d$t ($f) > " + str;
+            Editor.TraceOut(log_str,1)
+          }
+          console.info=function(str){
+            var log_str = "[INFO] $d$t ($f) > " + str;
+            Editor.TraceOut(log_str,1)
+          }
+          console.dir = function(obj){
+            var str = "[DUMP] $d$t ($f) > " + JSON.stringify(obj);
+            Editor.TraceOut(str,1);
+          }
+        };
+        if(flag == "wsh"){
+          console.info = function(str){WScript.Echo('[INFO] ' + DateUtil.get_todayString()  + ' (' + DateUtil.get_todayDayString() + ') ' + DateUtil.get_nowTimeString() + ' > ' + str)};
+          console.log = function(str){WScript.Echo('[DEBUG] ' + DateUtil.get_todayString()  + ' (' + DateUtil.get_todayDayString() + ') ' + DateUtil.get_nowTimeString() + ' > ' + str)};
+          console.dir = function(obj){ 
+            var str = JSON.stringify(obj);
+            WScript.Echo('[DUMP] ' + str);
+          }
+        }
+      }else{
+        if(flag == "wsh")  console.info = function(str){WScript.Echo(str)};
+        if(flag == "sakura")  console.info =function(str){Editor.InfoMsg(str)};
+        if(flag == "wsh")  console.log = function(str){null;};
+        if(flag == "sakura")  console.log = function(str){null;};
+        if(flag == "wsh")  console.dir = function(str){null;};
+        if(flag == "sakura")  console.dir = function(str){null;};
+      }
+    }
+    // 
+    CONFIG.debug_mode = true;
+    var MD = exports.MD;
+    var _ = exports._;
+    var StringUtil = exports.StringUtil;
+    var CLIP = exports.CLIP;
+    console.dir(exports);
+    doDebugMain();
+  } else {
+    console.log('Test on IE11')
+  }
+}
