@@ -239,7 +239,7 @@ var output_display = function(str){
 }
 
 // local method for WSH
-function get_sakuraMacroPath(){
+var get_sakuraMacroPath = function(){
   var target_macro_name = CONFIG.MACRO_FILE;
   var target_folder_name = CONFIG.MACRO_FOLDER;
   var objFS = new ActiveXObject("Scripting.FileSystemObject");
@@ -252,7 +252,7 @@ function get_sakuraMacroPath(){
   return target_macro_path
 }
 
-function open_sakura(target_){
+var open_sakura = function(target_){
   var objShell = new ActiveXObject("WScript.Shell");
   var cmd_statement = "sakura.exe -M=" + target_
   //var cmd_statement = "sakura.exe -DEBUGMODE -M=" + target_
@@ -287,6 +287,8 @@ var doProcess = function(menuSelected){
   var dic_lineCode = ['\r\n', '\r', '\n']
   var line_code = dic_lineCode[Editor.GetLineCode()];
   var tab_size = Editor.ChangeTabWidth(0); // get tab size setting
+  var isCheckedForm = typeof CONFIG.IS_CHECKED_FORM !== 'undefined' ? CONFIG.IS_CHECKED_FORM: false;
+  // get target
   var target_ = get_target('$L');
   var formatted = '';
   // pre-process
@@ -302,7 +304,7 @@ var doProcess = function(menuSelected){
     lines_formatted = form_target(target_, line_code);
     var line_first = lines_formatted[0];
     
-    var obj = get_object(lines_formatted, line_code);
+    var obj = MD.converttoJSON(lines_formatted, line_code, isCheckedForm, CONFIG);
     formatted = JSON.stringify(obj);
   }
   // post-process 
@@ -340,6 +342,7 @@ if(typeof(Editor) !== 'undefined'){
   var _ = exports._;
   var StringUtil = exports.StringUtil;
   var CLIP = exports.CLIP;
+    var MD = exports.MD;
   //var CLIP = exports.CLIPGETTER;
   //console.dir(exports);
   //console.dir(typeof _);

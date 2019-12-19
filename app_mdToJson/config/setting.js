@@ -1,7 +1,7 @@
 // NOTICE:JSON記述が正しくないとevalでエラーとなり、CONFIGを読み込めない
 var CONFIG = {
-  "DEBUG_MODE": true,
-  "APP_NAME": "app_mdTableToJson.jse",
+  "DEBUG_MODE": false,
+  "APP_NAME": "app_mdToJson.jse",
   "ENCODE" : "utf-8"
 }
 
