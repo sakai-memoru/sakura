@@ -31,7 +31,7 @@ var doProcess = function(){
   var regex_indent = /^([\t ]*)/;
   var indent = line_str.match(regex_indent)[0]
   var add_line_str = '';
-  var regex = /^([\t ]*)([\-\+\*\>#]|\/\/)/;
+  var regex = /(^[\t ]*)([\-+*\>#]|\/\/)/;
   if(regex.test(line_str)){
     regex.exec(line_str);
     var bullet_str = RegExp.$2;

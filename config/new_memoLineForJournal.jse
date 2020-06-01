@@ -7,6 +7,8 @@ var herestrings = function(){
 /*
 ---
 created: {{date_str3}}
+modified: {{date_str3}}
+title: {{date_str2}}
 ---
 
 # {{date_str2}}

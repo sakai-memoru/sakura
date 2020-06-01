@@ -12,14 +12,13 @@
 // const
 var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
 var CONS_COMMON_LIBS = [
-  // "./lib/es5-shim.js",
-  // "./lib/json2.js",
-  // "./lib/DateUtil.jse",
   "./lib/StringUtil.jse",
+  // "./lib/DateUtil.jse",
+  //"./lib/Dialog.jse",
   //"./lib/Clipboard3.jse",
   //"./lib/ClipboardGetter.jse",
-  //"./lib/Template.jse",
-  //"./lib/Dialog.jse",
+  // "./lib/json2.js",
+  //"./lib/underscore.jse",
   "./app_commentInOut/config/setting.js",
 ]
 

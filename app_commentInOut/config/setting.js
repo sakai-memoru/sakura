@@ -6,7 +6,7 @@ var CONFIG = {
 
 CONFIG.CONS_QUOTE_STRING = '> ';
 CONFIG.CONS_COMMENT_SLASH = '// ';
-CONFIG.CONS_TARGET_SLASH = ['cs', 'cpp', 'java', 'js', 'jse'];
+CONFIG.CONS_TARGET_SLASH = ['cs', 'cpp', 'java', 'js', 'jse', 'pug'];
 CONFIG.CONS_COMMENT_SHARP = '# ';
 CONFIG.CONS_TARGET_SHARP = ['ini', 'ps1', 'psd1', 'ts', 'py', 'pl', 'rb', 'php', 'coffee'];
 CONFIG.CONS_COMMENT_SEMICOLON = '; ';
