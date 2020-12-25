@@ -15,7 +15,6 @@
 var CONS_COMMON_LIBPATH = 'G:\\Users\\sakai\\AppData\\Roaming\\sakura';
 var CONS_COMMON_LIBS = [
   "./lib/json2.js",
-  //"./lib/ecl.js",
   "./lib/underscore.js",
   "./lib/StringUtil.jse",
   "./lib/DateUtil.jse",

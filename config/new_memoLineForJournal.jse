@@ -111,7 +111,7 @@ function doProcess(){
   var date_str = get_todayString('/');
   var day_str = get_todayDayString();
   var time_str = get_nowTimeString(':');
-  var date_str2 = replace_all(date_str,'/','') + '.md';
+  var date_str2 = replace_all('20' + date_str,'/','-') + '.md';
   var date_str3 = '20' + replace_all(date_str,'/','-') + 'T' + time_str + ':00+09:00';
   var clip_text = Editor.GetClipboard(0);
   var map_ = {

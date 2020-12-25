@@ -1,0 +1,128 @@
+// FileIO Utility for WSH and Editor
+//   Static Method
+//     FileIO.
+//
+
+var exports = exports || {};
+
+(function(){
+var CLS_ = {};
+
+var check_env = function(){
+  // set env_name for targetting wsh, sakura, node
+  var env_name = '';
+  if (typeof(WScript) !== "undefined") env_name = 'wsh';
+  if (typeof(Editor) !== "undefined") env_name = 'sakura';
+  if (typeof(alert) !== "undefined") {env_name = 'browser';}
+  else if (typeof(console) !== "undefined") env_name = 'node';
+  return env_name;
+}
+var flag = check_env();
+
+CLS_.File = function(){
+  // File class
+  var objIE = new ActiveXObject('InternetExplorer.Application');
+  objIE.navigate("about:blank");
+  while (objIE.Busy){
+    WScript.Sleep(10);
+  }
+  
+  // add textarea
+  var _textarea = objIE.document.createElement("textarea");
+  objIE.document.body.appendChild(_textarea);
+  _textarea.focus();
+  
+  // CLipboard functions
+  this.setText = function(text){
+    _textarea.innerText = text;
+    objIE.execWB(CONS_OLECMDID_SELECTALL, 0);
+    objIE.execWB(CONS_OLECMDID_COPY, 0);    
+  }
+  
+  this.getText = function(){
+    _textarea.innerText = "";
+    objIE.execWB(CONS_OLECMDID_PASTE, 0);
+    return _textarea.innerText;
+  }
+  
+};
+// if would use clipboard, pretend clipboard
+// get clipboardData
+CLS_.get_clipboard = function(){
+  var ret;
+  if(flag == "wsh" || flag == "browser"){
+    var Clip = new CLS_.Clipboard();
+    ret = Clip.getText();
+    // don't forgett to releace CLIP Object
+    Clip.release();
+  }
+  if(flag == "sakura"){
+    ret = Editor.getClipboard();
+  }
+  return ret;
+}
+
+
+exports.File = CLS_;
+
+}())
+
+// ---------------------- do debug
+function doDebugForWSH(){
+  // for WSH
+  WScript.Echo('------------------------// start debug');
+  var CLIP = exports.CLIP;
+  var Clip = new CLIP.Clipboard();
+  WScript.Echo('pre = ' + Clip.getText());
+  var dummy1 = 'Dummy statement for putting into clipbord 1';
+  Clip.setText(dummy1);
+  WScript.Echo('post = ' + Clip.getText());
+  Clip.release(); // must do
+  
+  // for Both Editor and WSH
+  // WSH
+  WScript.Echo('get_clipboard = ' + CLIP.get_clipboard());
+  var dummy2 = 'Dummy statement for putting into clipbord 2';
+  CLIP.set_clipboard(dummy2);
+  WScript.Echo('get_clipboard = ' + CLIP.get_clipboard());
+}
+
+function doDebugForEditor(){
+  // Editor
+  var CLIP = exports.CLIP;
+  var Clip = new CLIP.Clipboard();
+  Editor.TraceOut('get_clipboard = ' + CLIP.get_clipboard());
+  var dummy3 = 'Dummy statement for putting into clipbord from Editor 3';
+  CLIP.set_clipboard(dummy3);
+  Editor.TraceOut('get_clipboard = ' + CLIP.get_clipboard());
+  var dummy4 = 'Dummy statement for putting into clipbord from Editor 4';
+  CLIP.set_clipboard(dummy4);
+  Editor.TraceOut('get_clipboard = ' + CLIP.get_clipboard());
+}
+
+// ----------------------- entry point
+var file_name = 'FileUtil.jse';         // Set your module name collectly.
+                                        // Notice! If you rename this module file name.
+
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  var isBrowser = (typeof(alert) !== "undefined");
+  return (isWSH || isEditor || isBrowser)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(file_name)){
+    doDebugForEditor();
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    if (is_module(file_name)){
+      doDebugForWSH();
+    }
+  } else {
+    console.log('Test on IE11')
+  }
+}

@@ -1,17 +1,19 @@
 (function(){
 
 // CONST 
-var CONS_TARGET_FOLDER = "journal";
+//var CONS_TARGET_FOLDER = "journal";
+var CONS_TARGET_FOLDER = "GitHub/obsidian";
 var CONS_MACRO_FOLDER = "sakura";
 var CONS_MACRO_FOR_NEW = "./config/new_memoLineForJournal.jse";
 var CONS_MACRO_FOR_ADD = "./config/add_memoLineForJournal.jse";
 
 // global function
-function get_todayString(sep){
+function get_todayString(sep,ynum){
   if(typeof(sep) === 'undefined') sep='/';
+  if(typeof(sep) === 'undefined') ynum=-2;
   var dtm = new Date();
   return [
-    ('' + dtm.getFullYear()).slice(-2),
+    ('' + dtm.getFullYear()).slice(ynum),
     ('0' + (dtm.getMonth() +1)).slice(-2),
     ('0' + dtm.getDate()).slice(-2)
   ].join(sep);
@@ -38,7 +40,7 @@ function get_todayDayString(num){
   if(num === 0){
     ret = dw;
   } else {
-    ret = aryDay[dw].substr(0, 3);
+    ret = aryDay[dw].substr(0, num);
   }
   return ret;
 }
@@ -49,7 +51,8 @@ function get_journalForToday(){
   var objShell = new ActiveXObject("WScript.Shell");
   var doc_folder = objShell.SpecialFolders("MyDocuments");
   var target_folder_path = objFS.BuildPath(doc_folder, target_folder_name);
-  var date_str = get_todayString('');
+  //var date_str = get_todayString('');
+  var date_str = get_todayString('-',-4);
   var target_journal_path = objFS.BuildPath(target_folder_path, date_str + ".md");
   //WScript.Echo(target_journal_path)
   objShell = null;
@@ -104,6 +107,7 @@ function doProcess(){
   var isExist = test_path_and_new(target_journal_path);
   var target_macro_path = get_sakuraMacroPathForExist(isExist);
   var cmd_statement = "sakura.exe " + target_journal_path + " -M=" + target_macro_path;
+  //var cmd_statement = "wzme.exe " + target_journal_path ;
   var objShell = new ActiveXObject("WScript.Shell");
   
   objShell.Run(cmd_statement, 0);

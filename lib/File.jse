@@ -1,0 +1,74 @@
+var exports = exports || {};
+
+(function(){
+var CLS_ = {};
+
+// Public Function    //////////////////////////////////
+//
+//   get_todayString
+CLS_.get_todayString =  function(sep){
+  if(typeof(sep) === 'undefined') sep='/';
+  var dtm = new Date();
+  return [
+    ('' + dtm.getFullYear()).slice(-2),
+    ('0' + (dtm.getMonth() +1)).slice(-2),
+    ('0' + dtm.getDate()).slice(-2)
+  ].join(sep);
+}
+
+CLS_.get_specialFolder = function(folderSpecName) {
+  var objWShell = new ActiveXObject("WScript.Shell");
+  return objWShell.SpecialFolders(folderSpecName);
+}
+
+CLS_.get_currentDirectory = function() {
+  var objWShell = new ActiveXObject("WScript.Shell");
+  return objWShell.CurrentDirectory;
+}
+
+CLS_.build_path = function() {
+  return "n/a";
+}
+
+exports.File = CLS_;
+
+}())
+
+// ---------------------- do debug
+function doDebugForWSH(){
+  // for WSH
+  WScript.Echo('------------------------// start debug');
+  var File = exports.File;
+  WScript.Echo(File.get_todayString(''));
+  WScript.Echo(File.get_specialFolder('MyDocuments'));
+  WScript.Echo(File.get_currentDirectory());
+  
+  WScript.Echo('------------------------// end .......');
+}
+
+// ----------------------- entry point
+var file_name = 'File.jse';         // Set your module name collectly.
+                                        // Notice! If you rename this module file name.
+
+function is_module(this_module_name){
+  // reference : https://senooken.jp/blog/2016/08/20/
+  //             https://gist.github.com/lamsh/f16ee7032051868844fc081926bf0854
+  var isWSH = (typeof(WScript) !== "undefined" && WScript.ScriptName === this_module_name);
+  var isEditor = (typeof(Editor) !== "undefined" && Editor.ExpandParameter('$f') === this_module_name);
+  var isBrowser = (typeof(alert) !== "undefined");
+  return (isWSH || isEditor || isBrowser)
+}
+
+if(typeof(Editor) !== 'undefined'){
+  if (is_module(file_name)){
+    doDebugForEditor();
+  }
+} else {
+  if(typeof(WScript) !== 'undefined'){
+    if (is_module(file_name)){
+      doDebugForWSH();
+    }
+  } else {
+    console.log('Test on IE11')
+  }
+}
